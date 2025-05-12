@@ -1,0 +1,88 @@
+@startuml RegistrarProyectoCultivo
+
+actor "_:AdministradorDeCampo_" as A
+
+boundary "_:PantallaRegistrarProyectoCultivo_" as P
+A --> P : 1. registrarProyectoCultivo()
+' Los paréntesis en la vista dinámica no representan métodos, representan MENSAJES.
+
+P --> P : 2.abrirVentana()
+control "_:GestorPantallaDatosAdministrador_" as GIDA
+P --> GIDA : 3.nuevoProyectoCultivo()
+GIDA --> GIDA : buscarCampos()
+entity "_:Campo_" as C #red
+group loop [Mientras este habilitado obtengo el nombre]
+    GIDA --> C : 40. estaHabilitado()
+    GIDA --> C : 4. getNombre()
+end
+
+
+GIDA --> P : 5. mostrarCampos()
+P --> P : 6. pedirSeleccionCampo()
+
+A --> P: 7.tomarSeleccionCampo()
+
+P --> GIDA : 8. tomarSeleccionCampo()
+
+GIDA --> GIDA : 9. buscarLote()
+entity "_selec: Campo_" as SC
+GIDA --> SC : 10. buscarLote()
+entity "_:Lote_" as L #red
+SC --> L : 11. *getNumero()
+
+
+GIDA --> P: 12. mostrarLotes()
+P --> P : 13. pedirSeleccionLote()
+A --> P: 14.tomarSeleccionLote()
+P --> GIDA : 15. tomarSeleccionLote()
+GIDA --> GIDA: 41. verificarProyectoCultivo
+GIDA --> SC : 16. existeProyectoCultivoVigente()
+entity "_:selec: Lote_" as SL
+SC --> SL : 17. existeProyectoCultivoVigente()
+
+entity "_:ProyectoCultivo_" as PC #red
+group loop [Mientras haya proyectos]
+    SL --> PC : 36. esVigente()
+
+    entity "_:Estado_" as E #red
+    PC --> E : 37. esFinal()
+end
+GIDA --> P : 18. pedirSeleccionFechasProyecto()
+
+A --> P: 19.tomarSeleccionFechasProyecto()
+P --> GIDA : 20. tomarSeleccionFechasProyecto()
+GIDA --> GIDA : 43.getFechaActual()
+GIDA --> GIDA : 21. validarFechas()
+
+GIDA --> P : 22. pedirObservaciones()
+A --> P: 23.tomarObservaciones()
+P --> GIDA : 24. tomarObservaciones()
+
+entity "_:Cultivo_" as Cu #red
+
+GIDA --> GIDA: 42.buscarCultivos()
+GIDA --> Cu : 25. *getNombreCultivo()
+GIDA --> P : 26. mostrarCultivos()
+P --> P : 27. pedirSeleccionCultivo()
+A --> P: 28.tomarSeleccionCultivo()
+P --> GIDA : 29. tomarSeleccionCultivo()
+
+GIDA --> P : 30.pedirConfirmacion()
+A --> P: 31.tomarConfirmacion()
+P --> GIDA : 32.tomarConfirmacion()
+
+GIDA --> GIDA : 33. verificarDatosCompletos()
+entity "_:PC Estado_" as PC_E
+GIDA --> GIDA : 45. buscarEstadoEnPreparacion()
+GIDA --> PC_E: 44.*esEnPreparacion()
+
+GIDA --> GIDA : 34. crearProyectoCultivo()
+
+GIDA --> SC : 46. registrarProyectoCultivo()
+SC --> SL : 47. registrarProyectoCultivo()
+create entity "_new:ProyectoCultivo_" as PC
+SL --> PC : 35. *new()
+
+P --> P : 38.finCU()
+
+@enduml

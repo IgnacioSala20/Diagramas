@@ -1,0 +1,64 @@
+@startuml RegistrarProyectoCultivo
+
+class PantallaRegistrarProyectoCultivo{
+    +registrarProyectoCultivo()
+    +abrirVentana()
+    +pedirSeleccionCampo()
+    +pedirSeleccionLote()
+    +pedirSeleccionFechasProyecto()
+    +pedirObservaciones()
+    +pedirSeleccionCultivo()
+    +tomarSeleccionCampo()
+    +tomarSeleccionLote()
+    +tomarSeleccionFechasProyecto()
+    +tomarObservaciones()
+    +tomarSeleccionCultivo()
+    +pedirConfirmacion()
+    +tomarConfirmacion()
+    +mostrarCampos()
+    +mostrarLotes()
+    +mostrarCultivos()
+    +finCU()
+}
+
+class GestorPantallaDatosAdministrador{
+    +nuevoProyectoCultivo()
+    +tomarSeleccionCampo()
+    +buscarLote()
+    +tomarSeleccionLote()
+    +tomarSeleccionFechasProyecto()
+    +validarFechas()
+    +tomarObservaciones()
+    +tomarSeleccionCultivo()
+    +tomarConfirmacion()
+    +verificarDatosCompletos()
+    +crearProyectoCultivo()
+    +existeProyectoCultivoVigente()
+}
+
+class Campo{
+    +getNombreCampo()
+}
+class Lote{
+    +getNombreLote()
+    +existeProyectoCultivoVigente()
+}
+class ProyectoCultivo{
+    +esVigente()
+    +new()
+}
+class Estado{
+    +esFinal()
+}
+class Cultivo{
+    +getNombreCultivo()
+}
+
+PantallaRegistrarProyectoCultivo ..> GestorPantallaDatosAdministrador
+Campo o--> "1..*" Lote
+Lote --> "1..*" ProyectoCultivo
+ProyectoCultivo --> "1" Estado
+ProyectoCultivo --> "1" Cultivo
+GestorPantallaDatosAdministrador ..>  Campo
+GestorPantallaDatosAdministrador ..> Cultivo
+@enduml

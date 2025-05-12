@@ -1,0 +1,111 @@
+@startuml correcionVistaEstática
+hide circle
+hide empty attributes
+skinparam nodesep 150
+
+class InterfazMR {
+    enviarDatosRelevamiento()
+}
+' No tiene atributos porque no es una pantalla.
+
+class GestorIDM {
+    nombreCampo
+    nroLote
+    identificacionMonitor
+    fechaHoraRelevamiento
+    latitud
+    longitud
+    enviarDatosRelevamiento()
+    buscarCampo()
+    buscarLote()
+    buscarProyectoCultivoVigente()
+    buscarMonitor()
+    validarExistenciaDatosRelevados()
+    obtenerFechaHoraActual()
+    buscarTipoDatoRelevado()
+    buscarUnidadDeMedida()
+    finCU()
+}
+
+InterfazMR .> GestorIDM
+
+class Campo {
+    nombre
+    existeNombre()
+    esLote()
+    buscarProyectoCultivoVigente()
+    validarExistenciaDatosRelevados()
+    registrarDatosRelevados()
+}
+
+GestorIDM .> Campo
+
+class Lote {
+    numero
+    esLote()
+    buscarProyectoCultivoVigente()
+    validarDatosRelevados()
+    registrarDatosRelevados()
+}
+
+Campo "lote" o->"1..*" Lote
+
+class ProyectoDeCultivo {
+    esVigente()
+    validarDatosRelevados()
+    registrarDatosRelevados()
+}
+
+Lote "proyectoCultivo" --> "0..*" ProyectoDeCultivo
+
+class Estado {
+    nombre
+    estadoFinal
+    esFinal()
+}
+
+ProyectoDeCultivo "estadoFinal" --> "1" Estado
+
+class Monitor {
+    identificacion
+    fechaAlta
+    fechaBaja
+    esMonitor()
+}
+
+GestorIDM ..> Monitor
+
+class DatosRelevados {
+    fechaHoraRelevamiento
+    tenesFechaHora()
+    tenesMonitor()
+    new()
+    crearDetalles()
+}
+
+ProyectoDeCultivo "datoRelevado" --> "0..*" DatosRelevados
+DatosRelevados "monitor" --> "1" Monitor
+
+class TipoDeDatoRelevado {
+    nombre
+    descripcion
+    esTuNombre()
+}
+
+class UnidadDeMedida {
+    nombre
+    descripcion
+    abreviatura
+    esTuAbreviatura()
+}
+
+class DetalleDatosRelevados {
+    valor
+    new()
+}
+
+DatosRelevados "tipoDatoRelevado"-->"1" TipoDeDatoRelevado
+DetalleDatosRelevados "unidadDeMedida" --> "1" UnidadDeMedida
+DatosRelevados "   detalleDatosRelevados" o--> "1..*" DetalleDatosRelevados
+
+@enduml

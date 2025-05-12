@@ -1,0 +1,38 @@
+@startuml clases
+
+
+class Gestor{
+    +listaEventos
+}
+
+class EventoSismico{
+    
+}
+
+class Estado{}
+
+class Pantalla{
+    +opcAceptar()
+    +opcRechazar()
+    +opcRegistrarResultadoManual()
+}
+'La sesion'
+class Sesion{
+    +fechaHoraInicio
+    +fechaHoraFin
+}
+
+class Empleado{
+
+}
+class Usuario{}
+Gestor ..>Pantalla
+Pantalla ..>Gestor
+Gestor ..>EventoSismico
+EventoSismico --> "1" Estado
+Sesion --> "1" Usuario
+Usuario --> "1" Empleado
+
+Pantalla ..> Sesion
+@enduml
+

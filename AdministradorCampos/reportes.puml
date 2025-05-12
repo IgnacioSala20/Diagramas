@@ -1,0 +1,71 @@
+@startuml reportes
+
+actor "_:AdministradorDeProyectos_" as AP
+boundary "_:PantallaReportes_" as PR
+
+
+AP --> PR : 1.generarReporteProyectos()
+PR -->PR: 2.abrirVentana()
+control "_:ControladorReportes_" as CR
+
+PR --> CR: 3.nuevoReporte()
+CR --> CR: 4.buscarCampos()
+
+entity "_:Campo_" as C #red
+CR --> C: 5.*getNombreCampo()
+
+CR --> CR: 6.pedirSeleccionCampos()
+entity "_:selec: Campo_" as SC
+group loop
+    AP --> PR: 7.tomarSeleccionCampo()
+    PR --> CR: 8.tomarSeleccionCampo()
+end
+CR --> CR: 9.buscarLotes()
+entity "_:Lote_" as L #red
+CR --> SC: 10.buscarLotes()
+
+SC --> L: 11.*getNombreLote()
+
+CR --> PR: 12.pedirSeleccionLotes()
+group loop
+    AP --> PR: 13.tomarSeleccionLote()
+    PR --> CR: 14.tomarSeleccionLote()
+end
+
+entity "_:Cultivo_" as Cu #red
+entity "_:TipoSuelo_" as TS #red
+
+CR --> Cu: 15.*getNombreCultivo()
+CR --> TS: 16.*getNombreTipoSuelo()
+
+CR --> PR: 17.pedirSeleccionCultivos()
+group loop
+    AP --> PR: 18.tomarSeleccionCultivo()
+    PR --> CR: 19.tomarSeleccionCultivo()
+end
+
+CR --> PR: 20.pedirSeleccionTipoSuelo()
+group loop
+    AP --> PR: 21.tomarSeleccionTipoSuelo()
+    PR --> CR: 22.tomarSeleccionTipoSuelo()
+end
+
+CR --> PR: 23.pedirPeriodoReporte()
+
+AP --> PR: 24.tomarPeriodoReporte()
+PR --> CR: 25.tomarPeriodoReporte()
+CR --> CR: 26.validarPeriodoReporte()
+
+CR --> PR: 27.pedirConfirmacion()
+AP --> PR: 28.tomarConfirmacion()
+
+CR --> CR: 29.buscarDatosConCriteriosSeleccionados()
+
+CR --> PR: 30.pedirFormaVisualizacion()
+AP --> PR: 31.tomarFormaVisualizacion()
+PR --> CR: 32.tomarFormaVisualizacion()
+
+CR --> CR: 33.generarReporte()
+@enduml
+(preguntar como se hace con la seleccion de todos)
+y como hago para cuando puedo seleccionar varias cosas

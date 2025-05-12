@@ -1,0 +1,62 @@
+@startuml correccionVistaDinámica
+
+actor "_:Monitor de Rendimiento_" as MR
+ 
+create boundary "_:InterfazMR_" as I
+MR --> I : 1. enviarDatosRelevamiento()
+' Los paréntesis en la vista dinámica no representan métodos, representan MENSAJES.
+create control "_:GestorInterfazDatosMonitor_" as GIDM 
+I --> GIDM : 2. enviarDatosRelevamiento()
+GIDM -> GIDM : 3. buscarCampo()
+' Este self existe ya que sino, el mensaje enviarDatosRelevamiento() ejecutaría el mensaje.
+entity "_:Campo_" as C #red
+GIDM -> C : 4. *existeNombre()
+GIDM -> GIDM : 5. buscarLote()
+entity "_selec: Campo_" as SC
+GIDM -> SC : 6. buscarLote()
+entity "_:Lote_" as L #red
+SC -> L : 7. *esLote()
+GIDM -> GIDM : 8. buscarProyectoCultivoVigente()
+GIDM -> SC : 9. buscarProyectoCultivoVigente()
+entity "_selec: Lote_" as SL
+SC -> SL : 10. buscarProyectoCultivoVigente()
+entity "_:ProyectoCultivo_" as PC #red
+group loop ProyectoCultivo [Mientras haya proyectos de cultivo] 
+    SL -> PC : 11. esVigente()
+    entity "_:Estado_" as E
+    PC -> E : 12. esFinal()
+end
+GIDM -> GIDM : 13. buscarMonitor()
+entity "_:Monitor_" as M #red
+GIDM -> M : 14. *esMonitor()
+GIDM -> GIDM : 15. validarExistenciaDatosRelevados()
+GIDM -> SC : 16. validarExistenciaDatosRelevados()
+SC -> SL : 17. validarDatosRelevados()
+entity "_vigente: ProyectoCultivo_" as VPC
+SL -> VPC : 18. validarDatosRelevados()
+entity "_:DatosRelevados_" as DR #red
+
+group loop DatosRelevados [Mientras haya datos relevados]
+    VPC -> DR : 19. tenesFechaHora()
+    VPC -> DR : 20. tenesMonitor() 
+end
+
+GIDM -> GIDM : 21. crearDatosRelevados()
+GIDM -> GIDM : 22. obtenerFechaHoraActual()
+GIDM -> GIDM : 23. buscarTipoDatoRelevado()
+entity "_:TipoDeDatoRelevado_" as TDR #red
+GIDM -> TDR : 24. *esTuNombre()
+GIDM -> GIDM : 25. buscarUnidadDeMedida()
+entity "_:UnidadDeMedida_" as UM
+GIDM -> UM : 26. *esTuAbreviatura()
+GIDM -> SC : 27. registrarDatosRelevados()
+SC -> SL : 28. registrarDatosRelevados()
+SL -> VPC : 29. registrarDatosRelevados()
+create entity "_:DatosRelevados_" as CDR
+VPC --> CDR : 30. *new()
+CDR -> CDR : 31. crearDetalles()
+create entity "_:DetalleDatosRelevados_" as DDR
+CDR --> DDR : 32. *new()
+GIDM -> GIDM : 33. finCU()
+
+@enduml

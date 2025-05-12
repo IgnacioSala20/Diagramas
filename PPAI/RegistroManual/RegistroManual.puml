@@ -1,0 +1,87 @@
+@startuml RegistroManual
+actor "__:Analista en Sismos__" as Analista
+
+boundary "__:PantallaRegistrarResultado__" as PR
+
+Analista --> PR : 1.opcRegistrarResultado()
+
+PR --> PR : 2.abrirVentana()
+
+control "__:GestorRegistrarResultado__" as GR
+
+PR --> GR : 3.nuevoResultado()
+
+GR --> GR : 4.buscarEventosSismicos()
+
+entity "__:EventoSismico__" as ES #red
+entity "__:select: EventoSismico__" as SES
+group loop [Eventos sismicos auto detectados]
+    GR --> ES : 5.buscarEventosSismicosAutoDetectados()
+    entity "__:EstadoES__" as EES
+    ES --> EES : 6.esNoRevisado()
+end
+
+GR --> GR : 7.ordenarPorFechaYHora()
+GR --> PR : 8.mostrarEventosSismicos()
+
+PR --> PR : 9.pedirSeleccionEventoSismico()
+
+Analista --> PR : 10.tomarSeleccionEventoSismico()
+
+PR --> GR : 11.tomarSeleccionEventoSismico()
+
+entity "__:Estado__" as E #red
+GR --> GR : 12.buscarEstadoBloqueado()
+GR --> E : 13.*esBloqueado()
+
+GR --> SES : 14.actualizarEstado()
+SES --> EES : 14.bloquear()
+entity "__:Magnitud__" as M #red
+entity "__:Clasificacion__" as C #red
+
+entity "__:Origen__" as O #red
+entity "__:Alcance__" as A #red
+
+GR --> GR : 15.buscarDatosSismicos()
+GR --> SES: 16.buscarDatosSismicos()
+
+SES --> C: 16.getNombre()
+SES --> O: 16.getNombre()
+SES --> A: 16.getNombre()
+
+
+GR --> PR : 18.mostrarDatosSismicos()
+
+PR --> PR : 19.habilitarOpcionVisualizacion()
+
+PR --> PR : 20.habilitarModificacionDatos()
+
+PR --> PR : 21.pedirSeleccionAccion()
+Analista --> PR: 22.tomarSeleccionAccion()
+
+PR --> GR : 23.tomarSeleccionAccion()
+GR --> GR : 25.validarSeleccionAccion()
+GR --> GR : 26.validarMagnitud()
+GR --> SES : 27.validarMagnitud()
+SES --> M : 28.*existeMagnitud()
+GR --> GR : 29.validarOrigen()
+GR --> SES : 30.validarOrigen()
+SES --> O : 31.*existeOrigen()
+GR --> GR : 32.validarAlcance()
+GR --> SES : 33.validarAlcance()
+SES --> A : 34.*existeAlcance()
+
+GR --> GR : 35.buscarEstadoRechazado()
+GR --> EES : 36.*esRechazado()
+
+GR --> GR : 37.getFechaHoraActual()
+
+GR --> GR : 38.buscarUsuarioLogueado()
+entity "__:Usuarios__" as U #red
+GR --> U : 40.getUsuarioLogueado()
+
+GR --> SES : 41.actualizarEventoSismico()
+SES --> EES : 42.actualizarEventoSismico()
+PR --> PR : 43.finCU()
+
+@enduml

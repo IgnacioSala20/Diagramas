@@ -1,0 +1,79 @@
+@startuml DiagramaClase
+
+class EventoSismico{
+    +fechaHora
+    +valorMagnitud
+    +esAutoDetectado()
+    +esNoRevisado()
+}
+class Estado{
+    +valor
+    +esBloqueado()
+    +esRechazado()
+    +bloquear()
+}
+class Magnitud{
+    +nombre
+    +numero
+}
+class Clasificacion{
+    +nombre
+    +getNombre()
+}
+class Origen{
+    +nombre
+    +getNombre()
+}
+class Alcance{
+    +nombre
+    +getNombre()
+}
+class PantallaRegistrarResultado{
+    +opcRegistrarResultado()
+    +abrirVentana()
+    +mostrarEventosSismicos()
+    +pedirSeleccionEventoSismico()
+    +tomarSeleccionEventoSismico()
+    +mostrarDatosSismicos()
+    +habilitarOpcionVisualizacion()
+    +habilitarModificacionDatos()
+    +pedirSeleccionAccion()
+    +tomarSeleccionAccion()
+    +tomarSeleccionEventoSismico()
+    +finCU()
+}
+class GestorRegistrarResultado{
+    +fechaHoraActual
+
+    +nuevoResultado()
+    +buscarEventosSismicos()
+    +ordenarPorFechaYHora()
+    +tomarSeleccionEventoSismico()
+    +tomarSeleccionAccion()
+    +buscarEstadoBloqueado()
+    +buscarDatosSismicos()
+    +tomarSeleccionAccion()
+    +validarSeleccionAccion()
+    +validarMagnitud()
+    +validarOrigen()
+    +validarAlcance()
+    +buscarEstadoRechazado()
+    +getFechaHoraActual()
+    +buscarUsuarioLogueado()
+    +actualizarEstado()
+}
+
+class Usuario{
+    +nombre
+    +getNombre()
+}
+
+PantallaRegistrarResultado ..> GestorRegistrarResultado
+GestorRegistrarResultado ..> EventoSismico
+EventoSismico --> "1" Estado : estado
+EventoSismico --> "1" Magnitud : magnitud
+EventoSismico --> "1" Clasificacion : clasificacion
+EventoSismico --> "1" Origen : origen
+EventoSismico --> "1" Alcance : alcance
+GestorRegistrarResultado ..> "1" Usuario : usuarioLogueado
+@enduml

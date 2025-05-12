@@ -1,0 +1,84 @@
+@startuml correccion
+
+actor "__:Analista en Sismos__" as Analista
+
+create boundary "__:PantallaRegistrarResultado__" as PRR
+
+Analista --> PRR : 1.opcRegistrarResultadoRevision()
+
+PRR --> PRR : 2.abrirVentana()
+
+create control "__:GestorRegistrarResultado__" as GRR
+
+PRR --> GRR : 3.nuevaRevision()
+
+GRR --> GRR : 4.buscarEventoSismicoAuto()
+entity "__:EstadoES__" as E 
+entity "__:Evento Sismico__" as ES #red
+
+group loop [Mientras exista eventos sismicos]
+    GRR --> ES: 5.esAutoDetectado()
+    ES --> E : 6.esAutoDetectado()
+    GRR --> ES : 7.esPendienteRevision()
+    ES --> E : 8.esPendienteRevision()
+
+    GRR --> ES: 9.getDatosPrincipales()
+
+    ES --> ES: 10. getFechaHoraOcurrencia()
+    ES --> ES: 11. getLatitudEpicentro()
+    ES --> ES: 12. getLongitudEpicentro()
+    ES --> ES: 13. getLatitudHipocentro()
+    ES --> ES: 14. getLongitudHipocentro()
+    ES --> ES: 15. getValorMagnitud()
+end
+
+GRR --> GRR : 16.ordenarEvento()
+
+GRR --> PRR : 17.mostrarEventosSismicos()
+
+PRR --> PRR : 18.pedirSeleccionEventoSismico()
+
+Analista --> PRR: 19.tomarSelEventoSismico()
+
+PRR --> GRR : 20.tomarSelEventoSismico()
+
+
+'Arranca la parte del bloqueado, arranca el paso 8'
+'Siempre el gestor tiene que buscar el puntero de estado entre todas las instancias para luego efectuar el cambio'
+GRR --> GRR : 21.buscarEstadoBloqueado()
+entity "__:Estado__" as Estado #red
+group loop [Mientras exista estados]
+    'Va directo a Estado para recorrer todos los estados que puede haber'
+    
+    GRR --> Estado : 22.esAmbitoEventoSismico()
+    GRR --> Estado : 23.esBloqueadoEnRevision()
+end
+
+
+GRR --> GRR : 24.tomarFechaHoraActual()
+
+GRR --> GRR : 25.buscarEmpleadosLogueado()
+
+'Siempre el gestor tiene un puntero a la sesion actual'
+
+entity "__:Actual:Sesion__" as SA
+GRR --> SA : 26.obtenerUsuariosLogueados()
+entity "__:Log:Usuario__" as LU
+'Esto nos da el puntero del empleado por eso, si nosotros quisieramos los datos del empleado, llegariamos a su entidad y nos daria los datos'
+SA --> LU : 27.getEmpleado()
+
+GRR --> GRR : 28.bloquearEvento()
+
+entity "__:selec:EventoSismico__" as SES
+entity "__:CambioEstado__" as CE #red
+
+GRR --> SES : 29.revisar()
+
+
+SES --> SES : 30.buscarCambioEstado()
+'Devuelve si es un verdadero o falso'
+SES --> CE : 31.*esActual()
+
+entity "__:Actual:CambioEstado" as ACE #red
+CE --> ACE : 32.setFechaFin()
+@enduml
