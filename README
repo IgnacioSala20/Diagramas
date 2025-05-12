@@ -1,0 +1,16 @@
+DUDAS:
+    (preguntar como se hace con la seleccion de todos) 
+    y como hago para cuando puedo multiples cosas, que luego tengo que buscar datos ahi
+
+    -Si cuando ponele se puede seleccionar varios campos esto iria dentro de un loop al igual con lotes, cultivo y tipo suelo
+
+	-como manejamos que si imprime el reporte? Seria un metodo de pedirSeleccionImpresion?
+
+	-Preguntar por Tratamiento de Plaga, para el loop de verificar si alguno tiene tratamiento asignado
+
+	-Preguntar por la creacion del objeto de Tratamiento y Dosis, lo que es Agroquimico lo consulto, y unidad de medida hace falta hacerle el new?
+
+	-Si despues de la creacion pide la generacion de un archivo PDF, como seria
+
+
+	-En el caso de LineaAerea, como contemplo el notificar a los interesados

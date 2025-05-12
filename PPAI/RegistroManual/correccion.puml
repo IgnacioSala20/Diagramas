@@ -49,11 +49,9 @@ GRR --> GRR : 21.buscarEstadoBloqueado()
 entity "__:Estado__" as Estado #red
 group loop [Mientras exista estados]
     'Va directo a Estado para recorrer todos los estados que puede haber'
-    
     GRR --> Estado : 22.esAmbitoEventoSismico()
     GRR --> Estado : 23.esBloqueadoEnRevision()
 end
-
 
 GRR --> GRR : 24.tomarFechaHoraActual()
 

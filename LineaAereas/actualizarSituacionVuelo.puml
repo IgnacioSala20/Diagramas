@@ -1,0 +1,99 @@
+@startuml actualizarSituacionVuelo
+actor "__:EncargadoNavegacion__" as EN 
+
+create boundary "__:PantallaActualizacionVuelo" as PAV
+
+EN --> PAV : opcActualizarSitVuelo()
+
+PAV --> PAV: abrirVentana()
+
+create control "__:GestorActualizacionVuelo" as GAV
+
+PAV --> GAV : nuevaActualizacion()
+
+GAV --> GAV : buscarEstadosNoFinales()
+
+
+entity "__:Estado__" as E #red
+entity "__:Vuelo__" as V #red
+
+group loop [Mientras sea no final]
+    GAV  --> E : esNoFinal()*
+    GAV --> E : getNombre()
+end
+
+GAV --> PAV : mostrarEstados()
+
+PAV --> PAV: pedirSeleccionAterrizarVuelo()
+
+EN --> PAV : tomarSeleccionAterrizarVuelo()
+
+PAV --> GAV : tomarSeleccionAterrizarVuelo()
+
+GAV --> GAV : buscarVueloEnCondicionesAterrizaje()
+
+
+group loop 
+    GAV --> V: buscarVueloEnCondicionesAterrizaje()
+
+    entity "__:CambioEstado__" as CE
+
+
+    V --> CE : esEstadoEnZona()
+    CE --> E : esEstadoEnZona()
+
+    GAV --> V : getDefinicionVuelo()
+
+    V --> V : getHoraPartida()
+    V --> V : getFechaPartida()
+
+    entity "__:DefinicionVuelo__" as DV
+
+    V --> DV : getDefinicionVuelo()
+
+    DV --> DV : getNumeroVuelo()
+
+end
+
+GAV --> PAV : mostrarVuelos()
+
+PAV --> PAV : pedirSeleccionVuelo()
+
+EN --> PAV : tomarSeleccionVuelo()
+
+PAV --> GAV : tomarSeleccionVuelo()
+
+GAV --> PAV : pedirConfirmacion()
+
+EN --> PAV : tomarCOnfirmacioin()
+PAV --> GAV : tomarCOnfirmacioin()
+
+
+GAV --> GAV : getFechaHoraActual()
+
+GAV --> GAV : buscarUsuarioLogueado()
+
+entity "__:Empleado__" as Emp
+
+GAV --> Emp : getEmpleado()
+
+
+GAV --> GAV : actualizarVuelo()
+GAV --> SV: revisar()
+
+SV -->SV : getCambioEstadoVuelo()
+SV --> CE : *esActual()
+
+entity "__:Actual:CambioEstado__" as ACE 
+CE --> ACE : setFechaHoraFin()
+
+GAV --> GAV : crearCambioEstadoVuelo()
+entity "__:selec:Vuelo__" as SV
+
+GAV --> SV : crearCambioEstadoVuelo()
+create entity "__:nuevo:CambioEstado" as NCE
+SV --> NCE : new()
+'Como notificar a los interesados'
+
+PAV --> PAV : finCU()
+@enduml

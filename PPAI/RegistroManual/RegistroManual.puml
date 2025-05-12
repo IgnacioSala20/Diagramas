@@ -3,85 +3,144 @@ actor "__:Analista en Sismos__" as Analista
 
 boundary "__:PantallaRegistrarResultado__" as PR
 
-Analista --> PR : 1.opcRegistrarResultado()
+Analista --> PR : opcRegistrarResultado()
 
-PR --> PR : 2.abrirVentana()
+PR --> PR : abrirVentana()
 
 control "__:GestorRegistrarResultado__" as GR
 
-PR --> GR : 3.nuevoResultado()
+PR --> GR : nuevoResultado()
 
-GR --> GR : 4.buscarEventosSismicos()
+GR --> GR :buscarEventosSismicos()
 
 entity "__:EventoSismico__" as ES #red
+
+entity "__:EstadoES__" as EES
 entity "__:select: EventoSismico__" as SES
 group loop [Eventos sismicos auto detectados]
-    GR --> ES : 5.buscarEventosSismicosAutoDetectados()
-    entity "__:EstadoES__" as EES
-    ES --> EES : 6.esNoRevisado()
+    GR --> ES : esAutoDetectado()
+    ES --> EES : esAutoDetectado()
+    GR --> ES : esPendienteRevision()
+    ES --> EES : esPendienteRevision()
+
+    GR --> ES : getDatosPrincipales()
+
+    ES --> ES:  getFechaHoraOcurrencia()
+    ES --> ES:  getLatitudEpicentro()
+    ES --> ES:  getLongitudEpicentro()
+    ES --> ES:  getLatitudHipocentro()
+    ES --> ES:  getLongitudHipocentro()
+    ES --> ES: getValorMagnitud()
 end
 
-GR --> GR : 7.ordenarPorFechaYHora()
-GR --> PR : 8.mostrarEventosSismicos()
+GR --> GR : ordenarPorFechaYHora()
+GR --> PR : mostrarEventosSismicos()
 
-PR --> PR : 9.pedirSeleccionEventoSismico()
+PR --> PR : pedirSeleccionEventoSismico()
 
-Analista --> PR : 10.tomarSeleccionEventoSismico()
+Analista --> PR : tomarSeleccionEventoSismico()
 
-PR --> GR : 11.tomarSeleccionEventoSismico()
+PR --> GR : tomarSeleccionEventoSismico()
 
 entity "__:Estado__" as E #red
-GR --> GR : 12.buscarEstadoBloqueado()
-GR --> E : 13.*esBloqueado()
+GR --> GR : buscarEstadoBloqueado()
+group loop [Mientras haya estados]
+    GR --> E : esAmbitoEventoSismico()
+    GR --> E : esBloqueadoEnRevision()
+end
 
-GR --> SES : 14.actualizarEstado()
-SES --> EES : 14.bloquear()
+GR --> GR : getFechaHoraActual()
+
+GR --> GR : buscarEmpleadoLogueado()
+
+entity "__:Actual:Sesion__" as SA
+entity "__:Log:Usuario__" as LU 
+
+GR --> SA : buscarEmpleadoLogueado()
+SA --> LU : getEmpleado()
+
+GR --> GR : bloquearEvento()
+
+entity "__:CambioEstado__" as CE #red
+
+GR --> SES : revisar()
+
+SES --> SES : buscarCambioEstado()
+'Devuelve si es un verdadero o falso'
+SES --> CE : *esActual()
+
+entity "__:Actual:CambioEstado" as ACE #red
+CE --> ACE : setFechaFin()
+
+GR --> GR: crearCambioEstado()
+
+create entity "__:nuevo:CambioEstado" as nCE 
+GR --> nCE : new()
+
 entity "__:Magnitud__" as M #red
 entity "__:Clasificacion__" as C #red
 
 entity "__:Origen__" as O #red
 entity "__:Alcance__" as A #red
 
-GR --> GR : 15.buscarDatosSismicos()
-GR --> SES: 16.buscarDatosSismicos()
+GR --> GR : buscarDatosSismicos()
+GR --> SES: buscarDatosSismicos()
 
-SES --> C: 16.getNombre()
-SES --> O: 16.getNombre()
-SES --> A: 16.getNombre()
+SES --> C: getNombre()
+SES --> O: getNombre()
+SES --> A: getNombre()
+
+GR --> GR : buscarSerieTemporales()
+group loop
+    GR --> SES : buscarSerieTemporales()
+    entity "__:SerieTemporal__" as ST #red
+    entity "__:MuestraSismica__" as MS #red
+    entity "__:DetalleMuestraSismica__" as DMS #red
+    SES --> ST : getDatos()
+    ST --> MS : getDatos()
+    MS --> DMS : getDatos()
+    entity "__:TipoDeDato__" as TDD #red
+    
+    DMS --> TDD : getDenominacion()
 
 
-GR --> PR : 18.mostrarDatosSismicos()
+    create boundary "__:PantallaGenerarSismograma__" as PGS
+    GR --> PGS : generarSismograma()
+end
 
-PR --> PR : 19.habilitarOpcionVisualizacion()
+GR --> PR : mostrarDatosSismicos()
 
-PR --> PR : 20.habilitarModificacionDatos()
+PR --> PR : habilitarOpcionVisualizacion()
 
-PR --> PR : 21.pedirSeleccionAccion()
-Analista --> PR: 22.tomarSeleccionAccion()
+PR --> PR :habilitarModificacionDatos()
 
-PR --> GR : 23.tomarSeleccionAccion()
-GR --> GR : 25.validarSeleccionAccion()
-GR --> GR : 26.validarMagnitud()
-GR --> SES : 27.validarMagnitud()
-SES --> M : 28.*existeMagnitud()
-GR --> GR : 29.validarOrigen()
-GR --> SES : 30.validarOrigen()
-SES --> O : 31.*existeOrigen()
-GR --> GR : 32.validarAlcance()
-GR --> SES : 33.validarAlcance()
-SES --> A : 34.*existeAlcance()
+PR --> PR : pedirSeleccionAccion()
+Analista --> PR: tomarSeleccionAccion()
 
-GR --> GR : 35.buscarEstadoRechazado()
-GR --> EES : 36.*esRechazado()
+PR --> GR : tomarSeleccionAccion()
+GR --> GR : validarSeleccionAccion()
+GR --> GR : validarMagnitud()
+GR --> SES : validarMagnitud()
+SES --> M : *existeMagnitud()
+GR --> GR : validarOrigen()
+GR --> SES : validarOrigen()
+SES --> O :*existeOrigen()
+GR --> GR : validarAlcance()
+GR --> SES : validarAlcance()
+SES --> A : *existeAlcance()
 
-GR --> GR : 37.getFechaHoraActual()
+GR --> GR : buscarEstadoRechazado()
+group loop 
+    GR --> E : esAmbitoEventoSismico()
+    GR --> E : esRechazado()
+end
 
-GR --> GR : 38.buscarUsuarioLogueado()
-entity "__:Usuarios__" as U #red
-GR --> U : 40.getUsuarioLogueado()
+GR --> GR : getFechaHoraActual()
 
-GR --> SES : 41.actualizarEventoSismico()
-SES --> EES : 42.actualizarEventoSismico()
-PR --> PR : 43.finCU()
+create entity "__:nuevo:CambioEstado" as nCE
+GR --> GR : crearCambioEstado() 
+GR --> nCE : new()
+
+PR --> PR : finCU()
 
 @enduml

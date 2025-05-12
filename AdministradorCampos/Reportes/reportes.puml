@@ -1,0 +1,88 @@
+@startuml reportes
+
+actor "_:AdministradorDeProyectos_" as AP
+boundary "_:PantallaReportes_" as PR
+
+AP --> PR : generarReporteProyectos()
+PR -->PR: abrirVentana()
+control "_:ControladorReportes_" as CR
+
+PR --> CR: nuevoReporte()
+CR --> CR: buscarCampos()
+
+entity "_:Campo_" as C #red
+group loop [Mientras este Habilitado]
+    CR --> C : estaHabilitado()
+    CR --> C: getNombreCampo()
+end
+CR --> CR: 6.pedirSeleccionCampos()
+entity "_:selec: Campo_" as SC
+AP --> PR: 7.tomarSeleccionCampo()
+PR --> CR: 8.tomarSeleccionCampo()
+CR --> CR: 9.buscarLotes()
+entity "__:selec:Lote__" as SL 
+
+entity "_:Lote_" as L #red
+CR --> SC: 10.buscarLotes()
+
+SC --> L: 11.getNombreLote()*
+
+CR --> PR: 12.pedirSeleccionLotes()
+AP --> PR: 13.tomarSeleccionLote()
+PR --> CR: 14.tomarSeleccionLote()
+
+entity "_:Cultivo_" as Cu #red
+entity "_:TipoSuelo_" as TS #red
+
+CR --> CR : buscarCultivos()
+CR --> Cu: 15.getNombreCultivo()*
+
+CR --> PR: 17.pedirSeleccionCultivos()
+AP --> PR: 18.tomarSeleccionCultivo()
+PR --> CR: 19.tomarSeleccionCultivo()
+
+CR --> CR : buscarTipoSuelo()
+CR --> TS: 16.getNombreTipoSuelo()*
+
+CR --> PR: 20.pedirSeleccionTipoSuelo()
+AP --> PR: 21.tomarSeleccionTipoSuelo()
+PR --> CR: 22.tomarSeleccionTipoSuelo()
+
+
+CR --> PR: 23.pedirPeriodoReporte()
+AP --> PR: 24.tomarPeriodoReporte()
+PR --> CR: 25.tomarPeriodoReporte()
+CR --> CR: 26.validarPeriodoReporte()
+
+CR --> PR: 27.pedirConfirmacion()
+AP --> PR: 28.tomarConfirmacion()
+
+CR --> CR: 29.buscarDatosConCriteriosSeleccionados()
+
+group loop
+CR --> SC : buscarDatos()
+SC --> SL : buscarDatos()
+SL --> TS : getNombre()
+
+CR --> CR : buscarCultivosPC()
+CR --> SC : buscarCultivosPC()
+SC --> SL : buscarCultivosPC()
+entity "__:ProyectoCultivos__" as PC #red
+entity "__:Estado PC" as PC #red
+
+SL --> PC : getDatosPC()
+PC --> PC: getCultivo()
+PC --> PC : getEstado()
+PC --> PC : getFechaInicio()
+PC --> PC : getFechaFin()
+end
+
+CR --> PR : mostrar()
+PR --> PR: 30.pedirFormaVisualizacion()
+AP --> PR: 31.tomarFormaVisualizacion()
+PR --> CR: 32.tomarFormaVisualizacion()
+
+CR --> CR: 33.generarReporte()
+
+PR --> PR : finCU()
+@enduml
