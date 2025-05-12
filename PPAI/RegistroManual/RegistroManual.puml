@@ -62,20 +62,22 @@ SA --> LU : getEmpleado()
 GR --> GR : bloquearEvento()
 
 entity "__:CambioEstado__" as CE #red
-
+'metodo que es el mismo de la Maq Estado'
 GR --> SES : revisar()
 
 SES --> SES : buscarCambioEstado()
 'Devuelve si es un verdadero o falso'
-SES --> CE : *esActual()
+SES --> CE : esActual()*
 
-entity "__:Actual:CambioEstado" as ACE #red
+entity "__:Actual:CambioEstado" as ACE
 CE --> ACE : setFechaFin()
 
 GR --> GR: crearCambioEstado()
-
+GR --> SES : crearCambioEstado()
 create entity "__:nuevo:CambioEstado" as nCE 
-GR --> nCE : new()
+SES --> nCE : new()
+
+SES --> SES : setEstado()
 
 entity "__:Magnitud__" as M #red
 entity "__:Clasificacion__" as C #red
@@ -90,23 +92,29 @@ SES --> C: getNombre()
 SES --> O: getNombre()
 SES --> A: getNombre()
 
-GR --> GR : buscarSerieTemporales()
-group loop
-    GR --> SES : buscarSerieTemporales()
+SES --> SES : buscarSerieTemporales()
+group loop [Mientras haya series temporales]
     entity "__:SerieTemporal__" as ST #red
     entity "__:MuestraSismica__" as MS #red
     entity "__:DetalleMuestraSismica__" as DMS #red
-    SES --> ST : getDatos()
-    ST --> MS : getDatos()
-    MS --> DMS : getDatos()
     entity "__:TipoDeDato__" as TDD #red
+    SES --> ST : getDatos()
+    group loop [Mientras haya muestras sismicas]
+        ST --> MS : getDatos()
+        group loop [Mientras haya detalles de muestra sismica]
+            MS --> DMS : getDatos()
+            DMS --> TDD : getDenominacion()
+        end
+    end
+    entity "__:Sismografo__" as S #red
     
-    DMS --> TDD : getDenominacion()
-
-
-    create boundary "__:PantallaGenerarSismograma__" as PGS
-    GR --> PGS : generarSismograma()
+    ST --> S : esSismografo()
 end
+
+SES --> SES : clasificarPorEstacion()
+'usecase "__:GenerarSismograma__" as GS'
+
+'GR --> GS : invocarCU()'
 
 GR --> PR : mostrarDatosSismicos()
 
@@ -139,8 +147,17 @@ GR --> GR : getFechaHoraActual()
 
 create entity "__:nuevo:CambioEstado" as nCE
 GR --> GR : crearCambioEstado() 
-GR --> nCE : new()
+GR --> SES : rechazar()
+SES --> nCE : new()
+SES --> SES : setEstado()
 
 PR --> PR : finCU()
 
 @enduml
+
+'Si quiero por ej: un dato del empleado, tengo que ir hasta usuario y luego a empleado
+'Si quiero por ej: un dato del evento sismico, tengo que ir hasta el evento sismico y luego a su estado
+
+
+'Cuando tenes el puntero lo que podes hacer es ir a la entidad y pedirle los datos'
+'CUando no tenes el puntero, tenes que ir a la entidad y pedirle el puntero de la entidad que queres recorriendo todas las entidades'

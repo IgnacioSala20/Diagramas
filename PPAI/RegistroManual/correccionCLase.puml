@@ -3,6 +3,7 @@
 
 class Gestor{
     +listaEventos
+    +
 }
 
 class EventoSismico{
@@ -12,6 +13,7 @@ class EventoSismico{
 class Estado{}
 
 class Pantalla{
+    +grillaEventoSismico
     +opcAceptar()
     +opcRechazar()
     +opcRegistrarResultadoManual()
