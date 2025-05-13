@@ -63,6 +63,7 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 - Los atributos se piden los datos que se necesitan para la secuencia, puede haber dependencia entre entidades
 - En la implementacion podemos tener en el main todos los datos, en un array y luego se lo mandamos al gestor, cosa de evitar usar una BD
 
+<<<<<<< HEAD
 
 *Esto es para la clase CambioEstado*
 - buscar puntero a estado 
@@ -73,3 +74,12 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 - crear nuevo cambio de estado
 ### Solo si la clase principal(ej: EventoSismico) esta relacionada con estado 
 - [setEstado a la clase que cambia de estado (selec:evento)] 
+=======
+[PorLasRelacionesSucedeEsto]
+- Si quiero por ej: un dato del empleado, tengo que ir hasta usuario y luego a empleado
+- Si quiero por ej: el estado del evento sismico, tengo que ir hasta el evento sismico y luego a su estado
+
+[ObtencionDeDatos]
+- Cuando tenes el puntero lo que podes hacer es ir a la entidad y pedirle los datos
+- Cuando no tenes el puntero, tenes que ir a la entidad y pedirle el puntero de la entidad que queres recorriendo todas las entidades
+>>>>>>> 455198a (Aclaraciones)
