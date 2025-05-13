@@ -59,8 +59,17 @@ Este enfoque es similar a cómo el sistema se comunicaría con una **impresora**
 a través de una **interfaz que abstrae el canal de comunicación**, manteniendo **bajo acoplamiento entre los componentes**.
 
 
-
 ### ACLARACIONES
 - Los atributos se piden los datos que se necesitan para la secuencia, puede haber dependencia entre entidades
 - En la implementacion podemos tener en el main todos los datos, en un array y luego se lo mandamos al gestor, cosa de evitar usar una BD
 
+
+*Esto es para la clase CambioEstado*
+- buscar puntero a estado 
+- obtener fecha y hora actual
+- obtener datos necesarios para nuevo cambio de estado (empleado)
+- buscar actual cambio de estado
+- setear fecha fin al actual cambio de estado
+- crear nuevo cambio de estado
+### Solo si la clase principal(ej: EventoSismico) esta relacionada con estado 
+- [setEstado a la clase que cambia de estado (selec:evento)] 
