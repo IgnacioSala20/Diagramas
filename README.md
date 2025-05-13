@@ -82,4 +82,3 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 [ObtencionDeDatos]
 - Cuando tenes el puntero lo que podes hacer es ir a la entidad y pedirle los datos
 - Cuando no tenes el puntero, tenes que ir a la entidad y pedirle el puntero de la entidad que queres recorriendo todas las entidades
->>>>>>> 455198a (Aclaraciones)
