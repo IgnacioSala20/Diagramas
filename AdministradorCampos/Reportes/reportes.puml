@@ -15,17 +15,18 @@ group loop [Mientras este Habilitado]
     CR --> C : estaHabilitado()
     CR --> C: getNombreCampo()
 end
-CR --> CR: 6.pedirSeleccionCampos()
-entity "_:selec: Campo_" as SC
+CR --> PR: 6.pedirSeleccionCampos()
+
+
 AP --> PR: 7.tomarSeleccionCampo()
 PR --> CR: 8.tomarSeleccionCampo()
-CR --> CR: 9.buscarLotes()
-entity "__:selec:Lote__" as SL 
 
 entity "_:Lote_" as L #red
-CR --> SC: 10.buscarLotes()
-
-SC --> L: 11.getNombreLote()*
+CR --> CR: 9.buscarLotesCampos()
+group loop [Mientras haya lotes para esos campos]
+    CR --> C : esCampoSeleccionado()
+    C --> L: 11.getNombreLote()
+end
 
 CR --> PR: 12.pedirSeleccionLotes()
 AP --> PR: 13.tomarSeleccionLote()
@@ -60,21 +61,20 @@ AP --> PR: 28.tomarConfirmacion()
 CR --> CR: 29.buscarDatosConCriteriosSeleccionados()
 
 group loop
-CR --> SC : buscarDatos()
-SC --> SL : buscarDatos()
-SL --> TS : getNombre()
+    CR --> C : buscarDatos()
+    C --> L : buscarDatos()
+    L --> TS : getNombre()
 
-CR --> CR : buscarCultivosPC()
-CR --> SC : buscarCultivosPC()
-SC --> SL : buscarCultivosPC()
-entity "__:ProyectoCultivos__" as PC #red
-entity "__:Estado PC" as PC #red
+    CR --> C : buscarCultivosPC()
+    C --> L : buscarCultivosPC()
+    entity "__:ProyectoCultivos__" as PC #red
+    entity "__:Estado PC" as PC #red
 
-SL --> PC : getDatosPC()
-PC --> PC: getCultivo()
-PC --> PC : getEstado()
-PC --> PC : getFechaInicio()
-PC --> PC : getFechaFin()
+    L --> PC : getDatosPC()
+    PC --> PC: getCultivo()
+    PC --> PC : getEstado()
+    PC --> PC : getFechaInicio()
+    PC --> PC : getFechaFin()
 end
 
 CR --> PR : mostrar()
@@ -84,5 +84,7 @@ PR --> CR: 32.tomarFormaVisualizacion()
 
 CR --> CR: 33.generarReporte()
 
+create boundary "__:InterfazImpresora__" as IM
+CR --> IM : imprimirReporte()
 PR --> PR : finCU()
 @enduml

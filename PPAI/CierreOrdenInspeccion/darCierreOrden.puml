@@ -1,0 +1,136 @@
+@startuml darCierreOrdenInspeccion
+
+actor "__:Responsable de Inspecciones" as RI
+
+create boundary "__:PantallaOrdenInspeccion__" as POI
+
+RI --> POI : opcCerrarOrdenInspeccion()
+POI --> POI : abrirVentana()
+create control "__:GestorOrdenInspeccion" as GOI
+
+POI --> GOI : nuevoCierreInspeccion()
+
+GOI --> GOI : buscarEmpleadoLogueado()
+
+entity "__:Actual:Sesion__" as actualSesion
+GOI --> actualSesion: buscarEmpleadoLogueado()
+entity "__:Log:Usuario__" as LU
+
+actualSesion --> LU : getEmpleado()
+
+entity "__:OrdenDeInspeccion__" as OI #red
+
+GOI --> GOI : buscarOrdenesInspeccioRI()
+group loop [Mientras haya ordenes de inspeccion]
+
+GOI --> OI : esEmpleado()
+
+entity "__:EstadoOI__" as EOI 
+entity "__:EstacionSismologicaOI__" as ESOI
+OI --> EOI : esCompletamenteRealizada()
+OI --> OI : getNumeroOrden()
+OI --> OI : getFechaFinalizacion()
+entity "__:Sismografo__" as S #red
+OI --> OI : obtenerIdentificador()
+OI --> ESOI : obtenerIdentificadorSismografo()
+ESOI --> S : getIdentificadorSismografo()
+OI --> ESOI : getNombre()
+end
+GOI --> GOI : ordenarOrdenesInspeccion()
+
+GOI --> POI: pedirSeleccionOrden()
+
+RI --> POI : tomarSeleccionOrden()
+POI --> GOI : tomarSeleccionOrden()
+
+GOI --> POI : pedirObservacionCierre()
+RI --> POI : tomarObservacionCierre()
+
+POI --> GOI : tomarObservacionCierre()
+entity "__:MotivoTipo__" as MT #red
+
+GOI --> GOI : buscarMotivoTipo()
+GOI --> MT : getDescripcion()*
+
+GOI --> POI : pedirSeleccionMotivoTipo()
+group loop [Mientras haya motivos por poner comentarios]
+    RI --> POI : tomarSeleccionMotivoTipo()
+
+    POI --> GOI : tomarSeleccionMotivoTipo()
+
+    GOI --> POI : pedirComentarioMotivoTipoSelec()
+    RI --> POI : tomarComentarioMotivoTipoSelec()
+    POI --> GOI : tomarComentarioMotivoTipoSelec()
+end
+GOI --> POI : pedirConfirmacionCierre()
+RI --> POI : tomarConfirmacion()
+
+POI --> GOI : tomarConfirmacion()
+
+GOI --> GOI : validarObsYMotivoTipo()
+
+GOI --> GOI : getFechaHoraActual()
+
+entity "__:Estado__" as E #red
+
+GOI --> GOI : buscarEstadoCerrado()
+group loop [Mientras sea el ambito y haya estados]
+    GOI --> E : esAmbitoOrdenInspeccion()
+    GOI --> E : esCerrada()
+end
+entity "__selec:OrdenInspeccion__" as SOI
+GOI --> GOI : cerrarOrden()
+GOI --> SOI : cerrar()
+SOI --> SOI : setEstado()
+SOI --> SOI : setFechaHoraCiere()
+
+entity "__:SismografoES__" as SES
+GOI --> GOI : buscarEstadoFueraServicio()
+group loop [Mientras sea el ambito y haya estados]
+    GOI --> E : esAmbitoOrdenInspeccion()
+    GOI --> E : esFueraServicio()
+end
+
+entity "__:CambioEstado__" as CE #red
+
+entity "__:Actual:CambioEstado__" as ACEO
+
+GOI --> GOI : buscarCambioEstadoActualSismografo()
+GOI --> SES : buscarCambioEstadoActualSismografo()
+SES --> SES : buscarEstadoActual()
+SES --> CE : esEstadoActual()*
+CE --> ACEO : setFechaHoraFin()
+SES --> SES : setEstado()
+
+GOI --> GOI : crearCambioEstado()
+GOI --> SES : fueraServicio()
+
+create entity "__:nuevo:CambioEstado__" as nCE
+SES --> nCE: new()
+
+nCE --> nCE : crearMotivoFueraServicio()
+
+create entity "__:MotivoFueraServicio__" as MFS
+nCE --> MFS : new()*
+
+SES --> SES : setEstado()
+entity "__:Empleados__" as Empleado #red
+GOI --> GOI: buscarEmpleadosReparacion()
+
+GOI --> SOI : buscarEmpleadosReparacion()
+group loop
+    SOI --> Empleado : esResponsableReparacion()
+    SOI --> Empleado : getMail()
+end
+
+GOI --> GOI : enviarMailEmpleadosReparacion()
+create boundary "__:InterfazMail__" as i
+GOI --> i : enviarMailEmpleados()
+
+GOI --> GOI: publicarEnMonitores()
+create boundary "__:InterfazMonitor__" as im
+GOI --> im : publicarEnMonitoresDeCCRS()
+
+POI --> POI : finCU()
+
+@enduml

@@ -36,7 +36,7 @@ GAV --> GAV : buscarVueloEnCondicionesAterrizaje()
 group loop 
     GAV --> V: buscarVueloEnCondicionesAterrizaje()
 
-    entity "__:CambioEstado__" as CE
+    entity "__:CambioEstado__" as CE #red
 
 
     V --> CE : esEstadoEnZona()
@@ -77,12 +77,16 @@ entity "__:Empleado__" as Emp
 
 GAV --> Emp : getEmpleado()
 
+GAV --> GAV : buscarEstadoAterrizado()
 
+GAV --> E: esAterrizado()*
+
+entity "__:selec:Vuelo__" as SV
 GAV --> GAV : actualizarVuelo()
 GAV --> SV: revisar()
 
 SV -->SV : getCambioEstadoVuelo()
-SV --> CE : *esActual()
+SV --> CE : esActual()*
 
 entity "__:Actual:CambioEstado__" as ACE 
 CE --> ACE : setFechaHoraFin()
@@ -93,7 +97,12 @@ entity "__:selec:Vuelo__" as SV
 GAV --> SV : crearCambioEstadoVuelo()
 create entity "__:nuevo:CambioEstado" as NCE
 SV --> NCE : new()
-'Como notificar a los interesados'
+
+GAV --> GAV : notificar()
+create boundary "__:InterfazWeb__" as i
+GAV --> i: notificarViaWeb()
+create boundary "__:InterfazPantallaAeropuerto__" as iPE
+GAV --> iPE: notificarViaPantallaAeropuerto()
 
 PAV --> PAV : finCU()
 @enduml
