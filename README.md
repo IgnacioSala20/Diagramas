@@ -1,31 +1,13 @@
 DUDAS:
-      -Se hacen 2 interfaces para los mail y para los monitores?
-
-      -Preguntar sobre la relacion de dependencia de Estacion a Sismografo, esa dependencia es para agarrar el id nomas, o nos puede servir para recorrer una entidad, o solo se acota a pedir datos
-
-      -Cuando tenemos por ej: 
-      Vuelo --> Cambio Estado --> Estado , teniendo esas relaciones sin tener lo que es Vuelo--> Estado, nosotos tenemos que ir a cambioEstado y preguntar si ese Vuelo esta en TAL(enZona) estado
-
-      -Cuando creamos un objeto, es decir usamos el new()
-      debemos usar la linea unida y la flecha cerrada?? para todo lo otro seria linea cortada y flecha cerrada?
-
-      -Preguntar por el de actualizarSituacionVuelo, para ver si es asi lo de las 2 interfaces
-
-      -El 'se pueden seleccionar todos' es aspecto de implementacion? para el programador
-
-      -Preguntar si lo de lotes etsa bien, (buscar los campos seleccionados en campo y pedirle el nombre del lote a todas las entidades de lote)
-
-      -Preguntar por el loop del de Generar Reporte de Proyectos Cultivos. Paso 13
-
       -Preguntar si te dice, descarga el archivo PDF, y preguntar si ponele si genera el reporte como mensaje 
 
       -Preguntar si la forma de visualizacion, por ejemplo la de Imprimir es una interfaz de impresora, si la de reporte por pantalla es una interfaz reporte o si lo muestra en nuestra pantalla y sobre lo del archivo es otra interfaz aparte?
 
-      El generar es un mensaje?
 
       Si te dice, genera un PDF y lo muestra, es interfaz??
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
+
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
@@ -107,3 +89,8 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 [ObtencionDeDatos]
 - Cuando tenes el puntero lo que podes hacer es ir a la entidad y pedirle los datos
 - Cuando no tenes el puntero, tenes que ir a la entidad y pedirle el puntero de la entidad que queres recorriendo todas las entidades
+
+
+### Preguntar si cuando pongo mostrarOrdenes y despues pongo pedirSeleccionDeOrdenes, siemopre va del gestor a la pantalla
+- En este caso lo que se hace es poner un metodo que va de gestor a pantalla que sea mostrar y otro de gestor a pantalla que sea pedirSeleccionOrden
+

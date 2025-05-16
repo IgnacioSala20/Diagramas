@@ -15,27 +15,36 @@ GOI --> GOI : buscarEmpleadoLogueado()
 entity "__:Actual:Sesion__" as actualSesion
 GOI --> actualSesion: buscarEmpleadoLogueado()
 entity "__:Log:Usuario__" as LU
+'Podemos poner Usuario o Log:Usuario, pero en este caso es mejor Log:Usuario ya que indicamos el usuario que tiene la sesion Actual'
 
 actualSesion --> LU : getEmpleado()
+'En este caso obtenemos el id del empleado logueado, solo el id pero'
+'SI nos dice que necesita los datos del empleado iriamos a la entidad empleado para obtener estos datos'
+
 
 entity "__:OrdenDeInspeccion__" as OI #red
 
 GOI --> GOI : buscarOrdenesInspeccioRI()
 group loop [Mientras haya ordenes de inspeccion]
+    GOI --> OI : esEmpleado()
+    'Esta va para separar lo que el mensaje esEmpleado de lo que es completamente realizado'
+    GOI --> OI : esCompletamenteRealizada()
 
-GOI --> OI : esEmpleado()
-
-entity "__:EstadoOI__" as EOI 
-entity "__:EstacionSismologicaOI__" as ESOI
-OI --> EOI : esCompletamenteRealizada()
-OI --> OI : getNumeroOrden()
-OI --> OI : getFechaFinalizacion()
-entity "__:Sismografo__" as S #red
-OI --> OI : obtenerIdentificador()
-OI --> ESOI : obtenerIdentificadorSismografo()
-ESOI --> S : getIdentificadorSismografo()
-OI --> ESOI : getNombre()
+    entity "__:EstadoOI__" as EOI 
+    entity "__:EstacionSismologicaOI__" as ESOI
+    OI --> EOI : esCompletamenteRealizada()
+    GOI --> OI : getDatos()
+    OI --> OI : getNumeroOrden()
+    OI --> OI : getFechaFinalizacion()
+    entity "__:Sismografo__" as S #red
+    OI --> OI : obtenerIdentificador()
+    
+    'Cuando usamos la dependencia, lo que hacemos es agregar un atributo temporal, con '
+    OI --> ESOI : obtenerIdentificadorSismografo()
+    ESOI --> S : getIdentificadorSismografo()
+    OI --> ESOI : getNombre()
 end
+
 GOI --> GOI : ordenarOrdenesInspeccion()
 
 GOI --> POI: pedirSeleccionOrden()
@@ -116,20 +125,21 @@ nCE --> MFS : new()*
 SES --> SES : setEstado()
 entity "__:Empleados__" as Empleado #red
 GOI --> GOI: buscarEmpleadosReparacion()
+entity "__:Rol__" as R
 
-GOI --> SOI : buscarEmpleadosReparacion()
 group loop
-    SOI --> Empleado : esResponsableReparacion()
-    SOI --> Empleado : getMail()
+    GOI --> Empleado : esResponsableReparacion()
+    Empleado --> R : sosRol()
+    GOI --> Empleado : getMail()
 end
 
 GOI --> GOI : enviarMailEmpleadosReparacion()
 create boundary "__:InterfazMail__" as i
-GOI --> i : enviarMailEmpleados()
+GOI --> i : enviarMailEmpleados()*
 
 GOI --> GOI: publicarEnMonitores()
 create boundary "__:InterfazMonitor__" as im
-GOI --> im : publicarEnMonitoresDeCCRS()
+GOI --> im : publicarEnMonitoresDeCCRS()*
 
 POI --> POI : finCU()
 
