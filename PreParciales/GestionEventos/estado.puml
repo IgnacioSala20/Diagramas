@@ -1,23 +1,34 @@
 @startuml estado del evento
 
-[*] -down--> EnEdicion : new()
+[*] --> EnEdicion : new()
 
-[*] --> ListoParaPublicar : new()
 
-ListoParaPublicar --> Publicado : publicar()
-EnEdicion --> ListoParaPublicar : habilitarPublicacion()
+ListoParaPublicar -left--> Publicado : publicar() [y no habilita la inscripcion]
+ListoParaPublicar -down--> InscripcionesHabilitadas : publicar() [habilita la inscripcion abierta]
+
+'metodos en infinitivo, que sean un verbo'
+EnEdicion --> ListoParaPublicar : crearFormularioInscripcion()
 Publicado --> InscripcionesHabilitadas : InscripcionesHabilitadas()
 
+
 Publicado --> InscripcionesCerradas : cerrar()
+EnEdicion --> Cancelado : cancelar()
+InscripcionesHabilitadas --> InscripcionesCerradas : cerrarInscripcion()
+InscripcionesHabilitadas --> EnCupoLleno : cerrarInscripcion()
+InscripcionesHabilitadas --> InscripcionesHabilitadas : validarCierre()
 
-InscripcionesHabilitadas --> InscripcionesCerradas : cerrar()
 
+InscripcionesCerradas --> InscripcionesCerradas : validar
 
+EnCupoLleno --> EnCurso : iniciarEvento()
+InscripcionesCerradas --> Cancelado : cancelar()
 InscripcionesCerradas --> EnCurso : iniciarEvento()
 EnCurso --> Finalizado : finalizar()
 Finalizado --> [*]
 InscripcionesHabilitadas --> Cancelado : cancelar()
 Cancelado --> [*]
 ListoParaPublicar --> Cancelado : cancelar()
+EnCurso -->EnCurso : finalizar()
+EnCupoLleno --> Cancelado 
 Publicado --> Cancelado : cancelar()
 @enduml
