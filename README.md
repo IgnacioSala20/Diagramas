@@ -13,7 +13,10 @@ DUDAS:
 
       Como mantendriamos Consistente las vistas, cuando en la maquina de estados cuando tenemos un seudoEstado (H) el cual tiene memoria para saber el estado anterior
       
-      Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados?
+      Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados
+
+      COnsultar en el caso que tenga un objeto que sea Evento y que tenga 1..* categorias, yo cuando busco las categorias, como deberia hacer, (ADJUNTAR EJEMPLO DE DIAGRAMAS PARA CONSULTAR)
+
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
