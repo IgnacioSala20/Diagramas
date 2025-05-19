@@ -1,0 +1,102 @@
+@startuml clase
+
+class Evento {
+    +nombre
+    +fechaInicio
+    +fechaFin
+    +ubicacion
+    +cupoMaximoParticipantes
+    +cancelar()
+    +publicar()
+    +habilitarPublicacion()
+    +inscripcionesAbiertas()
+    +inscripcionesCerradas()
+    +iniciarEvento()
+    +finalizarEvento()
+    +esListoParaPublicar()
+    +getDato()
+    +getDescripcion()
+
+}
+
+class Usuario{
+
+}
+class Perfil{}
+class TipoEvento{
+    +description
+}
+class CategoriaEvento{
+    +nombre
+}
+class Empleado{}
+class Entrada{
+    +precio
+}
+class TipoEntrada{
+    +descripcion
+    +precio
+    +periodoVigencia
+}
+
+class Descuento {
+    +porcentajeDescontado
+    +fechaLimite
+    +descripcion
+}
+
+class InscripcionEvento{
+    +fechaLimite
+}
+
+class CambioEstado{
+    +fechaHoraInicio
+    +fechaHoraFin
+}
+
+class Estado{
+    +valor
+}
+
+class SesionActual{
+
+}
+class ControladorPublicarEvento{
+    +listaEventos
+    +usuarioLogueado
+    +seleccionEvento
+    +datosEvento
+    +confirmacion
+    +url
+    +nuevoPublicarEvento()
+    +buscarUsuariosLogueado()
+    +tomarSeleccionEvento()
+    +buscarDatosEvento()
+    +buscarEstadoPublicado()
+    +buscarCambioEstadoActual()
+    +getFechaHoraActual()
+    +crearCambioEstado()
+    +generarURL()
+
+}
+class PantallaPublicarEvento{
+    +opPublicarEvento()
+    +abrirVentana()
+    +tomarSeleccionEvento()
+    +pedirConfirmacion()
+    +tomarConfirmacion()
+    +finCU()
+}
+PantallaPublicarEvento ..> ControladorPublicarEvento
+ControladorPublicarEvento ..> PantallaPublicarEvento
+
+CambioEstado --> "1" Usuario
+ControladorPublicarEvento ..> Evento
+Evento --> "1..*" CambioEstado : cambioEstado
+CambioEstado --> "1" Estado
+
+Evento --> Entrada
+Entrada --> "1" TipoEntrada
+Evento --> TipoEvento
+Evento --> CategoriaEvento
+@enduml

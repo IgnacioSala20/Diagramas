@@ -27,6 +27,20 @@ DUDAS:
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
 
+
+      Preguntar acerca del URL, lo puede generar tanto la clase como el gestor, y luego cuando se hace el cambio de estado, se setea
+
+      Los atributos que van por ej en Evento, tambien son los del select Evento
+
+      La confirmacion se considera como un atributo, al igual que la seleccion, son cosas que tendra el controlador para poder buscar?
+
+      Preguntar Sobre analizar una clase, un paquete y un CU , el analisis de la arquitectura
+
+
+      Reglas UML - Mecanismos
+
+      Vistas de la Arquitectura
+
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
 ¿Cómo se maneja la selección múltiple de entidades en el sistema, especialmente cuando luego necesito buscar y procesar datos asociados a cada una de ellas?  

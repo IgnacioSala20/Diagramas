@@ -1,0 +1,23 @@
+@startuml estado del evento
+
+[*] -down--> EnEdicion : new()
+
+[*] --> ListoParaPublicar : new()
+
+ListoParaPublicar --> Publicado : publicar()
+EnEdicion --> ListoParaPublicar : habilitarPublicacion()
+Publicado --> InscripcionesHabilitadas : InscripcionesHabilitadas()
+
+Publicado --> InscripcionesCerradas : cerrar()
+
+InscripcionesHabilitadas --> InscripcionesCerradas : cerrar()
+
+
+InscripcionesCerradas --> EnCurso : iniciarEvento()
+EnCurso --> Finalizado : finalizar()
+Finalizado --> [*]
+InscripcionesHabilitadas --> Cancelado : cancelar()
+Cancelado --> [*]
+ListoParaPublicar --> Cancelado : cancelar()
+Publicado --> Cancelado : cancelar()
+@enduml

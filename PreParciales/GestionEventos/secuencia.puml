@@ -1,0 +1,104 @@
+@startuml secuencia
+
+actor "__:Organizador__" as O
+
+create boundary "__:PantallaPublicarEvento__" as PPE
+
+O --> PPE : opcPublicarEvento()
+PPE --> PPE : abrirVentana()
+
+create control "__:ControladorPublicarEvento__" as CPE
+
+PPE --> CPE : nuevoPublicarEvento()
+
+CPE --> CPE : buscarUsuarioLogueado()
+
+entity "__:Sesion:Actual__" as SA 
+entity "__:Log:Usuario__" as LU
+
+CPE --> SA : buscarUsuarioLogueado()
+SA --> LU : getEmpleado()
+entity "__:EmpleadoUsuario__" as EU 
+LU --> EU : getNombre()
+
+entity "__:Eventos__" as E #red
+entity "__:EstadoE__" as EE 
+group loop [Mientras haya eventos]
+    CPE --> E : esListoParaPublicar()
+    E --> EE : esListoParaPublicar()
+
+    CPE --> E : getDato()
+    E --> E : getDescripcion()
+end
+
+CPE --> PPE : pedirSeleccionEvento()
+
+O --> PPE : tomarSeleccionEvento()
+PPE --> CPE : tomarSeleccionEvento()
+
+entity "__:selec:Evento__" as SE 
+
+CPE --> CPE : buscarDatosEvento()
+
+CPE --> SE : getDatos()
+
+SE --> SE : getNombre()
+SE --> SE : getDescripcion()
+SE --> SE : getFoto()
+SE --> SE : getUbicacion()
+SE --> SE : getFechaInicio()
+SE --> SE : getFechaFin()
+SE --> SE : obtenerTipoEvento()
+entity "__:TipoEventoE__" as TEE
+SE --> TEE : getNombre()
+SE --> SE : obtenerCategorias()
+entity "__:Categoria__" as C #red
+group loop [Mientra haya categorias]
+    SE --> C : esDelEvento()
+    SE --> C : getNombre()
+end
+entity "__:TipoEntrada__" as TE
+entity "__:Grupo__" as G #red
+SE --> SE : obtenerTipoEntrada()
+SE --> TE : getDatos()
+TE --> TE : verificarExistenciaGrupos()
+
+TE --> TE : getPrecio()
+
+
+CPE --> PPE : pedirConfirmacion()
+O --> PPE : tomarConfirmacion()
+PPE --> CPE : tomarConfirmacion()
+
+CPE --> SE : generarURL()
+
+CPE --> CPE : buscarEstadoPublicado()
+entity "__:Estados__" as Estados #red
+group loop [Mientras haya estados]
+    CPE --> Estados : esPublicado()
+    CPE --> Estados : getIdentificador()
+end
+
+entity "__:CambioEstado__" as CE #red
+
+CPE --> CPE : buscarCambioEstadoActual()
+
+CPE --> SE : buscarCambioEstadoActual()
+CPE --> CPE : getFechaHoraActual()
+SE --> SE : buscarEstadoActual()
+SE --> CE : esActual()*
+entity "__:Actual:CambioEstado__" as ACE 
+CE --> ACE : setFechaHoraFin()
+
+
+CPE --> CPE : crearCambioEstado()
+
+CPE --> SE : publicar()
+
+create entity "__:nuevo:CambioEstado__" as nCE
+
+SE --> nCE : new()
+SE --> SE : setLink()
+
+PPE --> PPE : finCU()
+@enduml
