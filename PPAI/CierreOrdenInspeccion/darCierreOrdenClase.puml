@@ -1,0 +1,28 @@
+@startuml diagrama
+
+class Sesion{
+
+}
+class Usuario{
+    +getEmpleado()
+}
+
+class Gestor{
+    +fechaHoraCierre
+    +ordenesDeInspeccion
+    +fechaHoraActual
+    +listaMotivoTipo
+    +listaComentarios
+    +usuarioLogueado
+    +ordenSeleccionada
+    +estado
+    +mails
+    +usuario
+    +listaOrdenesInspeccion
+}
+class Pantalla{
+
+}
+
+
+@enduml
