@@ -3,11 +3,9 @@ DUDAS:
 
       -Preguntar si la forma de visualizacion, por ejemplo la de Imprimir es una interfaz de impresora, si la de reporte por pantalla es una interfaz reporte o si lo muestra en nuestra pantalla y sobre lo del archivo es otra interfaz aparte?
 
-
       Si te dice, genera un PDF y lo muestra, es interfaz??
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
-
 
       Preguntar acerca del URL, lo puede generar tanto la clase como el gestor, y luego cuando se hace el cambio de estado, se setea
 
