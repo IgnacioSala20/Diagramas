@@ -11,26 +11,24 @@ PAE --> PAE : abrirVentana()
 create control "__:GestorRegistrarAcreditacion__" as GRA
 
 PAE --> GRA : nuevaAcreditacion()
-
+entity "__:Organizador__" as Organizador
 entity "__:sesion:Actual__" as SA 
 entity "__:log:Usuario__" as LU 
-
 GRA --> GRA : buscarUsuarioLogueado()
 
 GRA --> SA : buscarUsuarioLogueado()
 
-SA --> LU : getUsuario()
-
+SA --> LU : getNombreUsuario()
+SA --> LU : getOrganizador()
 GRA --> GRA : buscarEventos()
 entity "__:EstadoE__" as EE
 entity "__:Evento__" as E #Red
-
+GRA --> Organizador :buscarEventosOrganizador()
 group loop [Mientras haya eventos]
-    GRA --> E: esDeEsteUsuario()
-    GRA --> E : esEstadoEnCurso()
+    Organizador --> E : esEstadoEnCurso()
     E --> EE: esEstadoEnCurso()
 
-    GRA --> E : getDatos()
+    Organizador --> E : getDatos()
     E --> E : getNombre()
 end
 
@@ -43,10 +41,10 @@ PAE --> GRA : tomarSeleccionEvento()
 'Preguntar acerca de esta duda, de si obtengo directamente los punteros o si los busco'
 GRA -->GRA : buscarInscripcionesEvento()
 entity "__:selec:Evento__" as SE
-GRA --> SE : buscarInscripcionesEvento()
+GRA --> Organizador : buscarInscripcionesEvento()
 entity "__:Participante__" as P #red
 entity "__:Inscripcion__" as I #red
-
+Organizador --> SE : buscarInscripcionesEvento()
 group loop [Mientras haya inscripciones]
     SE --> I :  esInscripcionEvento()
     SE --> I : esNoCancelable()
@@ -64,10 +62,12 @@ group loop [Mientras haya inscripciones]
     end
 end
 
-GRA --> PAE : pedirSeleccionParticipantes()
-O --> PAE : tomarSeleccionParticipante()
-PAE --> GRA :tomarSeleccionParticipante()
 
+group loop [Mientras haya participantes]
+    GRA --> PAE : pedirSeleccionParticipantes()
+    O --> PAE : tomarSeleccionParticipante()
+    PAE --> GRA :tomarSeleccionParticipante()
+end
 GRA --> PAE : pedirSeleccionConfirmacion()
 
 O --> PAE : tomarConfirmacion()
@@ -83,24 +83,30 @@ group loop [Mientras haya eventos]
 end
 
 GRA --> GRA : getFechaHoraActual()
-GRA --> GRA : buscarCambioEstadoActual()
+GRA --> GRA : acreditarParticipantes()
+GRA --> Organizador : acreditarParticipantes()
+Organizador --> SE : acreditarParticipantes()
 group loop [Mientras haya participantes seleccionados]
-    GRA --> P : esParticipanteSeleccionado()
-    GRA --> P: buscarCambioEstadoActual()
-    P --> P : buscarEstadoActual()
-    P --> IP: esCambioEstadoActual()
-    IP --> CE : esCambioEstadoActual()
+    SE --> I : buscarCambioEstadoActual()
+    I --> I : buscarParticipanteInscripcion()
+    I --> P : esParticipanteSeleccionado()
+    I --> I : buscarEstadoActual()
+    I --> CE: esActual()
     CE --> ACE : setFechaHoraActual()
 
-    IP --> IP : setEstado()
     GRA --> GRA : crearCambioEstado()
-    GRA --> P : crearCambioEstado()
-    P --> IP : acreditar()
+    GRA --> SE : crearCambioEstado()
+    SE --> I : acreditar(()
+
     create entity "__:nuevo:CambioEstado__" as nCE 
-    IP --> nCE : new()
+    I --> nCE : new()
+    I--> I : setEstado()
 end
 
 GRA --> GRA : finCU()
 @enduml
 
 
+'Podemos relacionar el usuario con el empleado y lo que hago es obtener el empleado con getEmpleado, obteniendo el puntero
+
+'

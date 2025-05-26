@@ -44,7 +44,7 @@ class SesionActual{
 
 }
 
-class LogUsuario{
+class Usuario{
 
 }
 
@@ -81,14 +81,19 @@ class CambioEstado{
 }
 
 CambioEstado -->Estado
-Pantalla ..> Evento 
+Gestor ..> Evento 
 Evento --> "1..*" Participante : participante
 Participante --> "1..*" Inscripcion : inscripcion
 Inscripcion --> "1..*" CambioEstado : cambioEstado
 Inscripcion --> "1" Estado : estado
-SesionActual --> LogUsuario : usuario
+SesionActual --> Usuario : usuario
 Gestor ..> SesionActual
-Gestor ..> Inscripcion
 Inscripcion ..>Participante
-Gestor ..>Participante
+
+class Organizador {
+
+}
+Organizador --> Usuario
+Organizador --> Evento
+CambioEstado --> Usuario 
 @enduml

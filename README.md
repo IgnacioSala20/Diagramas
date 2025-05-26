@@ -1,24 +1,14 @@
 DUDAS:
-      -Preguntar si te dice, descarga el archivo PDF, y preguntar si ponele si genera el reporte como mensaje 
-
-      -Preguntar si la forma de visualizacion, por ejemplo la de Imprimir es una interfaz de impresora, si la de reporte por pantalla es una interfaz reporte o si lo muestra en nuestra pantalla y sobre lo del archivo es otra interfaz aparte?
-
       Si te dice, genera un PDF y lo muestra, es interfaz??
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
 
-      Preguntar acerca del URL, lo puede generar tanto la clase como el gestor, y luego cuando se hace el cambio de estado, se setea
+      Todo lo que sea generado por un pdf y que muestra y permite descargar y demas, esta sera una responsabilidad de lo qwue es la interfaz que lo genera, no es algo que le pertenece al gestor o pantalla
+      Si dice que genera el pdf de igual modo lo mandaria a la interfaz, pero esto seria un error que no lo mostrase
+
 
       Los atributos que van por ej en Evento, tambien son los del select Evento
-
-      La confirmacion se considera como un atributo, al igual que la seleccion, son cosas que tendra el controlador para poder buscar?
-
-      Como mantendriamos Consistente las vistas, cuando en la maquina de estados cuando tenemos un seudoEstado (H) el cual tiene memoria para saber el estado anterior
-      
-      Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados
-
-      COnsultar en el caso que tenga un objeto que sea Evento y que tenga 1..* categorias, yo cuando busco las categorias, como deberia hacer, (ADJUNTAR EJEMPLO DE DIAGRAMAS PARA CONSULTAR)
-
+      Si, son respecto al evento, ya que este es un objeto del mismo
 
       Cuando tenemos un evento con varias Categorias, es decir Evento tiene un array con los punteros [1,2,3,4]
       Nosotros hacemos un getNombre()* a la clase con todas las categorias? O deberiamos hacer un loop preguntando
@@ -28,6 +18,9 @@ DUDAS:
             SE --> C : esDelEvento()
             SE --> C : getNombre()
         end
+
+      En este caso la entidad Categoria que contiene todas las entidades, estaria haciendo referencia a los punteros que tenemos en Evento seleccionado, por lo tanto hariamos solo un getNombre()* debido a que esa entidad que representa los muchos, serian los seleccionados,
+      NOSOTROS NO DISTINGUIMOS LO QUE SON LOS SELECCIONADOS DE LO QUE SON LA ENTIDAD CON TODOS
 
       Preguntar por el de reportes de Campo
       EJEMPLO: 
