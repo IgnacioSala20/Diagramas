@@ -24,6 +24,7 @@ LU --> EU : getNombre()
 entity "__:Eventos__" as E #red
 entity "__:EstadoE__" as EE 
 group loop [Mientras haya eventos]
+    CPE --> E : esEmpleado()
     CPE --> E : esListoParaPublicar()
     E --> EE : esListoParaPublicar()
 

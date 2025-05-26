@@ -6,11 +6,19 @@ DUDAS:
       Si te dice, genera un PDF y lo muestra, es interfaz??
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
-    
+
+      Preguntar acerca del URL, lo puede generar tanto la clase como el gestor, y luego cuando se hace el cambio de estado, se setea
+
+      Los atributos que van por ej en Evento, tambien son los del select Evento
+
       La confirmacion se considera como un atributo, al igual que la seleccion, son cosas que tendra el controlador para poder buscar?
 
       Como mantendriamos Consistente las vistas, cuando en la maquina de estados cuando tenemos un seudoEstado (H) el cual tiene memoria para saber el estado anterior
-      Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados?
+      
+      Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados
+
+      COnsultar en el caso que tenga un objeto que sea Evento y que tenga 1..* categorias, yo cuando busco las categorias, como deberia hacer, (ADJUNTAR EJEMPLO DE DIAGRAMAS PARA CONSULTAR)
+
 
       Cuando tenemos un evento con varias Categorias, es decir Evento tiene un array con los punteros [1,2,3,4]
       Nosotros hacemos un getNombre()* a la clase con todas las categorias? O deberiamos hacer un loop preguntando
