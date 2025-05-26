@@ -1,0 +1,18 @@
+@startuml diagrama estados
+
+[*] --> PreInscripta
+[*] --> Inscripto
+PreInscripta --> Rechazada : rechazar()
+Rechazada --> [*]
+PreInscripta --> Inscripto : cobrar() [Pago=SI]
+PreInscripta --> PreInscripta : [Pago=NO]
+PreInscripta --> Anular : anular() [Si no pago antes de la fecha de cierre]
+Inscripto --> Cancelar : cancelar() [Mientras no haya comenzado el evento]
+Inscripto --> NoCancelable
+NoCancelable --> Acreditada : acreditar() [Asistio=SI]
+NoCancelable --> NoAcreditada : vencio() [Asistio=NO]
+Anular --> [*]
+Cancelar --> [*]
+Acreditada --> [*]
+PreInscripta --> Cancelar
+@enduml

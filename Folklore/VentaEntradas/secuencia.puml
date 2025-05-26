@@ -1,0 +1,41 @@
+@startuml secuencia 
+
+actor "__:EncargadoVentas__" as EV
+
+create boundary "__:PantallaRegistrarVenta__" as PRV 
+
+EV --> PRV : opcRegistrarVenta()
+PRV --> PRV : abrirVentana()
+create control "__:GestorRegistrarVenta__" as GRV 
+PRV --> GRV : nuevaVenta()
+
+GRV --> GRV : buscarFestivalesVigentes()
+entity "__:Festivales__" as F #red
+entity "__:EstadoF__" as EF
+group loop [Mientras haya festivales]
+    GRV --> F : esVigente()
+    F --> EF : esVigente()
+    GRV --> F : getNombre()
+end
+
+GRV --> PRV : pedirSeleccionFestival()
+EV --> PRV : tomarSeleccionFestival()
+
+PRV --> GRV : tomarSeleccionFestival()
+entity "__selec:Festival__" as SF 
+GRV --> GRV : buscarFechasFestivalSelec()
+GRV --> SF : buscarFechasFestivalSelec()
+entity "__:DiaFestival__" as DF #red
+
+SF --> DF : getFechasFestival()*
+
+GRV --> PRV : pedirSeleccionFechaFestival()
+EV --> PRV : tomarSeleccionFechaFestival()
+PRV --> GRV : tomarSeleccionFechaFestival()
+
+GRV --> GRV : buscarSectoresConUbicacion()
+
+entity "__:Sectores__" as S
+
+
+@enduml

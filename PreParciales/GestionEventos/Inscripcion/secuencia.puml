@@ -1,0 +1,106 @@
+@startuml diagrama secuencia
+
+actor "__:Organizador__" as O
+
+create boundary "__:PantallaRegistrarAcreditacionEvento__" as PAE
+
+O --> PAE : opcRegistrarAcreditacion()
+
+PAE --> PAE : abrirVentana()
+
+create control "__:GestorRegistrarAcreditacion__" as GRA
+
+PAE --> GRA : nuevaAcreditacion()
+
+entity "__:sesion:Actual__" as SA 
+entity "__:log:Usuario__" as LU 
+
+GRA --> GRA : buscarUsuarioLogueado()
+
+GRA --> SA : buscarUsuarioLogueado()
+
+SA --> LU : getUsuario()
+
+GRA --> GRA : buscarEventos()
+entity "__:EstadoE__" as EE
+entity "__:Evento__" as E #Red
+
+group loop [Mientras haya eventos]
+    GRA --> E: esDeEsteUsuario()
+    GRA --> E : esEstadoEnCurso()
+    E --> EE: esEstadoEnCurso()
+
+    GRA --> E : getDatos()
+    E --> E : getNombre()
+end
+
+GRA --> PAE : pedirSeleccionEvento()
+
+O --> PAE : tomarSeleccionEvento()
+
+PAE --> GRA : tomarSeleccionEvento()
+
+'Preguntar acerca de esta duda, de si obtengo directamente los punteros o si los busco'
+GRA -->GRA : buscarInscripcionesEvento()
+entity "__:selec:Evento__" as SE
+GRA --> SE : buscarInscripcionesEvento()
+entity "__:Participante__" as P #red
+entity "__:Inscripcion__" as I #red
+
+group loop [Mientras haya inscripciones]
+    SE --> I :  esInscripcionEvento()
+    SE --> I : esNoCancelable()
+    entity "__:InscripcionP__" as IP
+    entity "__:EstadoI__" as EI 
+    I --> EI : esNoCancelable()
+
+    SE --> I : getDatosParticipantes()
+    I --> I : buscarParticipanteInscripcion()
+    group loop [Mientras haya participantes]
+        I --> P : esParticipanteInscripcion()
+        I --> P : getNombre()
+        I --> P : getApellido()
+        I --> P : getDNI()
+    end
+end
+
+GRA --> PAE : pedirSeleccionParticipantes()
+O --> PAE : tomarSeleccionParticipante()
+PAE --> GRA :tomarSeleccionParticipante()
+
+GRA --> PAE : pedirSeleccionConfirmacion()
+
+O --> PAE : tomarConfirmacion()
+PAE --> GRA : tomarConfirmacion()
+
+entity "__:actual:CambioEstado__" as ACE 
+entity "__:CambioEstado__" as CE #red
+entity "__:Estado__" as Estado #red 
+GRA --> GRA : buscarEstadoAcreditado()
+group loop [Mientras haya eventos]
+    GRA --> Estado : esAmbito()
+    GRA --> Estado: esAcreditada()
+end
+
+GRA --> GRA : getFechaHoraActual()
+GRA --> GRA : buscarCambioEstadoActual()
+group loop [Mientras haya participantes seleccionados]
+    GRA --> P : esParticipanteSeleccionado()
+    GRA --> P: buscarCambioEstadoActual()
+    P --> P : buscarEstadoActual()
+    P --> IP: esCambioEstadoActual()
+    IP --> CE : esCambioEstadoActual()
+    CE --> ACE : setFechaHoraActual()
+
+    IP --> IP : setEstado()
+    GRA --> GRA : crearCambioEstado()
+    GRA --> P : crearCambioEstado()
+    P --> IP : acreditar()
+    create entity "__:nuevo:CambioEstado__" as nCE 
+    IP --> nCE : new()
+end
+
+GRA --> GRA : finCU()
+@enduml
+
+

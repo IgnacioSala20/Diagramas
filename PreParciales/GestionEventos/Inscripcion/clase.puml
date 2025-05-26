@@ -1,0 +1,94 @@
+@startuml diagrama clases
+
+class Pantalla {
+    +listadoEventos
+    +listadoParticipantes
+    +seleccionEvento
+    +seleccionParticipantes
+    +confirmacion
+    +opcRegistrarAcreditacion()
+    +abrirVentana()
+    +pedirSeleccionEvento()
+    +tomarSeleccionEvento()
+    +pedirSeleccionParticipante()
+    +tomarSeleccionParticipante()
+    +pedirSeleccionConfirmacion()
+    +tomarConfirmacion()
+}
+
+class Gestor{
+    +usuarioLogueado
+    +cambioEstadoActual
+    +fechaHoraActual
+    +listadoEventos
+    +listadoParticipantes
+    +seleccionEvento
+    +seleccionParticipantes
+    +confirmacion
+    +nuevaAcreditacion()
+    +buscarUsuarioLogueado()
+    +buscarEventos()
+    +tomarSeleccionEvento()
+    +buscarInscripcionesEvento()
+    +tomarSeleccionParticipante()
+    +tomarConfirmacion()
+    +buscarEstadoAcreditado()
+    +getFechaHoraActual()
+    +buscarCambioEstadoActual()
+    +crearCambioEstado()
+    +finCU()
+}
+Pantalla ..> Gestor 
+Gestor ..> Pantalla
+class SesionActual{
+
+}
+
+class LogUsuario{
+
+}
+
+class Evento{
+    +esDeEsteEmpleado()
+    +esEstadoEnCurso()
+    +getDatos()
+    +getNombre()
+    +buscarInscripcionesEvento()
+    +esParticipanteSeleccionado()
+    +buscar
+}
+Evento --> "1" Estado : estado
+Evento --> "1..*" CambioEstado : cambioEstado
+class Estado{
+    +ambito
+    +valor
+}
+class Participante{
+
+}
+class Inscripcion{
+    +rechazar()
+    +cobrar()
+    +anular()
+    +cancelar()
+    +acreditar()
+    +vencio()
+}
+class CambioEstado{
+    +fechaHora
+    +usuarioLogueado
+
+}
+
+CambioEstado -->Estado
+Pantalla ..> Evento 
+Evento --> "1..*" Participante : participante
+Participante --> "1..*" Inscripcion : inscripcion
+Inscripcion --> "1..*" CambioEstado : cambioEstado
+Inscripcion --> "1" Estado : estado
+SesionActual --> LogUsuario : usuario
+Gestor ..> SesionActual
+Gestor ..> Inscripcion
+Inscripcion ..>Participante
+Gestor ..>Participante
+@enduml

@@ -6,21 +6,27 @@ DUDAS:
       Si te dice, genera un PDF y lo muestra, es interfaz??
       Si te dice genera un PDF y lo descarga?
       Si te dice genera un PDF nomas
-
-      Preguntar acerca del URL, lo puede generar tanto la clase como el gestor, y luego cuando se hace el cambio de estado, se setea
-
-      Los atributos que van por ej en Evento, tambien son los del select Evento
-
+    
       La confirmacion se considera como un atributo, al igual que la seleccion, son cosas que tendra el controlador para poder buscar?
-
-      Preguntar Sobre analizar una clase, un paquete y un CU , el analisis de la arquitectura
-
-      Reglas UML - Mecanismos
-
-      Vistas de la Arquitectura
 
       Como mantendriamos Consistente las vistas, cuando en la maquina de estados cuando tenemos un seudoEstado (H) el cual tiene memoria para saber el estado anterior
       Al igual cuando tenemos un estado compuesto? Con la maquina de estados nosotros podemos volver a estos estados relacionados?
+
+      Cuando tenemos un evento con varias Categorias, es decir Evento tiene un array con los punteros [1,2,3,4]
+      Nosotros hacemos un getNombre()* a la clase con todas las categorias? O deberiamos hacer un loop preguntando
+      si la categoria del evento es igual al de categoria, y si es asi pide el nombre
+      EJEMPLO:
+        group loop [Mientra haya categorias]
+            SE --> C : esDelEvento()
+            SE --> C : getNombre()
+        end
+
+      Preguntar por el de reportes de Campo
+      EJEMPLO: 
+        group loop [Mientras haya lotes para eso campos]
+            CR --> C : esCampoSeleccionado() Aca verifico que el puntero del seleccionado con el de la entidad
+            C --> L: 11.getNombreLote() y aqui le pido el nombre del lote a ese campo
+        end
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
@@ -54,7 +60,6 @@ Podría existir un método del tipo `pedirSeleccionImpresion()` que permita al u
 Este enfoque mantiene la *responsabilidad separada*: 
 	-El gestor organiza los datos
     - Y un componente externo especializado se encarga de la presentación e impresión.
-
 
 
 ## En el caso del ejercicio Línea Aérea, ¿cómo se contempla la notificación a los interesados una vez que se actualiza el estado del vuelo a "aterrizado"?
@@ -103,7 +108,7 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 - Cuando tenes el puntero lo que podes hacer es ir a la entidad y pedirle los datos
 - Cuando no tenes el puntero, tenes que ir a la entidad y pedirle el puntero de la entidad que queres recorriendo todas las entidades
 
-
 ### Preguntar si cuando pongo mostrarOrdenes y despues pongo pedirSeleccionDeOrdenes, siemopre va del gestor a la pantalla
 - En este caso lo que se hace es poner un metodo que va de gestor a pantalla que sea mostrar y otro de gestor a pantalla que sea pedirSeleccionOrden
 
+Debemos tener en la clase pantalla los botones de cancelar y confirmar

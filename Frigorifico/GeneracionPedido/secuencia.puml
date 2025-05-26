@@ -1,0 +1,15 @@
+@startuml secuencia
+
+actor "__:Responsable Pedidos__" as RP 
+
+create boundary "__:PantallaGenerarPedido__" as PGP 
+RP --> PGP : opcGenerarRemito()
+PGP --> PGP : abrirVentana()
+
+create control "__:GestorGenerarPedido__" as GGP 
+PGP --> GGP : nuevoPedido()
+
+
+
+
+@enduml
