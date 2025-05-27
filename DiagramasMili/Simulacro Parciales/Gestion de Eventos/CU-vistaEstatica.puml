@@ -1,0 +1,109 @@
+@startuml
+hide circle
+
+class PantallaEvento {
+ -listaEventosListosParaPublicar
+ 
+ #field2
+ ~method1()
+ +method2()
+}
+
+
+
+class GestorEvento {
+ -nombreUsuarioLogueado
+ -punteroEstadoEsListoParaPublicar
+ -datosEvento
+ -urlEvento
+ -punteroEstadoPublicado
+ -fechaHoraActual
+
+ ~method1()
+ +method2()
+}
+GestorEvento --> PantallaEvento
+Pantalla Evento --> GestorEvento
+
+class Evento {
+ -nombre 
+ -descripcion
+ -foto 
+ -ubicacion
+ -fechaInicio
+ -fechaFin
+ -tipoEvento:TipoEvento 
+ -categoria:Categoria 
+ -mediosDePago:MediosDePago
+ -tipoEntrada:TipoEntrada
+
+ ~method1()
+ +method2()
+}
+
+class Sesion {
+ -fechaHoraInicio
+ -fechaHoraFin
+ -usuario:Usuario 
+ #field2
+ ~method1()
+ +method2()
+}
+
+class Usuario {
+ -nombreUsuario
+ #field2
+ ~method1()
+ +method2()
+}
+
+class TipoEvento {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+class Categoria {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+class TipoEntrada {
+ -tipoEntrada 
+ -precio 
+ -cantidadMaxima
+ -cantidadMinima
+ #field2
+ ~method1()
+ +method2()
+}
+
+class MediosDePago {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+class Estado {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+class CambioDeEstado {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+
+
+
+
+@enduml

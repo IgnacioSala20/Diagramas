@@ -1,0 +1,70 @@
+@startuml Diagrama Secuencia CU 3 - Actualizar situación de vuelo
+autonumber
+
+actor "__:EncargadoDeNavegacion__" as EN 
+boundary "__:PantallaActualizarVuelo__" as Pantalla
+control "__:GestorVuelos__" as G 
+
+EN -->> Pantalla**: actualizarSituacionVuelo()
+Pantalla ->> Pantalla: abrirVentana()
+Pantalla -->> G**: actualizarSituacionVuelo()
+G-> G: buscarEstadosNoFinales()
+
+entity "__:Estado__" as E #Coral 
+G -> E: *esFinal()
+
+G-> Pantalla: mostrarEstadosParaSeleccion()
+Pantalla -> EN : mostrarEstadosParaSeleccion()
+EN -> Pantalla: tomarSeleccionEstadoAterrizar()
+Pantalla -> G: tomarSeleccionEstadoAterrizar()
+
+
+entity "__:Vuelo__" as V #Coral
+G -> G : buscarVuelosEnZona()
+
+entity "__:DefinicionDeVuelo__" as DV 
+group loop [mientras existan vuelos]
+G->V: obtenerEstadoActual()
+
+entity "__:CambioEstadoVuelo__" as CEV
+V -> CEV: esEstadoActual()
+
+'duda, va de nuevo la entity ESTADO? (podría poner selecAterrizar:?) 
+CEV -> E: esEstadoEnZona()
+
+'muestra de cada uno de los vuelos 
+'(número de vuelo y fecha y hora de partida programada).
+V -> DV : getNroVuelo()
+V->V : getFechaHoraPartidaProgramada()
+end
+
+G-> Pantalla: mostrarVuelosParaSeleccion()
+Pantalla -> EN : mostrarVuelosParaSeleccion()
+
+EN -> Pantalla: tomarSeleccionVuelo()
+Pantalla -> G: tomarSeleccionVuelo()
+entity "__selec:Vuelo__" as VueloSelec
+entity "__actual:CambioEstadoVuelo__" as ActCEV 
+
+G->Pantalla: solicitarConfirmacionCambioEstadoVuelo()
+Pantalla -> EN: solicitarConfirmacionCambioEstadoVuelo()
+EN -> Pantalla: tomarConfirmacionCambioEstado()
+Pantalla -> G: tomarConfirmacionCambioEstado()
+
+G -> G: buscarEmpleadoResponsable()
+entity "__:Empleado__" as Emp 
+G -> Emp: getEmpleado()
+
+G->G: actualizarFechaFinVuelo()
+VueloSelec->VueloSelec: buscarUltimoCambioEstado()
+VueloSelec->ActCEV: *esActual()
+VueloSelec -> ActCEV: setFechaHoraFin()
+
+G -> G: registrarActualizacionEstado()
+G -> VueloSelec: crearCambioEstadoVuelo()
+
+entity "__nuevo:CambioEstadoVuelo__" as newCEV 
+VueloSelec -->> newCEV**: new()
+
+G->G: finCU()
+@enduml

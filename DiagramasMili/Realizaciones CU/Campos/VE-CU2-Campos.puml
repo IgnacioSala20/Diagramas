@@ -1,0 +1,133 @@
+@startuml
+hide circle 
+class PantallaReporteDePC {
+ -gridCamposHabilitados
+ - listaCamposSeleccionados
+ - gridLotes
+ - listaLotesSeleccionados
+ - gridCultivos
+ - gridTipoDeSuelos
+ - seleccionCultivoYTipoSuelo 
+ - txtFechaInicio
+ - txtFechaFin
+ - btnConfirmar
+ - btnCancelar
+ - gridFormasVisualizacion
+ - seleccionFormasVisualizacion
+ 
+ +habilitarVentana()
+ +mostrarParaSeleccionCamposHabilitados()
+ +tomarSeleccionCampos()
+ +mostrarLotesParaSeleccion()
+ +tomarSeleccionLotes()
+ +mostrarParaSeleccionCultivoYTipoSuelo()
+ +tomarSeleccion()
+ +pedirIngresoPeriodo()
+ +tomarIngresoFechaInicio()
+ +tomarIngresoFechaFin()
+ +pedirConfirmacion()
+ +tomarConfirmacion()
+
+}
+
+class GestorReportes{
+    -listaCamposHabilitados 
+    -listaCamposSeleccionados
+    -listaLotes
+    -listaLotesSeleccionados
+    -listaCultivos 
+    -listaTipoDeSuelos
+    -seleccionCultivoYTipoSuelo 
+    -fechaInicio 
+    -fechaFin 
+    -listaProyectosFiltrados
+
+    +nuevoReporte()
+    +buscarCamposHabilitados()
+    +buscarLotesDeCampoSeleccionado()
+    +buscarCultivos()
+    +buscarTipoDeSuelos()
+    +validarFechaMenor()
+    +buscarProyectos()
+    +generarReporteDeProyecto()
+    +finCU()
+}
+
+class ImpresoraReporteProyecto{
+    +imprimir()
+}
+
+class Campo{
+    nombre
+    habilitado
+
+    +estaHabilitado()
+    +buscarLotes()
+    +buscarTipoSueloLote()
+    +validarProyectosLote()
+}
+
+class TipoSuelo{
+    -descripcion
+    -nombre
+    -numero
+
+    +getNombre()
+}
+
+class Cultivo{
+    -nombre 
+    -tipoSuelo: TipoSuelo 
+
+    +getNombre() 
+
+
+}
+
+class Estado{
+    -descripcion 
+    -nombre 
+
+    +getNombre()
+}
+
+class ProyectoCultivo{
+    - cultivo:Cultivo 
+    - estado:Estado 
+    - fechaInicio 
+    - fechaFin 
+    - observaciones
+
+    +getCultivo()
+    +getFechaInicio()
+    +getFechaFin()
+    +esDeCultivo()
+    +esDePeriodo()
+}
+
+class Lote{
+    - cantidadHectareas
+    - numero
+    - proyectoCultivo:ProyectoCultivo
+    - tipoSuelo: TipoSuelo 
+    +esLote()
+    +conocerTipoSuelo()
+    +buscarProyectoDeCultivo()
+}
+
+GestorReportes ..> PantallaReporteDePC
+PantallaReporteDePC ..> GestorReportes
+
+GestorReportes ..> Cultivo
+GestorReportes ..> TipoSuelo
+
+GestorReportes ..> Campo
+Campo o-->"1..*" Lote
+Lote -->"1" TipoSuelo
+Lote --> "0..*" ProyectoCultivo
+ProyectoCultivo --> "1" Cultivo 
+ProyectoCultivo --> "1" Estado 
+Cultivo--> "1..*" TipoSuelo
+
+GestorReportes ..> ImpresoraReporteProyecto
+@enduml

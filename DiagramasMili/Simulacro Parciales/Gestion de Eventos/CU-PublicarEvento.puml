@@ -1,0 +1,87 @@
+@startuml CU7 
+
+actor "__:Organizador__" as O 
+boundary "__:PantallaEvento__" as Pantalla 
+control "__:gestorEvento__" as Gestor 
+
+O -->> Pantalla**: opcionPublicarEvento()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**: nuevaPublicacionEvento()
+
+entity "__actual:Sesion__" as Sesion 
+Gestor -> Gestor: buscarUsuarioLogueado()
+Gestor -> Sesion: buscarUsuarioLogueado()
+entity "__log:Usuario__" as Usuario 
+Sesion -> Usuario: getNombreUsuario()
+
+Gestor -> Gestor: buscarEventosListoParaPublicar()
+entity "__:Evento__" as Evento #Coral 
+entity "__:Estado__" as Estados #Coral 
+loop Eventos Listos [mientras existan eventos]
+    'obtiene el puntero a estado actual
+    Gestor -> Evento: esListoParaPublicar()
+    Evento -> Estados: esListoParaPublicar()
+    Evento -> Evento: getDescripcion()
+end
+
+Gestor -> Pantalla: pedirSeleccionEvento()
+O -> Pantalla: tomarSeleccionEvento()
+Pantalla -> Gestor: tomarSeleccionEvento()
+entity "__selec:Evento__" as EventoSeleccionado 
+
+Gestor -> Gestor: buscarDatosEvento()
+Gestor -> EventoSeleccionado: buscarDatosEvento()
+EventoSeleccionado -> EventoSeleccionado: getNombre()
+EventoSeleccionado -> EventoSeleccionado: getDescripcion()
+EventoSeleccionado -> EventoSeleccionado: getFoto()
+EventoSeleccionado -> EventoSeleccionado: getUbicacion()
+EventoSeleccionado -> EventoSeleccionado: getFechaInicio()
+EventoSeleccionado -> EventoSeleccionado: getFechaFin()
+entity "__:TipoEvento__" as TipoEvento
+EventoSeleccionado -> TipoEvento: getTipoEvento()
+entity "__:Categoria__" as Categoria
+EventoSeleccionado -> Categoria: getCategoria()
+entity "__habilitados:MediosDePago__" as MP #Coral
+EventoSeleccionado -> MP: *getMediosDePago()
+entity "__:TipoEntrada__" as TipoEntrada 
+EventoSeleccionado -> TipoEntrada: getTipoEntrada()
+EventoSeleccionado -> TipoEntrada: getPrecio()
+'duda acá
+EventoSeleccionado -> TipoEntrada: esGrupal()
+EventoSeleccionado -> TipoEntrada: getCantidadMaxima()d
+EventoSeleccionado -> TipoEntrada: getCantidadMinima()
+
+Gestor -> Pantalla: pedirConfirmacionPublicacion()
+O -> Pantalla: tomarConfirmacionPublicacion()
+Pantalla -> Gestor: tomarConfirmacionPublicacion()
+
+Gestor -> Gestor: generarURL()
+
+Gestor -> Gestor: buscarEstadoPublicado()
+Gestor -> Estados: *esPublicado()
+
+entity "__:CambioEstado__" as CE #Coral
+entity "__actual:CambioEstado__" as actualCE
+entity "__nuevo:CambioEstado__" as newCE 
+Gestor-> Gestor: tomarFechaHoraActual()
+
+Gestor -> Gestor: publicar()
+EventoSeleccionado -> EventoSeleccionado: buscarUltimoCambioEstado()
+EventoSeleccionado -> CE: *esActual()
+EventoSeleccionado -> actualCE: setFechaHoraFin()
+Gestor --> newCE**: new()
+newCE -> newCE: setEstadoActual()
+newCE -> newCE: setFechaHoraPublicacion()
+newCE -> newCE: setUsuarioResponsableDePublicacion()
+
+
+
+Gestor -> Gestor: finCU()
+
+
+
+
+
+
+
+@enduml

@@ -1,0 +1,99 @@
+@startuml secuencia
+
+actor ":Organizador__" as O
+
+create boundary ":PantallaPublicarEvento__" as PPE
+
+O --> PPE : opcPublicarEvento()
+PPE --> PPE : abrirVentana()
+
+create control ":ControladorPublicarEvento__" as CPE
+
+PPE --> CPE : nuevoPublicarEvento()
+
+CPE --> CPE : buscarUsuarioLogueado()
+
+entity ":Sesion:Actual__" as SA 
+entity ":Log:Usuario__" as LU
+
+CPE --> SA : buscarUsuarioLogueado()
+SA --> LU : getEmpleado()
+entity ":EmpleadoUsuario__" as EU 
+LU --> EU : getNombre()
+
+entity ":Eventos__" as E #red
+entity ":EstadoE__" as EE 
+group loop [Mientras haya eventos]
+    CPE --> E : esListoParaPublicar()
+    E --> EE : esListoParaPublicar()
+
+    CPE --> E : getDato()
+    E --> E : getDescripcion()
+end
+
+CPE --> PPE : pedirSeleccionEvento()
+
+O --> PPE : tomarSeleccionEvento()
+PPE --> CPE : tomarSeleccionEvento()
+
+entity ":selec:Evento__" as SE 
+
+CPE --> CPE : buscarDatosEvento()
+
+CPE --> SE : getDatos()
+
+SE --> SE : getNombre()
+SE --> SE : getDescripcion()
+SE --> SE : getFoto()
+SE --> SE : getUbicacion()
+SE --> SE : getFechaInicio()
+SE --> SE : getFechaFin()
+SE --> SE : obtenerTipoEvento()
+entity ":TipoEventoE__" as TEE
+SE --> TEE : getNombre()
+SE --> SE : obtenerCategorias()
+entity ":Categoria__" as C #red
+group loop [Mientra haya categorias]
+    SE --> C : esDelEvento()
+    SE --> C : getNombre()
+end
+entity ":TipoEntrada__" as TE #red
+SE --> TE : getPrecio()
+
+
+CPE --> PPE : pedirConfirmacion()
+O --> PPE : tomarConfirmacion()
+PPE --> CPE : tomarConfirmacion()
+
+CPE --> SE : generarURL()
+
+CPE --> CPE : buscarEstadoPublicado()
+entity ":Estados__" as Estados #red
+group loop [Mientras haya estados]
+    CPE --> Estados : esPublicado()
+    CPE --> Estados : getIdentificador()
+end
+
+entity ":CambioEstado__" as CE #red
+
+CPE --> CPE : buscarCambioEstadoActual()
+
+CPE --> SE : buscarCambioEstadoActual()
+
+SE --> SE : buscarEstadoActual()
+SE --> CE : esActual()*
+entity ":Actual:CambioEstado__" as ACE 
+CE --> ACE : setFechaHoraFin()
+
+
+CPE --> CPE : crearCambioEstado()
+
+CPE --> SE : publicar()
+
+create entity ":nuevo:CambioEstado__" as nCE
+
+SE --> nCE : new()
+SE --> SE : setLink()
+
+PPE --> PPE : finCU()
+@enduml

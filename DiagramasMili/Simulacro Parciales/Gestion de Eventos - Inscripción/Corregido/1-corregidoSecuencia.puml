@@ -1,0 +1,92 @@
+@startuml CU Inscripcion 
+autonumber 
+actor "__:Organizador__" as O
+boundary "__:PantallaAcreditacion__" as Pantalla 
+control "__:GestorAcreditaciones__" as Gestor 
+O -->> Pantalla**: opcRegistrarAcreditacion()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**: nuevaAcreditacion()
+Gestor -> Gestor: buscarUsuarioLogueado()
+entity "__actual:Sesion__" as Sesion 
+entity "__log:Usuario__" as Usuario 
+entity "__:Organizador__" as Organizadores #violet 
+entity "__logueado:Organizador__" as OLog
+Gestor -> Sesion: buscarUsuarioLogueado()
+Sesion -> Usuario: getNombre()
+
+Gestor -> Pantalla: mostrarUsuarioLogueado()
+'porque organizador conoce sus eventos (Patrón) y no usuario a organizador, por ende dependencia entre gestor y organizador
+Gestor -> Organizadores: *esTuUsuario()
+
+Gestor -> Gestor: buscarEventosEnCurso()
+Gestor -> OLog: buscarEventosEnCurso()
+
+entity "__:Evento__" as Eventos #violet 
+entity "__:CambioEstadoEvento__" as CE #violet 
+entity "__actual:CambioEstadoEvento__" as actualCE 
+entity "__:Estado__" as E 
+
+'lo puedo plantear con Estado, no pregunto por ambito
+'si lo planteo con cambio estado pregunto por ambito
+loop Eventos [mientras existan eventos]
+    OLog -> Eventos: estaEnCurso()
+    Eventos -> CE: *esActual()
+    CE -> actualCE: esEnCurso()
+    actualCE->E: esEnCurso()
+    Eventos -> Eventos: getNombre()
+end
+
+Gestor -> Pantalla: mostrarEventosParaSeleccion()
+O -> Pantalla: tomarSeleccionEvento()
+Pantalla -> Gestor: tomarSeleccionEvento()
+
+entity "__selec:Evento__" as EventoSeleccionado 
+
+Gestor -> Gestor: buscarInscripcionesNoCancelables()
+Gestor -> EventoSeleccionado: buscarInscripcionesNoCancelables () 
+
+entity "__:Inscripcion__" as Inscripciones #violet 
+entity "__:Participante__" as Participante
+loop Inscripciones [ mientras existan inscripciones ]
+    EventoSeleccionado -> Inscripciones: esNoCancelable()
+    Inscripciones -> CE: *esActual()
+    actualCE -> E: esAmbitoInscripciones()
+    actualCE -> E: esNoCancelable()
+    Inscripciones -> Participante: getNombre()
+    Inscripciones -> Participante: getApellido()
+    Inscripciones -> Participante: getDNI()
+end
+
+Gestor -> Pantalla: mostrarParaSeleccionParticipantes()
+O -> Pantalla: tomarSeleccionParticipantes()
+Pantalla -> Gestor: tomarSeleccionParticipantes()
+
+Gestor -> Pantalla: pedirConfirmacion()
+O -> Pantalla: tomarConfirmacion()
+Pantalla -> Gestor: tomarConfirmacion()
+
+entity "__:Estado__" as Estados #violet 
+Gestor -> Gestor: tomarFechaHoraActual()
+Gestor -> Gestor: buscarEstadoAcreditada()
+Gestor -> Estados: *esAmbitoInscripciones()
+Gestor -> Estados: *esAcreditada()
+
+Gestor -> Gestor: acreditarInscripciones()
+Gestor -> OLog: acreditarInscripciones()
+OLog -> EventoSeleccionado: acreditarInscripciones()
+
+
+loop Participantes [mientras exista seleccion de participantes]
+    
+
+    EventoSeleccionado -> Inscripciones: acreditar()
+    Inscripciones -> Inscripciones: crearCambioEstado()
+    Inscripciones -> actualCE: setFechaHoraFin()
+    entity "__acreditada:CambioEstado__" as newCE 
+    Inscripciones -->> newCE**: new()
+    newCE -> newCE: setEstadoActual()
+
+end
+
+Gestor -> Gestor: finCU()
+@enduml

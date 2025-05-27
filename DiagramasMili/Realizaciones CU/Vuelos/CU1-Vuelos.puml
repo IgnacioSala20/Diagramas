@@ -1,0 +1,108 @@
+@startuml CU1
+autonumber
+
+actor "__:Pasajero__" as P 
+boundary "__:PantallaConsultarDisponibilidadVuelos__" as Pantalla
+control "__:GestorVuelos__" as G 
+
+
+
+
+P-->Pantalla**: consultarDisponibilidadVuelos()
+Pantalla -> Pantalla : abrirVentana()
+Pantalla --> G**: consultarDisponibilidadVuelos()
+
+G->Pantalla: solicitarSeleccionTipoVuelo()
+P->Pantalla: tomarSeleccionTipoVuelo()
+Pantalla->G: tomarSeleccionTipoVuelo()
+
+entity "__:Pais__" as Pais  #Coral
+G->G: buscarPaises()
+G->Pais: getNombre()
+
+G->Pantalla: solicitarSeleccionPaisOrigenDestino()
+P->Pantalla: tomarSeleccionPaisOrigen()
+P->Pantalla: tomarSeleccionPaisDestino()
+Pantalla->G: tomarSeleccionPaisOrigenDestino()
+
+entity "__selecOrigen:Pais__" as PaisOrigen 
+entity "__selecDestino:Pais__" as PaisDestino
+G->G: buscarProvincias()
+G->PaisOrigen: getProvincia()
+G->PaisDestino: getProvincia()
+
+G->Pantalla: solicitarSeleccionProvinciaOrigenDestino()
+P->Pantalla: tomarSeleccionProvinciaOrigen()
+P->Pantalla: tomarSeleccionProvinciaDestino()
+Pantalla->G: tomarSeleccionProvinciaOrigenDestino()
+
+entity "__selecOrigen:Provincia" as ProvinciaOrigen 
+entity "__selecDestino:Provincia" as ProvinciaDestino 
+G->G: buscarCiudades()
+G->ProvinciaOrigen: getCiudad()
+G->ProvinciaDestino: getCiudad()
+G->Pantalla: solicitarSeleccionCiudadOrigenDestino()
+P->Pantalla: tomarSeleccionCiudadOrigen()
+P->Pantalla: tomarSeleccionCiudadDestino()
+Pantalla->G: tomarSeleccionCiudadOrigenDesino()
+
+G->Pantalla: solicitarSeleccionFlexibilidad()
+G->Pantalla: solicitarSeleccionFecha()
+P->Pantalla: tomarSeleccionFlexibilidad()
+P->Pantalla: tomarSeleccionFecha()
+
+
+entity "__:TipoClase__" as TipoClase #Coral
+G->G: buscarTipoClasesDisponibles()
+G->TipoClase: *getNombre()
+
+G->Pantalla: solicitarSeleccionTipoClase()
+G->Pantalla: solicitarSeleccionCantidadPasajeros()
+P->Pantalla: tomarSeleccionTipoClaseYCantidadPasajeros()
+Pantalla->G: tomarSeleccionTipoClaseYCantidadPasajeros()
+
+G->Pantalla: solicitarConfirmacionBusqueda()
+P->Pantalla: tomarConfirmacionBusqueda()
+
+G->G: validarDatosCompletados()
+G->G:validarFlexibilidad()
+G->G:validarTipoVuelo()
+G->G:buscarVuelosDisponiblesSegunDatosCompletados()
+
+entity "__:Vuelo__" as V #Coral
+entity "__:DefinicionDeVuelo__" as DV 
+
+group loop [por cada vuelo que exista, mientras existan vuelos]
+    G->V: esDeFechaHoraYDestino()
+    G->V: obtenerDisponibilidadPorClase()
+    'verificar reservas vigentes y capacidad de la aeronave asignada al vuelo
+    entity "__:Reserva__" as R 
+    V->R: esDeTipoClaseYFecha()
+    V->R: estaVigente()
+
+    V->DV: getTipoAeroNave()
+    entity "__:TipoAeroNave__" as TipoAeroNave 
+    DV->TipoAeroNave: obtenerCapacidadPorTipoClase()
+
+    'aca muestra los datos de cada vuelo
+    G->V: getDefinicionVuelo()
+    V->DV: getHorarioPartida()
+    V->DV: getAeropuertoOrigen()
+    'aca deberia saber el horario de llegada, debería hacer un calculo entre horario de partida y duracion pero en donde? en gestor?
+    V->DV: getAeropuertoDestino()
+    V->DV: getNroVuelo()
+    V->DV: getDuracion()
+    V->DV: getTarifa()
+
+    entity "__:Tarifa__" as T 
+    DV->T: getImporte()
+
+
+end
+
+G->Pantalla: mostrarVuelosDisponibles()
+G->G: finCU()
+
+
+
+@enduml

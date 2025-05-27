@@ -1,0 +1,96 @@
+@startuml NBA 
+autonumber 
+
+actor "__:AdministradorDeDraft__" as AD 
+boundary "__:PantallaRondas__" as Pantalla 
+control "__:GestorRondas__" as Gestor
+
+AD --> Pantalla**: opcionGenerarRondas()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla --> Gestor**: nuevaRonda()
+
+Gestor -> Gestor: tomarAnioActual()
+
+entity "__:Draft__" as Drafts #pink 
+Gestor -> Gestor: buscarDraftActual()
+Gestor -> Drafts: *esAnioActual()
+entity "__actual:Draft__" as actualDraft
+
+'duda, iria loop por ronda?
+Gestor -> Pantalla: pedirIngresoHorasEstimadas()
+AD -> Pantalla: tomarIngresoHorasEstimadas()
+Pantalla -> Gestor: tomarIngresoHorasEstimadas()
+
+
+Gestor -> Pantalla: pedirIngresoHorasEstimadas()
+AD -> Pantalla: tomarIngresoHorasEstimadas()
+Pantalla -> Gestor: tomarIngresoHorasEstimadas()
+
+Gestor -> Gestor : buscarTablaRendimiento()
+Gestor -> actualDraft : buscarTablaRendimiento()
+entity "__:Tabla__" as Tabla 
+entity "__:Equipo__" as Equipos #violet
+Loop para buscar equipos[ Mientras existan equipos]
+    actualDraft -> Tabla: getPosicion()
+    actualDraft -> Tabla: conocerEquipo()
+    Tabla -> Equipos: getNombre()
+end
+Gestor -> Gestor: generarPrimeraRonda()
+Gestor -> Gestor: invertirPrimerasPosiciones()
+Gestor -> Gestor: generarLoteria()
+
+buondary "__interfaz:Loteria__" as Loteria
+Gestor -> Loteria: generarNroPosicion()
+
+Gestor -> Gestor: generarSegundaRonda()
+'aca ya se puede generar posiciones con el metodo o se debe hacer un loop, buscar pos
+Gestor -> Gestor: reasignarPosicionesAnioAnterior()
+'duda duda
+'muestra y confirma (faltaria esto)
+Gestor -> Pantalla: mostrarRondas()
+Gestor -> Pantalla: pedirConfirmacionDeRondas()
+AD -> Pantalla: tomarConfirmacionDeRondas()
+Pantalla -> Gestor: tomarConfirmacionDeRondas()
+
+
+Gestor -> Gestor: crearRondas()
+Gestor -> actualDraft: crearRondas()
+entity "__1:ronda__" as ronda1
+entity "__:picks__" as picks1
+actualDraft --> ronda1**: new()
+ronda1 -> ronda1: crearPicks()
+ronda1 --> picks1**: *new()
+
+
+entity "__2:ronda__" as ronda2
+entity "__:picks__" as picks2
+actualDraft --> ronda2**: new()
+ronda2 -> ronda2: crearPicks()
+ronda2 --> picks2**: *new()
+
+
+
+entity "__:Jugador__" as Jugador #violet
+entity "__:Estado__" as Estado #violet 
+
+
+Gestor -> Gestor: buscarEstadoFueraDraft()
+Gestor -> Estado: *esFueraDraft()
+
+Gestor -> Gestor: buscarJugadoresPendAprobacion()
+loop jugadores [mientras existan jugadores]
+    Gestor -> Jugador: esPendAprobacion()
+    Jugador -> Estado: *esPendAprobacion()
+    
+end
+
+Gestor -> Gestor: ponerFueraDeDraft()
+entity "__selec:Jugador__" as selecJugadores
+loop actualizar estado jugadores [mientras existan jugadores]
+    Gestor -> selecJugadores: cerrarListaJugadores()
+    Jugador -> Estado: setEstadoAnterior()
+     Jugador -> Estado: setEstadoActual()
+    
+end
+
+@enduml

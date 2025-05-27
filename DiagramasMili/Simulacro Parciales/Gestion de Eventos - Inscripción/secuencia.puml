@@ -1,0 +1,95 @@
+@startuml CU25: "Registrar acreditación de participantes"
+autonumber
+
+actor "__:Organizador__" as O 
+boundary "__:PantallaAcreditacion__" as Pantalla 
+control "__:GestorAcreditaciones__" as Gestor 
+
+O --> Pantalla**: registrarAcreditacion()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla --> Gestor: nuevaAcreditacion()
+Gestor -> Gestor: buscarUsuarioLogueado()
+entity "__actual:Sesion__" as Sesion 
+entity "__log:Usuario__" as Usuario 
+entity "__:Organizador__" as Organizadores #Coral 
+entity "__logueado:Organizador__" as OLog
+Gestor -> Sesion: buscarUsuarioLogueado()
+Sesion -> Usuario: getNombre()
+
+Gestor -> Pantalla: mostrarUsuarioLogueado()
+Gestor -> Organizadores: *esTuUsuario()
+
+Gestor -> Gestor: buscarEventosEnCurso()
+Gestor -> OLog: buscarEventosEnCurso()
+
+entity "__:Evento__" as Eventos #Coral 
+entity "__:Estado__" as Estado
+entity "__:HistorialEvento__" as historialEvento #Coral
+entity "__actual:HistorialEvento__" as actHistorialEvento
+
+loop Eventos [mientras existan eventos]
+    OLog -> Eventos: estaEnCurso()
+    Eventos -> historialEvento: *esEstadoActual()
+    Eventos -> actHistorialEvento: esEnCurso()
+    actHistorialEvento -> Estado: esAmbitoEventos()
+    actHistorialEvento -> Estado: esEnCurso()
+    Eventos -> Eventos: getNombre()
+end
+
+Gestor -> Pantalla: mostrarEventosParaSeleccion()
+O -> Pantalla: tomarEventoSeleccionado()
+Pantalla -> Gestor: tomarEventoSeleccionado()
+
+entity "__selec:Evento__" as selecEvento 
+entity "__:Inscripcion__" as Inscripciones #Pink 
+entity "__:CambioEstado__" as CEInscripcion #Pink
+entity "__actual:CambioEstado__" as actCE 
+Gestor -> Gestor: buscarInscripcionesNoCancelables()
+'Gestor -> OLog: buscarInscripcionesNoCancelables()
+'OLog -> selecEvento: buscarInscripcionesNoCancelables()
+Gestor -> selecEvento: buscarInscripcionesNoCancelables()
+
+entity "__:Participante__" as Participante
+loop Inscripciones [mientras existan inscripciones]
+    selecEvento -> Inscripciones: esNoCancelable()
+    Inscripciones -> CEInscripcion: *esEstadoActual()
+    Inscripciones -> actCE: esNoCancelable()
+  
+    Inscripciones -> Participante: getNombre()
+    Inscripciones -> Participante: getApellido()
+    Inscripciones -> Participante: getDNI()
+end
+
+Gestor -> Pantalla: mostrarParticipantesParaSeleccion()
+O-> Pantalla: tomarSeleccionParticipantes()
+Pantalla->Gestor: tomarSeleccionParticipantes()
+
+Gestor -> Pantalla: solicitarConfirmacion()
+O->Pantalla: tomarConfirmacion()
+Pantalla-> Gestor: tomarConfirmacion()
+
+entity "__:Estado__" as Estados #Coral 
+entity "__selec:Inscripcion__" as selecInscripcion
+
+Gestor -> Gestor: buscarEstadoAcreditada()
+Gestor -> Estados: *esAmbitoInscripciones()
+Gestor -> Estados: *esAcreditada()
+Gestor -> Gestor: tomarFechaHoraActual()
+Gestor -> Gestor: registrarAcreditacion()
+Gestor -> OLog: registrarAcreditacion()
+OLog -> selecInscripcion: acreditar()
+selecInscripcion -> selecInscripcion: crearHistorialEstado()
+selecInscripcion -> actCE: setFechaHoraFin() 
+entity "__nuevo:CambioEstado__" as newCEInscripcion
+selecInscripcion --> newCEInscripcion: new()
+
+
+
+Gestor -> Gestor: finCU()
+
+
+
+
+
+
+@enduml

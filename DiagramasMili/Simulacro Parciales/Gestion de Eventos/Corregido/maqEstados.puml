@@ -1,0 +1,42 @@
+@startuml
+hide empty description
+'Máquina de Estados: Reglas de Negocio, Descripción del Dominio, Descripción de los CU
+
+
+[*] --> EnEdicion : new() CU: RegistrarEvento
+'EnEdicion --> EnEdicion : modificarDatos() [falta información a completar]
+EnEdicion --> ListoParaPublicar : generarFormularioDeInscripcion()
+
+'Se publica sin abrir inscripciones
+ListoParaPublicar --> Publicado : publicar() [no abre inscripciones]
+'Se publica abriendo las inscripciones
+ListoParaPublicar --> PublicadoConInscripcionAbierta: publicar() [abre inscripciones en el momento de publicacion]
+
+Publicado --> PublicadoConInscripcionAbierta: abrirInscripciones()
+
+'Publicado --> PublicadoConInscripcionCerrada: cerrarInscripcion()
+PublicadoConInscripcionAbierta --> PublicadoConInscripcionAbierta: validarCierreDeInscripciones() [no se llenó el cupo y no llego la fecha de inicio]
+PublicadoConInscripcionAbierta --> InscripcionCerrada: cerrarInscripcion() [se llegó a fecha de cierre]
+
+PublicadoConInscripcionAbierta --> EnCupoLleno: cerrarInscripciones() [Cupo lleno]
+
+'estas validaciones se hacen porque existe un proceso automatico que valida si llega la fecha de inicio o fin
+EnCupoLleno --> EnCupoLleno: iniciarEvento() [no llegó a fecha de inicio]
+
+InscripcionCerrada --> EnCurso : iniciarEvento() [llegó fecha inicio]
+EnCupoLleno --> EnCurso : iniciarEvento()
+
+'se pone el finalizar, porque valida hasta que la condicion sea verdadera, cuando es V dispara el método
+EnCurso --> EnCurso : finalizar() [no se llegó a fecha hora fin del evento]
+
+EnCurso --> Finalizado: finalizar()
+
+EnEdicion --> Cancelado: cancelar()
+ListoParaPublicar --> Cancelado : cancelar()
+Publicado --> Cancelado : cancelar()
+PublicadoConInscripcionAbierta --> Cancelado: cancelar()
+InscripcionCerrada --> Cancelado: cancelar()
+EnCupoLleno --> EnCupoLleno: cancelar()
+Cancelado --> [*]
+Finalizado --> [*]
+@enduml

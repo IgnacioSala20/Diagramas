@@ -1,0 +1,21 @@
+@startuml
+hide empty description
+[*] --> EnEdicion : new()
+EnEdicion --> EnEdicion : modificarDatos() [falta información a completar]
+EnEdicion --> ListoParaPublicar : generarFormularioInscripcion()
+
+ListoParaPublicar --> Publicado : publicar()
+
+Publicado --> PublicadoConInscripcionAbierta: abrirInscripciones() [se genera formulario en el momento]
+
+Publicado --> EnCurso : iniciarEvento() [llegó fecha inicio]
+PublicadoConInscripcionAbierta --> EnCurso : iniciarEvento() 
+EnCurso --> Finalizado: finalizar()
+
+EnEdicion --> Cancelado: cancelar()
+ListoParaPublicar --> Cancelado : cancelar()
+Publicado --> Cancelado : cancelar()
+
+Cancelado --> [*]
+Finalizado --> [*]
+@enduml

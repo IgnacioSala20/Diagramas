@@ -1,0 +1,82 @@
+@startuml CU2: Generar reportes 
+autonumber 
+
+actor "__:AdministradorDeCampos__" as ADM 
+boundary "__:PantallaReporteDePC__" as Pantalla 
+control "__:GestorReportes__" as Gestor 
+boundary "__:ImpresoraReporteProyectos__" as Impresora 
+ADM --> Pantalla**: opcGenerarReporteDeProyecto()
+
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla --> Gestor**: nuevoReporte()
+
+entity "__:Campo__" as Campo #violet 
+Gestor -> Gestor: buscarCamposHabilitados()
+Gestor -> Campo: *estaHabilitado()
+
+Gestor -> Pantalla: mostrarParaSeleccionCamposHabilitados()
+ADM -> Pantalla: tomarSeleccionCampos()
+Pantalla -> Gestor: tomarSeleccionCampos() 
+entity "__:Lote__" as Lote #violet
+Gestor -> Gestor: buscarLotesDeCampoSeleccionado()
+loop Lotes [por cada campo seleccionado, mientras existan lotes]
+    Gestor -> Campo: buscarLotes()
+    Campo -> Lote: esLote()
+end
+Gestor -> Pantalla: mostrarLotesParaSeleccion() 
+ADM -> Pantalla: tomarSeleccionLotes()
+Pantalla -> Gestor: tomarSeleccionLotes()
+Gestor -> Gestor: buscarCultivos()
+entity "__:Cultivo__" as Cultivos #violet
+Gestor -> Cultivos: *getNombre()
+
+Gestor -> Gestor: buscarTipoDeSuelos()
+entity "__:TipoDeSuelo__" as TipoSuelo1 #violet
+entity "__lote:TipoDeSuelo__" as TipoSuelo 
+Gestor -> TipoSuelo1: *getNombre()
+
+Gestor -> Pantalla: mostrarParaSeleccionCultivoYTipoSuelo()
+ADM -> Pantalla: tomarSeleccion()
+Pantalla -> Gestor: tomarSeleccion()
+
+Gestor -> Pantalla: pedirIngresoPeriodo()
+ADM -> Pantalla: tomarIngresoFechaInicio()
+ADM -> Pantalla: tomarIngresoFechaFin()
+Pantalla -> Gestor: tomarIngresoPeriodo()
+
+Gestor -> Gestor: validarFechaMenor()
+Gestor -> Pantalla: pedirConfirmacion()
+ADM -> Pantalla: tomarConfirmacion()
+Pantalla -> Gestor: tomarConfirmacion()
+
+Gestor -> Gestor: buscarProyectos()
+entity "__:ProyectoCultivo__" as ProyectoCultivo
+entity "__DelProyecto:Cultivo__" as Cultivo 
+loop Lotes [por cada lote seleccionado, mientras existan lotes]
+Gestor -> Campo: buscarTipoSueloLote()
+Campo -> Lote: conocerTipoSuelo()
+Lote -> TipoSuelo: getNombre()
+
+Gestor -> Campo: validarProyectosLote()
+Campo -> Lote: buscarPoryectosDeCultivo()
+Lote -> ProyectoCultivo: esDeCultivo()
+Lote -> ProyectoCultivo: esDePeriodo()
+ProyectoCultivo -> ProyectoCultivo: getCultivo()
+ProyectoCultivo -> Cultivo: getNombre()
+
+entity "__:Estado__" as E 
+ProyectoCultivo -> E: getNombre()
+ProyectoCultivo -> ProyectoCultivo: getFechaInicio()
+ProyectoCultivo -> ProyectoCultivo: getFechaFin()
+end
+
+Gestor -> Pantalla: solicitarSeleccionFormaDeVisualizacion()
+ADM -> Pantalla: tomarSeleccionFormaDeVisualizacion()
+Pantalla -> Gestor: tomarSeleccionFormaDeVisualizacion()
+
+Gestor->Gestor: generarReporteDeProyecto()
+
+Gestor -> Impresora: imprimir()
+
+Gestor-> Gestor: finCU()
+@enduml
