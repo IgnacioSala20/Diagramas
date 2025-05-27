@@ -1,0 +1,25 @@
+@startuml estado
+
+[*] --> EnPreparacion : laborear()
+EnPreparacion --> EnPreparacion : laborear() [Laboreo=Si]
+EnPreparacion --> Siembra : sembrar() [Laboreo=NO]
+
+Siembra --> Siembra : sembrar() [ReSiembra=SI]
+Siembra --> Cancelar: cancelar() [ReSiembra=NO]
+
+Siembra --> LaboreoPostSiembra : laborear() 
+
+LaboreoPostSiembra --> LaboreoPostSiembra : laborear()
+
+LaboreoPostSiembra --> Cosecha : cosechar()
+
+LaboreoPostSiembra --> Cancelar : cancelar()
+
+Siembra --> Cancelar : cancelar()
+
+EnPreparacion --> Cancelar : cancelar()
+
+Cosecha --> [*]
+
+Cancelar --> [*]
+@enduml

@@ -24,7 +24,47 @@ end
 GGD --> PGD : pedirSeleccionFestival()
 RF --> PGD : tomarSeleccionFestival()
 PGD --> GGD : tomarSeleccionFestival()
-
+entity "__:selec:Festival__" as sF
 GGD --> GGD : buscarFechasFestival()
-GGD --> F: getFechaFestival()
+GGD --> sF: getFechaFestival()
+sF --> DF : getFecha()
+
+GGD --> PGD : pedirSeleccionDia()
+RF --> PGD : tomarSeleccionDia()
+PGD --> GGD : tomarSeleccionDia()
+
+GGD --> GGD : buscarDatosDiaFestival()
+
+GGD --> sF : buscarDatosDiaFestival()
+sF --> DF : getFecha()
+sF --> DF : getDia()
+sF --> DF : getHoraInicioProgramacion()
+
+GGD --> GGD : buscarGruposArtistas()
+entity "__:GrupoMusical__" as GM #Red
+GGD --> GM : getNombre()*
+
+GGD --> PGD : pedirSeleccionGrupos()
+RF --> PGD : tomarSeleccionGrupos()
+PGD --> GGD : tomarSeleccionGrupos()
+
+GGD --> PGD : pedirDatosActuacion()
+group loop[Mientras haya grupos musicales]
+    RF --> PGD : tomarNumOrdenActuacion()
+    RF --> PGD: tomarDuracionEspectaculo()
+    RF --> PGD : tomarHoraInicioEstimada()
+end
+PGD --> GGD : tomarDatosActuacion()
+
+GGD --> GGD : verificarCompletitudDatos()
+GGD --> PGD : pedirConfirmacion()
+RF --> PGD : tomarConfirmacion()
+PGD --> GGD : tomarConfirmacion()
+
+GGD --> GGD : verificarRestricciones()
+
+GGD --> GGD : generarDiagramacion()
+create boundary "__:InterfazDiagramacion__" as ID 
+
+GGD --> ID : generarDiagramacion()
 @enduml
