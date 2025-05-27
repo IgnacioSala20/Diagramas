@@ -1,0 +1,108 @@
+@startuml clase 
+class Cultivo{
+    +nombre
+    +getNombre()
+}
+class ProyectoCultivo{
+    +fecha
+    +estaEnPeriodo()
+    +obtenerCultivo()
+    +obtenerEstadoPC()
+}
+
+class Estado{
+    +valor
+    +getValor()
+}
+class TipoSuelo{
+    +nombre
+    +getNombre()
+}
+class Lote{
+    +numero
+    +getNumero()
+    +buscarDatosLotes()
+    +obtenerTipoSuelo()
+    +buscarProyectoCultivo()
+}
+class Campo{
+    +nombre
+    +habilitado
+    +getNombre()
+    +estaHabilitado()
+}
+class Pantalla {
+    +listCampos
+    +listLotes
+    +listCultivos
+    +listTipoSuelo
+    +labelPeriodo
+    +listCamposSeleccionados
+    +listLotesSeleccionados
+    +listCultivosSeleccionados
+    +listTipoSueloSeleccionados
+    +seleccionVisualizacion()
+    +opcGenerarReporte()
+    +abrirVentana()
+    +pedirSeleccionCampos()
+    +tomarSeleccionCampos()
+    +pedirSeleccionLotes()
+    +tomarSeleccionLotes()
+    +pedirSeleccionTipoSuelo()
+    +tomarSeleccionTipoSuelo()
+    +pedirSeleccionCultivo()
+    +tomarSeleccionCultivo()
+    +pedirIngresoPeriodo()
+    +tomarIngresoPeriodo()
+    +pedirConfirmacion()
+    +tomarConfirmacion()
+    +pedirSeleccionVisualizacion()
+    +tomarSeleccionVisualizacion()
+}
+class Gestor{
+    +listCampos
+    +listLotes
+    +listCultivos
+    +listTipoSuelo
+    +periodo 
+    +listCamposSeleccionados
+    +listLotesSeleccionados
+    +listCultivosSeleccionados
+    +listTipoSueloSeleccionados
+    +seleccionVisualizacion()
+    +nuevoReporte()
+    +buscarCamposHabilitados()
+    +tomarSeleccionCampos()
+    +buscarLotesCampos()
+    +tomarSeleccionLotes()
+    +buscarCultivos()
+    +buscarTipoSuelo()
+    +tomarSeleccionTipoSuelo()
+    +tomarSeleccionCUltivo()
+    +tomarIngresoPeriodo()
+    +validarPeriodoIngresado()
+    +tomarConfirmacion()
+    +buscarInformacionCampos()
+    +tomarSeleccionVisualizacion()
+    +imprimir()
+}
+
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+Campo o--> "1..*" Lote : lote
+
+Lote --> "0..*" ProyectoCultivo : proyectoCultivo
+
+Gestor ..> Campo
+Gestor ..> TipoSuelo
+Gestor ..> Cultivo
+ProyectoCultivo --> "1" Estado : estado
+
+Lote --> "1" TipoSuelo : tipoSuelo
+
+TipoSuelo --> "1" Cultivo : cultivo
+
+ProyectoCultivo --> "1" Cultivo : cultivo
+
+
+@enduml

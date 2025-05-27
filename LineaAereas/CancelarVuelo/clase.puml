@@ -1,0 +1,117 @@
+@startuml clase
+
+class Pantalla{
+    +listVuelos
+    +listMotivosCancelacion
+    +description
+    +seleccionMotivoCancelacion
+    +seleccionVuelo
+    +opcCancelarVuelo()
+    +abrirVentana()
+    +pedirSeleccionVuelo()
+    +tomarSeleccionVuelo()
+    +pedirSeleccionMotivoCancelacion()
+    +pedirIngresoDescripcion()
+    +tomarIngresoDescripcion()
+    +pedirConfirmacion()
+    +tomarConfirmacion()
+
+}
+class Gestor{
+    +listaVuelos
+    +listaMotivosCamcelacion
+    +punteroVuelo
+    +usuarioLogueado
+    +motivoCancelacion
+    +seleccionMotivo 
+    +fechaHora
+    +punteroEstadoCancelado
+    +nuevaCancelacion()
+    +buscarVueloPosiblesCancelables()
+    +tomarSeleccionVuelo()
+    +buscarMotivoCancelacion()
+    +tomarSeleccionMotivoCancelacion()
+    +tomarIngresoDescripcion()
+    +tomarConfirmacion()
+    +getFechaHora()
+    +buscarUsuarioLogueado()
+    +buscarCambioEstadoActual()
+    +crearCambioEstado()
+    +notificarPantallaAeropuerto()
+    +notificarViaWeb()
+    +finCU()
+}
+
+Gestor ..> Pantalla
+Pantalla ..> Gestor 
+class Vuelo{
+    +fechaHoraProgramada
+    +esCancelable()
+    +buscarCEactual()
+    +getDatos()
+    +obtenerNumeroVuelo()
+    +esEstadoActual()
+    +buscarCambioEstadoActual()
+    +cancelar
+}
+class CambioEstadoVuelo{
+    +fechaHoraInicio
+    +fechaHoraFin
+    +setFechaHoraFin()
+    +esActual()
+    +esPosibleCancelar()
+    +new()
+}
+CambioEstadoVuelo --> "1" Usuario : usuario
+Vuelo --> "1..*" CambioEstadoVuelo : cambioEstado
+class Estado{
+    nombre
+    +esCancelable()
+    +permiteCancelar()
+}
+CambioEstadoVuelo --> "1" Estado : estado
+class DefinicionDeVuelo{
+    +numVuelo
+    +horario
+    +getNumVuelo()
+    +getHorario()
+}
+Vuelo --> "1" DefinicionDeVuelo : definicionVuelo
+class Aeropuerto{
+
+    +obtenerCiudadOrigen()
+    +obtenerCiudadDestino()
+
+}
+DefinicionDeVuelo --> "1" Aeropuerto : origen
+DefinicionDeVuelo --> "1" Aeropuerto : destino
+
+class Ciudad{
+    +nombre
+    +getNombre()
+}
+Aeropuerto --> "1" Ciudad : ciudad
+class MotivoCancelacion{
+    +nombre
+    +getNombre()
+}
+CambioEstadoVuelo --> "1" MotivoCancelacion : motivoCancelacion
+class Sesion{
+    +fechaHora 
+    +buscarUsuarioLogueado()
+}
+class Usuario{
+    +getEmpleado()
+}
+class Empleado{
+    +nombre
+    +apellido
+}
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Empleado : empleado
+
+Gestor ..> Sesion
+Gestor ..> Vuelo 
+Gestor ..> Estado
+Gestor ..> MotivoCancelacion
+@enduml

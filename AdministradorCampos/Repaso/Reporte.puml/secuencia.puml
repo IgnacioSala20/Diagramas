@@ -1,0 +1,96 @@
+@startuml secuencia 
+
+actor "__:AdministradorProyectos__" as AP 
+
+create boundary "__:PantallaGenerarReporte__" as PGR 
+
+AP --> PGR : opcGenerarReporte()
+PGR --> PGR : abrirVentana()
+
+create control "__:GestorGenerarReporte__" as GGR 
+
+PGR --> GGR : nuevoReporte()
+
+GGR --> GGR : buscarCamposHabilitados()
+entity "__:Campo__" as C #red
+group loop [Mientras haya campos]
+    GGR --> C : estaHabilitado()
+    GGR --> C : getNombre()
+end
+group loop [Mientras haya campos]
+    GGR --> PGR : pedirSeleccionCampos()
+    AP --> PGR : tomarSeleccionCampos()
+    PGR --> GGR : tomarSeleccionCampos()
+end
+entity "__:Lote__" as L #red
+GGR --> GGR : buscarLotesCampos()
+GGR --> C : obtenerNumeroLotes()
+C --> L : getNumero()*
+group loop [Mientras haya lotes]
+    GGR --> PGR : pedirSeleccionLotes()
+    AP --> PGR : tomarSeleccionLotes()
+    PGR --> GGR : tomarSeleccionLotes()
+end
+
+entity "__:Cultivos__" as Cultivo #red
+entity "__:TipoSuelo__" as TS #red
+
+GGR --> GGR : buscarCultivos()
+
+GGR --> Cultivo : getNombre()*
+
+GGR --> GGR : buscarTipoSuelo()
+
+GGR --> TS : getNombre()*
+
+group loop [Mientras haya lotes]
+    GGR --> PGR : pedirSeleccionTipoSuelo()
+    AP --> PGR : tomarSeleccionTipoSuelo()
+    PGR --> GGR : tomarSeleccionTipoSuelo()
+
+    GGR --> PGR : pedirSeleccionCultivo()
+    AP --> PGR : tomarSeleccionCultivo()
+    PGR --> GGR : tomarSeleccionCultivo()
+end
+GGR --> PGR : pedirIngresoPeriodo()
+AP --> PGR : tomarIngresoPeriodo()
+PGR --> GGR : tomarIngresoPeriodo()
+GGR --> GGR : validarPeriodoIngresado()
+
+GGR --> PGR : pedirCOnfirmacion()
+AP --> PGR : tomarCOnfirmacion()
+PGR --> GGR : tomarConfirmacion()
+
+GGR --> GGR : buscarInformacionCampos()
+entity "__:ProyectoCultivo__" as PC
+entity "__:EstadoPC__" as EPC
+group loop [Mientras haya campos]
+    GGR --> C : buscarInformacionCampos()
+    C --> C : buscarDatosLotes()
+    group loop [Mientra haya lotes]
+        C --> L : buscarDatosLotes()
+        L --> L : obtenerTipoSuelo()
+        L --> TS : getNombre()
+        L --> L : buscarProyectoCultivo()
+        group loop [Mientras haya proyectos cultivo]
+            L --> PC : estaEnPeriodo()
+            L --> PC : obtenerCultivo()
+            PC --> Cultivo : getNombre()
+            L --> PC : obtenerEstadoPC()
+            PC --> EPC : getNombre()
+        end
+    end
+end
+
+GGR --> PGR : pedirSeleccionVisualizacion()
+AP --> PGR : tomarSeleccionVisualizacion()
+PGR --> GGR : tomarSeleccionVisualizacion()
+
+GGR --> GGR : imprimir()
+
+create boundary "__:InterfazImpresora__" as II 
+
+GGR --> II : imprimir()
+
+
+@enduml

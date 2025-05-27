@@ -21,13 +21,21 @@ DUDAS:
 
       En este caso la entidad Categoria que contiene todas las entidades, estaria haciendo referencia a los punteros que tenemos en Evento seleccionado, por lo tanto hariamos solo un getNombre()* debido a que esa entidad que representa los muchos, serian los seleccionados,
       NOSOTROS NO DISTINGUIMOS LO QUE SON LOS SELECCIONADOS DE LO QUE SON LA ENTIDAD CON TODOS
-
+      ENTONCES LA ENTIDAD QUE ESTA PINTADA, REPRESENTARIA NUESTROS 4 PUNTEROS DE CATEGORIA
       Preguntar por el de reportes de Campo
       EJEMPLO: 
         group loop [Mientras haya lotes para eso campos]
             CR --> C : esCampoSeleccionado() Aca verifico que el puntero del seleccionado con el de la entidad
             C --> L: 11.getNombreLote() y aqui le pido el nombre del lote a ese campo
         end
+
+      EN ESTE CASO NO HARIA FALTA EL LOOP, YA QUE  IRIAMOS DESDE EL GESTOR A LA ENTIDAD CON TODOS LOS CAMPOS, EL CUAL REPRESENTARIA LOS CAMPOS QUE NOSOTROS SELECCIONAMOS, Y LUEGO IRIAMOS A LA ENTIDAD DE TODOS LOS LOTES, EN EL CUAL, CAMPO TIENE LOS PUNTEROS A LOTES, POR LO TANTO ESA ENTIDAD QUE REPRESENTA TODOS LOS LOTES, ESTARIA INDICANDO LOS PUNTEROS QUE TIENE CAMPO SOBRE LOTE
+
+
+
+      PREGUNTAR SI CUANDO PONEMOS UNA INTERFAZ EXTERNA, EJ: IMPRESORA, LA CLASE VA EN EL DIAGRAMA DE CLASES CON SU MENSAJE CORRESPONDIENTE
+
+      PREGUNTAR POR EL TEMA DE LA SELECCION MULTIPLE POR EJ DE CAMPOS, COMO SE MANEJA EN EL DIAGRAMA DE CLASES, VA COMO punterosCampo O LISTA CAMPOS (MISMA PREGUNTA PARA CUANDO ES MULTIPLE Y CUANDO ES SELECCION UNICA)
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  

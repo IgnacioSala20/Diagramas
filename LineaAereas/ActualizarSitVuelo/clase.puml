@@ -1,0 +1,91 @@
+@startuml clase 
+
+class Vuelo {
+    +horarioPartidaProgramada 
+    +fecha
+    +obtenerEstadoActual()
+    +getDatos()
+    +obtenerNumVuelo()
+    +getHorarioPartidaProgramada()
+    +getFecha()
+    +aterrizar()
+    +actualizarCEactual()
+    +buscarCambioEstado()
+    +buscarCambioEstadoActual()
+}
+class DefinicionVuelo{
+    +numVuelo
+    +getNumVuelo()
+}
+class Estado{
+    +nombre
+    +esNoFinal()
+    +getNombre()
+    +esEnZona()
+}
+
+class CambioEstado{
+    +esActual()
+    +fechaHoraFin
+    +fechaHoraInicio
+    +setFechaHoraFin()
+    +esEnZona()
+    +new()
+}
+class Sesion{
+    +fechaHoraSesion
+    +buscarUsuarioLogueado()
+}
+class Usuario{
+    +getEmpleado()
+}
+class Empleado{
+    +nombre
+}
+class Pantalla{
+    +listaVuelos
+    +seleccionVuelo
+    +listaEstados
+    +seleccionEstado
+    +opcActualizarVuelo()
+    +abrirVentana()
+    +pedirSeleccionEstado()
+    +tomarSeleccionEstado()
+    +pedirSeleccionVueloAterrizar()
+    +tomarSeleccionVuelo()
+    +tomarConfirmacion()
+    +pedirConfirmacion()
+    +opcCancelar()
+    +finCU()
+}
+class Gestor{
+    +fechaHoraActual
+    +listaEstados
+    +listaVuelos
+    +usuarioLogueado
+    +punteroCE
+    +buscarEstadosNoFinales()
+    +buscarVuelosEnZona()
+    +tomarSeleccionEstado()
+    +tomarSeleccionVuelo()
+    +tomarConfirmacion()
+    +getFechaHora()
+    +buscarUsuarioLogueado()
+    +actualizarCEactual()
+    +crearCambioEstado()
+    +notificarEnPantalla()
+    +notificarEnViaWeb()
+}
+
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+Sesion --> "1" Usuario : usuario
+Gestor ..> Sesion
+Usuario --> "1" Empleado : empleado
+Vuelo --> "1..*" CambioEstado : cambioEstado
+Vuelo --> "1" DefinicionVuelo : definicionVuelo
+CambioEstado --> "1" Estado : estado
+Gestor ..> Vuelo
+Gestor ..> Estado
+CambioEstado --> "1" Usuario
+@enduml

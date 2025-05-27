@@ -1,0 +1,116 @@
+@startuml secuencia 
+actor "__:EncargadoLaboreo__" as EL 
+
+create boundary "__:PantallaRegistrarLaboreo__" as PRL 
+
+EL --> PRL : opcRegistrarLaboreo()
+
+PRL --> PRL : abrirVentana()
+
+create control "__:GestorRegistrarLaboreo__" as GRL 
+
+PRL --> GRL : nuevoLaboreo()
+
+GRL --> GRL : buscarCamposHabilitados()
+entity "__:Campo__" as C #Red
+group loop [Mientras haya campos]
+    GRL --> C : estaHabilitado()
+    GRL --> C : getNombre()
+end 
+
+
+GRL --> PRL: pedirSeleccionCampo()
+
+EL --> PRL : tomarSeleccionCampo()
+PRL --> GRL : tomarSeleccionCampo()
+entity "__:selec:Campo__" as sC
+
+entity "__:Lote__" as L #Red
+entity "__:ProyectoCultivo__" as PC #Red
+
+entity "__:EstadoPC__" as EPC 
+GRL --> GRL : buscarLotes()
+GRL --> sC : buscarLotesPCV()
+group loop [Mientras haya lotes con PC vigente]
+    sC --> sC : obtenerLotePCV()
+    group loop [Mientras haya lotes para ese campo]
+        sC --> L : tienePCV()
+        L --> PC : esEstadoNoFinal()
+        PC --> EPC : esNoFinal()
+    end
+
+
+    sC --> sC : obtenerDatosLotes()
+    group loop [Mientras haya lotes para ese campo]
+        sC --> L : getNumeroLote()
+        sC --> L : obtenerFechaInicioProyecto()
+        L --> PC : getFechaInicio
+    end
+end
+GRL --> PRL : mostrarLotes()
+group loop [Mientra haya lotes]
+    GRL --> PRL : pedirSeleccionLotes()
+    EL --> PRL : tomarSeleccionLotes()
+    PRL --> GRL : tomarSeleccionLotes()
+end
+
+GRL --> GRL : buscarLaboreoCultivo()
+GRL --> sC : buscarLaboreoCultivo()
+entity "__:Cultivo__" as Cultivo
+entity "__:Laboreo__" as Laboreo #red
+group loop [Mientras haya lotes seleccionados]
+    sC --> L : buscarLaboreoCultivo()
+    L --> PC : conocerCultivo()
+    PC --> Cultivo : getNombre()
+    L --> L : conocerLaboreos()
+    L --> PC : conocerLaboreos()
+        PC --> Laboreo : mostrarLaboreo()*
+end
+
+GRL --> PRL : mostrarCultivoLaboreo()
+GRL --> GRL : buscarTiposLaboreosPC()
+entity "__:TipoLaboreo__" as TL 
+entity "__:OrdenDeLaboreo__" as ODL 
+
+GRL --> Cultivo : conocerOrdenDeLaboreo()
+group loop [Mientra haya orden de laboreo]
+    Cultivo --> ODL : conocerTipoLaboreo()
+    ODL --> TL : mostrarTipoLaboreo()
+end
+group [Mientras se quiera registrar laboreos]
+    GRL --> PRL : pedirSeleccionTipoLaboreo()
+    EL --> PRL : tomarSeleccionTipoLaboreo()
+    PRL --> GRL : tomarSeleccionTipoLaboreo()
+end
+GRL --> PRL : pedirIngresoFechaHoraInicio()
+GRL --> PRL : pedirIngresoFechaHoraFIn()
+EL --> PRL : tomarIngresoFechaHoraInicio()
+EL --> PRL : tomarIngresoFechaHoraFin()
+PRL --> GRL : tomarIngresoFechaHoraInicio()
+PRL --> GRL : tomarIngresoFechaHoraFin()
+
+GRL --> GRL : validarFechas()
+
+GRL --> GRL : buscarEmpleados()
+entity "__:Empleados__" as E #red
+GRL --> E : getNombre()*
+
+GRL --> PRL : pedirSeleccionEmpleado()
+EL --> PRL : tomarSeleccionEmpleado()
+PRL --> GRL : tomarSeleccionEmpleado()
+
+GRL --> PRL : pedirConfirmacion()
+EL --> PRL : tomarCOnfirmacion()
+PRL --> GRL : tomarConfirmacion()
+
+GRL --> GRL : crearLaboreo()
+GRL --> sC : crearLaboreo()
+sC --> L : crearLaboreo()
+L --> PC : crearLaboreo()
+create entity "__:nuevo:Laboreo__" as nL 
+PC --> nL : new()
+
+GRL --> GRL : validarDatos
+
+
+@enduml 

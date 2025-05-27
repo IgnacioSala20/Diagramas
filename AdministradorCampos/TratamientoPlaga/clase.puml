@@ -1,0 +1,25 @@
+@startuml clase
+
+class Tratamiento{
+}
+class Dosis{}
+class UnidadMedida{}
+class Agroquimico{}
+class Plaga{}
+class Cultivo{}
+class Pantalla{}
+class Gestor{}
+
+Pantalla ..> Gestor 
+Gestor ..> Pantalla 
+Cultivo --> "0..*" Tratamiento : tratamiento
+
+Tratamiento *-> "1..*" Dosis : dosis
+Dosis --> "1" UnidadMedida : unidadMedida
+Dosis --> "1" Agroquimico : agroquimico 
+Tratamiento --> "1" Plaga : plaga
+Gestor ..> Cultivo 
+Gestor ..> Agroquimico
+Gestor ..> Plaga
+Gestor ..> UnidadMedida
+@enduml

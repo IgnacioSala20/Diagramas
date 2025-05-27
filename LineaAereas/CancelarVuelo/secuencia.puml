@@ -1,0 +1,101 @@
+@startuml secuencia
+
+actor "__:EncargadoNavegacion__" as EN 
+
+create boundary "__:PantallaRegisCancelacionVuelo" as PRCV 
+EN --> PRCV : opcCancelarVuelo()
+
+PRCV --> PRCV :abrirVentana()
+create control "__:GestorRegisCancelacionVuelo__" as GRCV 
+
+PRCV --> GRCV : nuevaCancelacion()
+
+GRCV --> GRCV :buscarVuelosPosiblesCancelar()
+
+entity "__:Vuelo__" as V #Red
+entity "__:CambioEstadoVuelo__" as CEV #red
+entity "__:actual:CambioEstado__" as aCE
+entity "__EstadoCE__" as E 
+group loop [Mientras haya vuelos]
+    GRCV --> V: esCancelable()
+    V --> V : buscarCEactual()
+    V --> CEV : esActual()*
+    V --> aCE : esPosibleCancelar()
+    aCE --> E : permiteCancelar()
+
+    GRCV --> V : getDatos()
+    V --> V : obtenerNumeroVuelo()
+    entity "__:DefinicionDeVuelo__" as DV 
+    V --> DV : getNumVuelo()
+
+    entity "__:origen:Aeropuerto__" as oA 
+    entity "__:destino:Aeropuerto__" as dA 
+    entity "__:Ciudad__" as C 
+    V --> oA : obtenerCiudadOrigen()
+    oA --> C : getNombre()
+
+    V --> dA : obtenerCiudadDestino()
+    dA --> C : getNombre()
+
+    V --> DV : getHorario()
+end
+
+GRCV --> PRCV : pedirSeleccionVuelo()
+EN --> PRCV : tomarSeleccionVuelo()
+PRCV --> GRCV : tomarSeleccionVuelo()
+
+GRCV --> GRCV : buscarMotivosCancelacion()
+entity "__:MotivoCancelacion__" as MT 
+
+GRCV --> MT : getNombre()*
+
+GRCV --> PRCV : pedirSeleccionMotivoCancelacion()
+EN --> PRCV : tomarSeleccionMotivoCancelacion()
+PRCV --> GRCV : tomarSeleccionMotivoCancelacion()
+
+GRCV --> PRCV : pedirIngresoDescripcion()
+EN --> PRCV : tomarIngresoDescripcion()
+PRCV --> GRCV : tomarIngresoDescripcion()
+
+GRCV --> PRCV : pedirConfirmacion()
+EN --> PRCV : tomarConfirmacion()
+PRCV --> GRCV : tomarConfirmacion()
+
+GRCV --> GRCV : getFechaHora()
+
+GRCV --> GRCV : buscarUsuarioLogueado()
+entity "__:actual:Sesion__" as actualS
+entity "__:log:Usuario__" as lU 
+
+GRCV --> actualS : buscarUsuarioLogueado()
+actualS --> lU : getEmpleado()
+
+GRCV --> GRCV : buscarEstadoCancelado()
+entity "__:Estado__" as Estado #red
+GRCV --> Estado : esCancelado()*
+
+entity "__:selec:Vuelo__" as sV 
+
+GRCV --> GRCV : buscarCambioEstadoActual()
+
+GRCV --> sV : buscarCambioEstadoActual()
+sV --> sV: esEstadoActual()
+
+sV --> CEV : esActual()*
+CEV --> aCE : setFechaHoraFin()
+
+GRCV --> GRCV : crearCambioEstado()
+GRCV --> sV : cancelar()
+create entity "__nuevo:CambioEstado__" as nCE 
+sV --> nCE : new()
+
+GRCV --> GRCV : notificarPantallaAeropuerto()
+create boundary "__:InterfazPantallaAeropuerto__" as IPE 
+GRCV --> IPE : notificarPantallaAeropuerto()
+GRCV --> GRCV : notificarViaWeb()
+
+create boundary "__:InterfazViaWeb__" as IVW 
+GRCV --> IVW : notificarViaWeb()
+
+GRCV --> GRCV : finCU()
+@enduml

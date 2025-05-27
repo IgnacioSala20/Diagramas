@@ -1,0 +1,30 @@
+@startuml secuencia
+
+actor "__:ResponsableFestival__" as RF 
+
+create boundary "__:PantallaGenerarDiagramacion__" as PGD 
+
+RF --> PGD : opcGenerarDiagramacion()
+PGD --> PGD : abrirVentana()
+
+create control "__:GestorGenerarDiagramacion__" as GGD 
+
+PGD --> GGD : nuevaDiagramacion()
+
+GGD --> GGD : buscarFestivalesNoDiagramados()
+
+entity "__:Festival__" as F #Red
+entity "__:DiaFestival__" as DF #Red
+group loop [Mientras haya dias de festival]
+    GGD --> F :buscarFestivalesNoDiagramados()
+    F --> DF : estaDiagramado()
+    F --> DF : getDiaFestival()
+end
+
+GGD --> PGD : pedirSeleccionFestival()
+RF --> PGD : tomarSeleccionFestival()
+PGD --> GGD : tomarSeleccionFestival()
+
+GGD --> GGD : buscarFechasFestival()
+GGD --> F: getFechaFestival()
+@enduml

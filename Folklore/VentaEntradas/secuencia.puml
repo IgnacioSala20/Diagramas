@@ -26,16 +26,39 @@ entity "__selec:Festival__" as SF
 GRV --> GRV : buscarFechasFestivalSelec()
 GRV --> SF : buscarFechasFestivalSelec()
 entity "__:DiaFestival__" as DF #red
+entity "__:Sector__" as S #red
+entity "__:Fila__" as Fila #red
+entity "__:Butaca__" as B #red
+entity "__:DisponibilidadButaca__" as DB #red
+entity "__:Estado__" as E 
+group loop [Mientras haya dias de festival]
+    SF --> DF : getFechaDiaFestival()
+    SF --> SF : buscarSectoresDisponibles()
+    SF --> DF : buscarButacas()
+    DF --> DB : estaDisponible()
+    DB --> E : esDisponible()
+    DF --> DB :getButaca()
 
-SF --> DF : getFechasFestival()*
+    group loop [Mientras haya Butacas]
+        DB --> B : getDatosFila()
+        B --> B : buscarFilaButaca()
+        B --> Fila: esEstaFila()
+        DB -->B: getDatosSector()
+    end
+end
+GRV --> PRV : pedirSeleccionUbicacion()
+EV --> PRV : tomarSeleccionUbicacion()
+PRV --> GRV : tomarSeleccionUbicacion()
 
-GRV --> PRV : pedirSeleccionFechaFestival()
-EV --> PRV : tomarSeleccionFechaFestival()
-PRV --> GRV : tomarSeleccionFechaFestival()
+entity "__:PrecioEntrada__" as PE #red
+entity "__:TipoEntrada__" as TE
+GRV --> GRV : buscarTipoEntrada()
+GRV --> PE : getTipoEntrada()
+PE --> TE : getNombre()
 
-GRV --> GRV : buscarSectoresConUbicacion()
 
-entity "__:Sectores__" as S
+
+
 
 
 @enduml

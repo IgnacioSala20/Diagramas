@@ -1,0 +1,54 @@
+@startuml secuencia 
+
+actor "__:AdministradorCampo__" as AC
+
+create boundary "__:PantallaRegistrarCampo__" as PRC 
+
+AC --> PRC : opcRegistrarCampo()
+PRC --> PRC : abrirVentana()
+
+create control "__:GestorRegistrarCampo__" as GRC 
+
+PRC --> GRC : nuevoCampo()
+
+GRC --> PRC : pedirIngresoNombreCampo()
+AC --> PRC : tomarIngresoNombreCampo()
+PRC --> GRC : tomarIngresoNombreCampo()
+GRC --> GRC : validarNombreCampo()
+
+GRC --> PRC : pedirIngresoSUperficieCampo()
+AC --> PRC : tomarIngresoSuperficieCampo()
+PRC --> GRC : tomarIngresoSuperficieCampo()
+GRC --> GRC : verificarNulidad()
+
+GRC --> PRC : pedirIngresoDatosLotes()
+GRC --> GRC : buscarTipoSuelo()
+entity "__:TipoSuelo__" as TS #Red
+GRC --> TS : getNombre()*
+group loop [Mientras se ingresen lotes]
+    AC --> PRC : tomarNumeroLote()
+    PRC --> GRC : tomarNumeroLote()
+    GRC --> GRC : validarRepeticionLote()
+    AC --> PRC : tomarSuperficieLote()
+    PRC --> GRC : tomarSuperficieLote()
+    GRC --> GRC : verificarNulidad()
+    GRC --> PRC : mostrarTipoSuelo()
+    GRC --> PRC : pedirSeleccionTipoSuelo()
+    AC --> PRC : tomarSeleccionTipoSuelo()
+    PRC --> GRC : tomarSeleccionTipoSuelo()
+    GRC --> PRC : pedirFinIngresosLotes()
+    AC --> PRC : tomarFinIngresoLotes()
+    PRC --> GRC : tomarFinIngresoLotes()
+end
+GRC --> GRC : validarSumaSuperficies()
+GRC --> PRC : pedirConfirmacionRegistro()
+AC --> PRC : tomarConfirmacion()
+PRC --> GRC : tomarConfirmacion()
+GRC --> GRC : validarExistenciaDatosObligatorios()
+GRC --> GRC : crearCampo()
+create entity "__:nuevo:Campo__" as nC 
+GRC --> nC : new()
+nC --> nC : crearLotes()
+create entity "__:nuevo:Lote__" as nL 
+nC --> nL : new()*
+@enduml

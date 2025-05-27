@@ -1,0 +1,86 @@
+@startuml secuencia 
+
+actor "__:EncargadoNavegacion__" as EN 
+
+create boundary "__:PantallaActualizar__" as PA
+EN --> PA : opcActualizarVuelo()
+
+PA --> PA :abrirVentana()
+create control "__:GestorActualizar__" as GA 
+
+PA --> GA : nuevaCancelacion()
+
+
+GA --> GA : buscarEstadosNoFinales()
+
+entity "__:Estado__" as E #Red
+group loop [Mientras haya estados]
+    GA --> E : esNoFinal()
+    GA --> E : getNombre()
+end
+GA --> PA : pedirSeleccionEstado()
+EN --> PA : tomarSeleccionEstado()
+PA --> GA : tomarSeleccionEstado()
+
+GA --> GA : buscarVuelosEnZona()
+
+entity "__:Vuelo__" as V #Red
+entity "__:CambioEstado__" as CE #Red
+entity "__:EstadoCE__" as ECE 
+entity "__:actual:CambioEstado__" as aCE
+group loop [Mientras haya vuelos]
+    GA --> V : obtenerEstadoActual()
+    V --> CE : esActual()*
+    V --> aCE : esEnZona()
+    aCE --> ECE : esEnZona()
+
+    GA --> V : getDatos()
+    entity "__:DefinicionVuelo__" as DV 
+    V --> V : obtenerNumVuelo()
+    V --> DV : getNumVuelo()
+    V --> V : getHorarioPartidaProgramada()
+    V --> V : getFecha()
+end
+GA --> PA : pedirSeleccionVueloAterrizar()
+EN --> PA : tomarSeleccionVuelo()
+PA --> GA : tomarSeleccionVuelo()
+
+GA --> PA : pedirConfirmacion()
+EN --> PA : tomarConfirmacion()
+PA --> GA : tomarConfirmacion()
+
+GA --> GA : getFechaHora()
+
+GA --> GA : buscarUsuarioLogueado()
+entity "__:sesion:Actual__" as sA 
+entity "__:log:Usuario__" as lU 
+
+GA --> sA : buscarUsuarioLogueado()
+sA --> lU: getEmpleado()
+
+GA --> GA : buscarCambioEstadoActual()
+entity "__:select:Vuelo__" as sV 
+GA --> sV : buscarCambioEstadoActual()
+sV --> sV : buscarCambioEstado()
+sV --> CE : esActual()*
+CE --> aCE : setFechaHoraFin()
+
+
+GA --> GA : crearCambioEstado()
+
+GA --> sV : aterrizar()
+create entity "__nuevo:CambioEstado__" as nCE 
+sV --> nCE : new()
+
+GA --> GA : notificarEnPantlla()
+
+create boundary "__:InterfazAeropuerto__" as IA 
+GA --> IA : notificarEnPantalla()
+
+GA --> GA : notificarEnViaWeb()
+create boundary "__:InterfazSitioWeb__" as ISW 
+GA --> ISW : notificarEnViaWeb()
+
+
+
+@enduml 

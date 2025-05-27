@@ -1,0 +1,95 @@
+@startuml secuencia
+
+actor "__:AdministradorCampo__" as AC
+
+create boundary "__:PantallaRegistrarTratamiento__" as PRT 
+AC --> PRT : opcRegistrarTratamiento()
+
+PRT --> PRT : abrirVentana()
+create control "__:GestorRegistrarTratamiento__" as GRT 
+
+PRT --> GRT : nuevoTratamiento()
+entity "__:Cultivo__" as C #red
+GRT --> GRT : buscarCultivos()
+GRT --> C : getNombre()*
+
+GRT --> PRT : pedirSeleccionCultivo()
+
+AC --> PRT : tomarSeleccionCultivo()
+PRT --> GRT : tomarSeleccionCultivo()
+
+GRT --> GRT : buscarPlagas()
+entity "__:Plaga__" as P #red
+GRT --> P : getNombre()*
+
+GRT --> PRT : pedirSeleccionPlaga()
+AC --> PRT : tomarSeleccionPlaga()
+PRT --> GRT : tomarSeleccionPlaga()
+
+GRT --> GRT : validarExistenciaTratamientosDeCultivo()
+entity "__:selec:Cultivo__" as sC 
+entity "__:Tratamiento__" as T 
+entity "__:selec:Plaga__" as sP 
+group loop
+    GRT --> sC : conocerTratamientos()
+    GRT --> sC : conocerPlagaTratamiento()
+    sC --> T : conocerPlaga()
+    T --> sP : esPlagaSeleccionada()
+end
+GRT --> PRT : pedirDatosTratamiento()
+AC --> PRT : tomarNombreTratamiento()
+AC --> PRT : tomarDescripcionTratamiento()
+PRT --> GRT : tomarNombreTratamiento()
+PRT --> GRT : tomarDescripcionTratamiento()
+
+GRT --> GRT : buscarAgroquimicos()
+entity "__:Agroquimicos__" as A #red
+GRT --> A : getNombre()*
+
+GRT --> PRT : pedirSeleccionAgroquimicos()
+AC --> PRT : tomarSeleccionAgroquimicos()
+PRT --> GRT : tomarSeleccionAgroquimicos()
+
+GRT --> GRT : buscarUnidadesMedida()
+entity "__:UnidadesMedida__" as UM #red
+GRT --> UM : getAbreviatura()
+
+group loop [Mientras haya agroquimico seleccionado]
+    GRT --> PRT : pedirIngresoDosis()
+    AC --> PRT : tomarIngresoDosis()
+    PRT --> GRT : tomarIngresoDosis()
+    GRT --> PRT : pedirSeleccionUnidadMedida()
+    AC --> PRT : tomarSeleccionUnidadMedida()
+    PRT --> GRT : tomarSeleccionUnidadMedida()
+end 
+
+GRT -> PRT : pedirConfirmacion()
+AC --> PRT : tomarConfirmacion()
+PRT --> CRT : tomarConfirmacion()
+
+GRT --> GRT : validarDatosTratamiento()
+GRT --> GRT : crearTratamiento()
+
+GRT --> sC : crearTratamiento()
+
+create entity "__:nuevo:Tratamiento__" as nT 
+sC --> nT : new()
+
+nT --> nT : crearDosis()
+create entity "__:Dosis__" as D 
+nT --> D : new()*
+
+GRT --> PRT : pedirSeleccionVisualizacion()
+AC --> PRT : tomarSeleccionVisualizacion()
+PRT --> GRT : tomarSeleccionVisualizacion()
+GRT --> GRT : getFechaHora()
+GRT --> GRT : generarPDF()
+create boundary "__:InterfazGeneradorPDF__" as IGPDF 
+
+GRT --> IGPDF : generarPDF()
+
+GRT --> GRT : finCU()
+@enduml
+
+
+
