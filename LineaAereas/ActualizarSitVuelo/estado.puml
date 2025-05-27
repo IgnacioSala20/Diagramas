@@ -1,0 +1,25 @@
+
+@startuml estado
+
+[*] --> Programado : new()
+
+Programado --> Embarcando : embarcar()
+Programado --> Demorado : demorar()
+Demorado --> ReProgramado : reprogramar()
+Programado --> ReProgramado : reprogramar()
+Programado --> Cancelado : cancelar()
+
+
+ReProgramado --> Embarcando : embarcar()
+ReProgramado --> Cancelado : cancelar()
+ReProgramado --> ReProgramado: reprogramar()
+ReProgramado --> Demorado : demorar()
+
+
+
+EnEjecucion --> Finalizado : finalizar()
+Embarcando --> Cerrado : cerrar()
+Cerrado --> EnEjecucion : despegar()
+Finalizado --> [*]
+
+@enduml
