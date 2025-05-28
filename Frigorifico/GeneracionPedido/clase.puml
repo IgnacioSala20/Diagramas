@@ -1,3 +1,36 @@
 @startuml clase
 
+class Pantalla {}
+class Gestor{}
+
+class Sesion{}
+class Cliente{}
+class PuntoEntrega{}
+
+class TipoCorteVacuno{}
+class Estado{}
+class Factura {}
+class DetalleFactura{}
+
+class Pedido{}
+class Usuario{}
+
+
+class Empleado{}
+Usuario --> "1" Empleado :empleado
+Sesion --> "1" Usuario : usuario
+Cliente --> "0..*" Factura : factura
+Factura --> "1..*" DetalleFactura : detalleFactura
+Gestor ..> Pantalla
+Pantalla ..> Gestor 
+Gestor ..> Cliente
+Gestor ..> Estado 
+Factura --> "1" Estado : estado
+Cliente --> "1..*" PuntoEntrega : puntoEntrega
+Gestor ..> TipoCorteVacuno
+Gestor ..> Sesion
+Cliente --> "1..*" Pedido: pedido
+PuntoEntrega --> "1" TipoCorteVacuno : tipoCorteVacuno
+Pedido --> "1" Estado : estado
+Gestor ..> Pedido 
 @enduml

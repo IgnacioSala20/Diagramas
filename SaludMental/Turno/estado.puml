@@ -1,0 +1,26 @@
+@startuml estado 
+
+[*] --> Disponible : new()
+
+Disponible --> NoDisponible : inhabilitar()
+NoDisponible --> [*]
+Disponible --> Solicitado : registrarTurno()
+
+Solicitado --> Solicitado : confirmarTurno() [Confirma=NO]
+
+
+Solicitado --> Ocupado : confirmarTurno() [Confirma=SI]
+
+Ocupado --> Derivado : derivarTurno()
+Solicitado --> Cancelado : cancelar()
+Ocupado --> Cancelado : cancelar()
+Ocupado --> Asistio : asistio()
+Ocupado --> NoAsistio : asisitio()
+Ocupado --> Ocupado 
+Derivado --> Asistio : asistio()
+Derivado --> NoAsistio : asistio()
+
+Asistio --> [*]
+NoAsistio --> [*]
+Cancelado --> [*]
+@enduml

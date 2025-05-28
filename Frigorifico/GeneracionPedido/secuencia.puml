@@ -9,7 +9,77 @@ PGP --> PGP : abrirVentana()
 create control "__:GestorGenerarPedido__" as GGP 
 PGP --> GGP : nuevoPedido()
 
+GGP --> GGP : buscarClientes()
+entity "__:CLiente__" as C #Red
+
+GGP --> C : getNombre()*
+GGP --> PGP : pedirSeleccionCLiente()
+RP --> PGP : tomarSeleccionCliente()
+PGP --> GGP : tomarSeleccionCLiente()
+
+entity "__:select:Cliente__" as sC 
+entity "__:PuntoEntrega__" as PE #red
+GGP --> GGP : buscarPuntosEntrega()
+GGP --> sC : buscarPuntosEntrega()
+group loop [Mientras haya puntos de entrega]
+    sC --> PE : getDatos()
+    PE --> PE : getNombre()
+    PE --> PE :getDireccion()
+end
+
+GGP --> PGP : pedirSeleccionPuntoEntrega()
+
+RP --> PGP : tomarSeleccionPuntoEntrega()
+PGP --> GGP : tomarSeleccionPuntoEntrega()
+
+GGP --> GGP : buscarTiposCorteVacuno()
+entity "__:TipoCorteVacuno__" as TCV #red
+
+GGP --> TCV : getNombre()*
+
+GGP --> PGP : pedirSeleccionTipoCorteVacuno()
+group loop [Mientras se seleccionen tipos de corte vacuno]
+    RP --> PGP : tomarSeleccionTipoCorteVacuno()
+    PGP --> GGP : tomarSeleccionTipoCorteVacuno()
+    GGP --> PGP : pedirIngresoCantidadKilos()
+    RP --> PGP : tomarIngresoCantidadKilos()
+    PGP --> GGP : tomarIngresoCantidadKilos()
+end
+
+GGP --> GGP : verificarFacturasPendientes()
 
 
+entity "__:EstadoFactura__" as EF 
+entity "__:Factura__" as F #red
+
+GGP --> sC : verificarFacturasPendientes()
+group loop [Mientras haya facturas]
+    sC --> F : esPendiente()
+    F --> EF : esPendiente()
+    sC --> F : esMayorDosMeses()
+end
+
+GGP --> PGP : pedirConfirmacion()
+RP --> PGP : tomarConfirmacion()
+PGP --> GGP : tomarConfirmacion()
+
+GGP --> GGP : generarNumSecuencial()
+entity "__:Pedido__" as Pedido 
+GGP --> Pedido : esUltimoNumeroPedido()*
+GGP --> GGP : buscarEstadoPendiente()
+entity "__:Estado__" as Estado
+group loop [Mientras haya estados]
+    GGP --> Estado :esAmbito()
+    GGP --> Estado : esPendiente()
+end
+entity "__:actual:Sesion__" as actualS
+entity "__:log:Usuario__" as lU
+GGP --> GGP : buscarUsuarioLogueado()
+GGP --> actualS : buscarUsuarioLogueado()
+actualS --> lU : getEmpleado()
+GGP --> GGP : crearNuevoPedido()
+GGP --> sC : crearNuevoPedido()
+create entity "__:nuevo:Pedido__" as nP 
+sC --> nP : new()
 
 @enduml

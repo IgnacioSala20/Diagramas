@@ -39,6 +39,8 @@ DUDAS:
 
       PREGUNTAR POR GENERAR DIAGRAMACION de folklore, en el cual generamos la diagramacion como completada, pero en ningun lado dice que cambia el estado, ademas que es una salida, por lo tanto, esto seria una interfaz que genera y maneja todo el?
 
+      Preguntar si es lo mismo hacer un obtenerClasificacion y luego getNombre a Clasificacion
+
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
 ¿Cómo se maneja la selección múltiple de entidades en el sistema, especialmente cuando luego necesito buscar y procesar datos asociados a cada una de ellas?  

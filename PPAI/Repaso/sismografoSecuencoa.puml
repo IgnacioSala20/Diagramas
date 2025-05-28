@@ -1,0 +1,128 @@
+@startuml sismografo
+
+actor "__:AnalistaEnSismos__" as AES 
+
+create boundary "__:PantallaRegistrarResultadoManual__" as PRRM 
+
+AES --> PRRM : opcRegistrarResultado()
+
+PRRM --> PRRM : abrirVentana()
+
+create control "__:GestorRegistrarResultadoManual__" as GRRM 
+
+PRRM --> GRRM : nuevoResultado()
+
+GRRM --> GRRM : buscarEventosSismicos()
+
+entity "__:EventoSismico__" as ES #Red
+
+entity "__:EstadoES__" as EES 
+
+group loop [Mientras haya eventos sismicos]
+    GRRM --> ES : esAutoDetectado()
+    ES --> EES : esAutoDetectado()
+    GRRM --> ES : esPendienteRevision()
+    ES --> EES : esPendienteRevision()
+    GRRM --> ES : getDatos()
+    ES --> ES : getFechaHora()
+    ES --> ES : getEpicentro()
+    ES --> ES : getLatitudEpicentro()
+    ES --> ES : getLatitudHipocentro()
+    ES --> ES : getLongitudEpicentro()
+    ES --> ES : getLongitudHipocentro()
+    ES --> ES : getHipocentro()
+    ES --> ES : getValorMagnitud()
+end
+GRRM --> GRRM : ordenarFechaHora()
+
+GRRM --> PRRM : pedirSeleccionEvento()
+AES --> PRRM : tomarSeleccionEvento()
+PRRM --> GRRM : tomarSeleccionEvento()
+
+GRRM --> GRRM : buscarEstadoBloqueadoEnRevision()
+entity "__:Estado__" as E #Red
+group loop [Mientras haya eventos]
+    GRRM --> E : esAmbito()
+    GRRM --> E : esBloqueadoEnRevision()
+end
+
+GRRM --> GRRM : buscarUsuarioLogueado()
+entity "__:actual:Sesion__" as actualS 
+entity "__:log:Usuario__" as lU 
+GRRM --> actualS : buscarUsuarioLogueado()
+actualS --> lU : getEmpleado()
+entity "__:select:Evento__" as sE 
+GRRM --> GRRM : getFechaHora()
+GRRM --> GRRM : buscarCambioEstado()
+entity "__:CambioEstado__" as CE #Red
+entity "__:actual:CambioEstado__" as aCE
+GRRM --> sE : buscarCambioEstado()
+sE --> sE : buscarEstado()
+sE --> CE : esActual()*
+CE --> aCE : setFechaHoraFin()
+
+GRRM --> GRRM : crearCambioEstado()
+GRRM --> sE : bloquear()
+create entity "__:nuevo:CambioEstado__" as nCE 
+
+sE --> nCE : new()
+sE --> sE : setEstado()
+
+GRRM --> GRRM : buscarDatosSismicos()
+
+GRRM --> sE : getDatos()
+sE --> sE : obtenerAlcance()
+entity "__:Alcance__" as A 
+entity "__:Clasificacion__" as C 
+entity "__:Origen__" as O 
+
+sE --> A : getNombre()
+sE --> C : getNombre()
+sE --> O : getNombre()
+
+sE --> sE : buscarSeriesTemporales()
+entity "__:SerieTemporal__" as ST #Red
+entity "__:MuestraSismica__" as MS #Red
+entity "__:DetalleMuestraSismica__" as DMS #Red
+entity "__:TipoDeDato__" as TD
+
+group loop [Mientras haya series temporales]
+    sE --> ST : getDatos()
+    ST -->ST : buscarMuestrasSismicas()
+    group loop [Mientras haya Muestaras sismicas]
+        ST --> MS : getDatos()
+        MS --> MS : buscarDetalleMuestras()
+        group loop [Mientras haya Detalles]
+            MS --> DMS : getDatos()
+            DMS --> TD : getDenominacion()
+        end
+    end
+    entity "__:EstacionSismologica__" as ESS 
+    entity "__:Sismografo__" as S #Red
+    ST --> ST : buscarSismografo()
+    group loop [Mientras haya sismografos]
+        ST --> S : esTuSismografo()
+        ST --> S : getEstacion()
+        S --> ESS : getCodigoEstacion()
+    end
+end
+sE --> sE : clasificarPorEstacion()
+
+GRRM --> PRRM : habilitarVisualizacionMapa()
+GRRM --> PRRM : hablitarModificacion()
+GRRM --> PRRM : pedirSeleccionAccion()
+AES --> PRRM : tomarSeleccionAccion()
+PRRM --> GRRM : tomarSeleccionAccion()
+GRRM --> GRRM : verificarSeleccionAccion()
+GRRM --> GRRM : verificarExistenciaDatos()
+GRRM --> GRRM : buscarEstadoRechazado()
+group loop [Mientras haya estados]
+    GRRM --> E : esAmbito()
+    GRRM --> E : esRechazado()
+end
+
+GRRM --> sE : rechazar()
+create entity "__:nuevo:CambioEstado__" as nnCE 
+sE --> nnCE : new()
+GRRM --> GRRM : finCU()
+@enduml

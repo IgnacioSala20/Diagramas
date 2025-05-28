@@ -1,0 +1,29 @@
+@startuml estado
+
+[*] --> AutoConfirmado : new()
+
+[*] --> AutoDetectado : new()
+
+AutoDetectado --> AutoDetectado : controlarTiempo() [Tiempo<5min]
+AutoDetectado --> PendienteRevision : controlarTiempo() [Tiempo>5min]
+
+PendienteRevision --> Anulado: anular() [Tiempo>5min]
+PendienteRevision --> PendienteRevision : controlarTiempo() [Tiempo<5min]
+
+AutoDetectado --> BloqueadoEnRevision : bloquear()
+
+BloqueadoEnRevision --> Derivado : derivar() 
+BloqueadoEnRevision --> Confirmado : confirmar()
+BloqueadoEnRevision --> Rechazado : rechazar()
+Derivado --> Confirmado : confirmar()
+Derivado --> Rechazado : rechazar()
+PendienteRevision --> BloqueadoEnRevision : bloquear()
+AutoConfirmado --> PendienteCierre : revisar()
+
+PendienteCierre --> Cerrado : cerrar()
+
+Confirmado --> PendienteCierre : revisar()
+Rechazado --> [*]
+Cerrado --> [*]
+Anulado --> [*]
+@enduml

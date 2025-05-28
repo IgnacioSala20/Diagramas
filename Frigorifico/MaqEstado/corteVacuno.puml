@@ -1,0 +1,22 @@
+@startuml corteVacuno
+
+[*] --> EntradaRegistrada : new()
+
+EntradaRegistrada --> Deposte 
+
+Deposte --> Envasado
+Envasado --> VencioCorte
+Envasado --> ExpiroCorte
+Envasado --> Guardado
+
+Guardado --> VencioCorte
+Guardado --> ExpiroCorte
+
+Guardado --> AsignadoEntrega
+
+AsignadoEntrega --> Entregado
+
+Entregado --> [*]
+VencioCorte --> [*]
+ExpiroCorte --> [*]
+@enduml

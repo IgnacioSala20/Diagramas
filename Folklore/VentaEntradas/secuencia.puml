@@ -11,10 +11,8 @@ PRV --> GRV : nuevaVenta()
 
 GRV --> GRV : buscarFestivalesVigentes()
 entity "__:Festivales__" as F #red
-entity "__:EstadoF__" as EF
 group loop [Mientras haya festivales]
     GRV --> F : esVigente()
-    F --> EF : esVigente()
     GRV --> F : getNombre()
 end
 
@@ -31,24 +29,50 @@ entity "__:Fila__" as Fila #red
 entity "__:Butaca__" as B #red
 entity "__:DisponibilidadButaca__" as DB #red
 entity "__:Estado__" as E 
-group loop [Mientras haya dias de festival]
-    SF --> DF : getFechaDiaFestival()
+
+SF --> DF : getFechaDiaFestival()*
+group loop [Mientras haya fechas de los dia de festival]
+    GRV --> PRV : pedirSeleccionFecha()
+    EV --> PRV : tomarSeleccionFecha()
+    PRV --> GRV : tomarSeleccionFecha()
+end
+GRV --> GRV : buscarSectoresUbicacionesDis()
+GRV --> SF : buscarSectoresUbicacionesDis()
+group loop [Mientras haya fechas seleccionadas]
     SF --> SF : buscarSectoresDisponibles()
     SF --> DF : buscarButacas()
     DF --> DB : estaDisponible()
     DB --> E : esDisponible()
     DF --> DB :getButaca()
-
+    DB --> DB : buscarFilaSector()
     group loop [Mientras haya Butacas]
         DB --> B : getDatosFila()
         B --> B : buscarFilaButaca()
-        B --> Fila: esEstaFila()
+        group loop [Mientras haya filas]
+            B --> Fila: esEstaFila()
+            B --> Fila : getNumero()
+        end
         DB -->B: getDatosSector()
+        B --> B : buscarSectorFila()
+        group loop [Mientras haya sectores]
+            B --> Fila : getDatosSector()
+            group loop [Mientras haya sectores]
+                Fila --> S : esEsteSector()
+                Fila --> S : getNombre()
+            end
+        end
+
     end
 end
 GRV --> PRV : pedirSeleccionUbicacion()
 EV --> PRV : tomarSeleccionUbicacion()
 PRV --> GRV : tomarSeleccionUbicacion()
+
+GRV --> GRV : bloquearTemporalmente()
+GRV --> GRV : validarVentaAnticipada()
+
+
+
 
 entity "__:PrecioEntrada__" as PE #red
 entity "__:TipoEntrada__" as TE

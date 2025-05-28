@@ -1,0 +1,37 @@
+@startuml estado
+
+[*] --> Disponible : new()
+[*] --> EsperaCertificacion : new()
+
+Disponible --> EsperaCertificacion : certificar()
+
+EsperaCertificacion --> HabilitadoConstruccion: habilitar()
+
+HabilitadoConstruccion --> IncluidoPlan: generarPlan()
+Disponible --> IncluidoPlan : reemplazar()
+
+IncluidoPlan --> Disponible : diponibilizar()
+
+IncluidoPlan --> EnInstalacion : iniciarObra()
+
+EnInstalacion --> Reclamado : reclamar()
+
+
+Reclamado --> EnInstalacion : reanudarInstalacion()
+
+Reclamado --> DeBaja : darDeBaja()
+
+EnInstalacion --> EnLinea : ponerEnLinea()
+
+EnLinea --> Inhabilitado : inhabilitar()
+
+Inhabilitado --> FueraServicio : reparar()
+
+FueraServicio --> EnLinea : ponerEnLinea()
+Inhabilitado --> EnLinea : ponerEnLinea()
+
+FueraServicio --> DeBaja : darDeBaja()
+
+
+
+@enduml
