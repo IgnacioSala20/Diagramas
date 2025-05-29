@@ -65,7 +65,7 @@ GST --> sS : buscarDiasDisponibles()
 sS --> sP : buscarDiasDisponibles()
 entity "__:Agenda__" as A #red
 entity "__:EstadoA__" as EA 
-sP --> sP : buscarDiasDisponibles()
+sP --> sP : buscarDias()
 
 group loop [Mientras haya dias]
     sP --> A : estaDisponible()
@@ -82,8 +82,8 @@ GST --> GST : buscarTurnos()
 GST --> sS :buscarTurnos()
 sS --> sP : buscarTurnos()
 entity "__:selec:Agenda__" as sA
-sP --> sA
-sA --> sA : buscarTurnos()
+sP --> sA : buscarTurnos()
+sA --> sA : sonTurnos()
 entity "__:Turno__" as T #red
 entity "__:EstadoT__" as ET 
 group loop [Mientras haya turnos]
@@ -125,11 +125,11 @@ GST --> Paciente : setTurno()
 GST --> GST : buscarCambioEstado()
 GST --> Paciente : buscarCambioEstado()
 Paciente --> sT : buscarCambioEstado()
-sT --> sT : buscarCambioEstado()
+sT --> sT : buscarEstado()
 sT --> CE : esActual()*
 CE --> aCE : setFechaHoraFin()
 
-GST --> Paciente : obtenerEmailPaciente()
+GST --> GST : obtenerEmailPaciente()
 GST --> Paciente : getEmail()
 
 GST --> GST : enviarMail()

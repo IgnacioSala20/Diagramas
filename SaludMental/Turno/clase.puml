@@ -1,4 +1,113 @@
 @startuml clase 
 
+class Paciente{
+    +nombre
+    +apellido
+    +email
+    +asignarTurno()
+    +buscarCambioEstado()
+    +setTurno()
+    +getEmail()
+}
+class Turno{
+    +horaInicio
+    +horaFin
+    +estaLibre()
+    +getHorarioInicio()
+    +buscarCambioEstado()
+    +buscarEstado()
+}
+class CambioEstado{
+    +fechaHoraInicio
+    +fechaHoraFin
+    +esActual()
+    setFechaHoraFin()
+}
+class Estado{
+    +ambito
+    +nombre
+    +esAmbito() 
+    +esSolicitado()
+    +estaLibre()
+}
+class Usuario{
+    +nombre
+    +getPaciente()
+}
+class Sesion{
+    +fechaHora
+    +buscarUsuarioLogueado()
+}
+class Agenda{
+    +dia
+    +estaDisponible()
+    +getDatos()
+    +getDia()
+    +buscarTurnos()
+    +sonTurnos()
+}
+class Profesional{
+    +apellido
+    +nombre
+    +esProfesional()
+    +getApellido()
+    +buscarDiasDisponibles()
+    +buscarDias()
+    +buscarTurnos()
+}
+class Servicio{
+    +nombre
+    +getNombre()
+    +buscarProfesionales()
+    +buscarProfesional()
+}
+class TipoTurno{
+    +nombre
+    +getNombre()
+}
+class Gestor {
+    +fechaHoraActual
+    +nuevoTurno()
+    +buscarTipoTurno()
+    +tomarSeleccionTipoTurno()
+    +buscarServicios()
+    +tomarSeleccionServicio()
+    +tomarSeleccionProfServicio()
+    +tomarIngresoApellidoProfesional()
+    +buscarProfesionales()
+    +tomarSeleccionProfesional()
+    +buscarDiasDisponibles()
+    +tomarSeleccionDiaDisponible()
+    +tomarSeleccionHorarioTurno()
+    +tomarCOnfirmacion()
+    +buscarEstadoSolicitado()
+    +asignarTurno()
+    +buscarCambioEstado()
+    +obtenerEmailPaciente()
+    +getFechaHoraActual()
+    +enviarMail()
+    +generarPDF()
+}
+class Pantalla{
 
+}
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+
+Gestor ..> TipoTurno
+Gestor ..> Servicio
+Profesional --> "1..*" Servicio : profesional
+Servicio ..> Profesional
+Profesional --> "1..*" Agenda : agenda
+Agenda *-> "1..*" Turno : horaDisponible
+Turno --> "1" TipoTurno
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Paciente : paciente
+
+Gestor ..> Sesion
+Turno --> "1..*" CambioEstado : cambioEstado
+CambioEstado -->"1" Estado : estado
+Turno --> "1" Estado : estadoActual
+Agenda --> "1" Estado: estadoActual
+Paciente --> "1..*" Turno : turno
 @enduml
