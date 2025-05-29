@@ -5,7 +5,11 @@ actor "__:Paciente__" as Paciente
 boundary "__:PantallaTurnos__" as Pantalla 
 control "__:GestorTurnos__" as Gestor 
 boundary "__:InterfazMail__" as InterfazMail 
-boundary "__:InterfazPDDF__" as InterfazPDF
+boundary "__:InterfazPDF__" as InterfazPDF
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+entity "__:Paciente__" as Pacientes #violet 
+entity "__logueado:Paciente__" as logPaciente 
 
 Paciente -->> Pantalla**: opcionSolicitarTurno()
 Pantalla -> Pantalla: habilitarVentana()
@@ -26,8 +30,8 @@ Pantalla -> Gestor: tomarSeleccionServicio()
 entity "__selec:Servicio__" as ServicioSelec 
 
 Gestor -> Pantalla: pedirSeleccionBusquedaProfesionalONo()
-Paciente -> Pantalla: buscarProfesional()
-Pantalla -> Gestor: buscarProfesional()
+Paciente -> Pantalla: tomarSeleccionBuscarProfesional()
+Pantalla -> Gestor: tomarSeleccionBuscarProfesional()
 Gestor -> Pantalla: pedirIngresoApellidoProfesional()
 Paciente -> Pantalla: tomarIngresoApellidoProfesional()
 Pantalla -> Gestor: tomarIngresoApellidoProfesional()
@@ -64,7 +68,7 @@ ProfesionalSelec -> actualAgenda: tieneTurnosDisponibles()
 actualAgenda -> EA: esDisponible()
 'loop Turnos [mientras existan turnos]
         'aca obtendria todos, incluso los que no son libres asi puede mostrarlos como gris?
-    actualAgenda -> Turnos: *getFechaHoraTurno()
+    actualAgenda -> Turnos: *getDias()
     'ESTO CREO Q NO LO DEBERÍA HACER AHORA... lo comento pero es una DUDA
         'aca si busco los disponibles (verdes)
    ' actualAgenda -> Turnos: estaLibre()
@@ -101,10 +105,7 @@ Paciente -> Pantalla: tomarConfirmacion()
 Pantalla -> Gestor: tomarConfirmacion()
 
 Gestor -> Gestor: buscarUsuarioLogueado()
-entity "__:Sesion__" as Sesion 
-entity "__:Usuario__" as Usuario 
-entity "__:Paciente__" as Pacientes #violet 
-entity "__logueado:Paciente__" as logPaciente 
+
 Gestor -> Sesion: obtenerUsuarioLogueado()
 Sesion -> Usuario: getNombre()
 Gestor -> Pacientes: *esTuUsuario()
@@ -124,8 +125,7 @@ entity "__nuevo:CambioEstado__" as newCE
 logPaciente -->> newCE**: new()
 'que seria el solicitado
 newCE -> newCE: setEstadoActual()
-entity "__nuevo:Turno__" as nuevoTurno
-logPaciente -->> nuevoTurno**: new()
+Gestor -> logPaciente: setTurno()
 
 Gestor -> Gestor: enviarMailPaciente()
 Gestor -> InterfazMail: enviarMail()
