@@ -31,9 +31,9 @@ DUDAS:
 
       EN ESTE CASO *NO* HARIA FALTA EL LOOP, YA QUE  IRIAMOS DESDE EL GESTOR A LA ENTIDAD CON TODOS LOS CAMPOS, EL CUAL REPRESENTARIA LOS CAMPOS QUE NOSOTROS SELECCIONAMOS, Y LUEGO IRIAMOS A LA ENTIDAD DE TODOS LOS LOTES, EN EL CUAL, CAMPO TIENE LOS PUNTEROS A LOTES, POR LO TANTO ESA ENTIDAD QUE REPRESENTA TODOS LOS LOTES, ESTARIA INDICANDO LOS PUNTEROS QUE TIENE CAMPO SOBRE LOTE
 
+      PREGUNTAR SI CUANDO PONEMOS UNA INTERFAZ EXTERNA, EJ: IMPRESORA, LA CLASE VA EN EL DIAGRAMA DE CLASES CON SU MENSAJE CORRESPONDIENTE (Si, va en el diagrama de clases, ImpresorInforme ImpresorPedido, el metodo es el que le llega y como atributos pueden ir o no, dependiendo lo que le mandemos)
 
-
-      PREGUNTAR SI CUANDO PONEMOS UNA INTERFAZ EXTERNA, EJ: IMPRESORA, LA CLASE VA EN EL DIAGRAMA DE CLASES CON SU MENSAJE CORRESPONDIENTE
+      la sesion va a tener, fecha y hora de inicio, y fecha de hora fin
 
       PREGUNTAR POR EL TEMA DE LA SELECCION MULTIPLE POR EJ DE CAMPOS, COMO SE MANEJA EN EL DIAGRAMA DE CLASES, VA COMO punterosCampo O LISTA CAMPOS (MISMA PREGUNTA PARA CUANDO ES MULTIPLE Y CUANDO ES SELECCION UNICA)
 
@@ -45,7 +45,7 @@ DUDAS:
       Seleccionar varios elementos, incluye adentro del loop el pedirSelccion...
       Mi pregunta eso, no hay un disparador para ese loop? EJ: el de PPAI de darOrden 
 
-
+      No hace falta hacer el inicio de sesion, ya que es otro CU, podemos instanciar lo que es la sesion en el main y luego se lo pasamos al gestor
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  
@@ -131,3 +131,5 @@ a través de una **interfaz que abstrae el canal de comunicación**, manteniendo
 - En este caso lo que se hace es poner un metodo que va de gestor a pantalla que sea mostrar y otro de gestor a pantalla que sea pedirSeleccionOrden
 
 Debemos tener en la clase pantalla los botones de cancelar y confirmar
+
+Hay que hacer al menos 2 alternativas de lo que es nuestro diagrama de secuencia
