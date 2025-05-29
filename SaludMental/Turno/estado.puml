@@ -1,10 +1,10 @@
 @startuml estado 
 
-[*] --> Disponible : new()
+[*] --> Libre : new()
 
-Disponible --> NoDisponible : inhabilitar()
+Libre --> NoDisponible : inhabilitar()
 NoDisponible --> [*]
-Disponible --> Solicitado : registrarTurno()
+Libre --> Solicitado : asignarTurno()
 
 Solicitado --> Solicitado : confirmarTurno() [Confirma=NO]
 

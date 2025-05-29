@@ -1,5 +1,143 @@
 @startuml secuencia 
 
-actor
+actor "__:Paciente__" as P 
+
+create boundary "__:PantallaSolicitarTurno__" as PST 
+
+P --> PST : opcSolicitarTurno()
+
+PST --> PST : abrirVentana()
+
+create control "__:GestorSolicitarTurno__" as GST 
+
+PST --> GST : nuevoTurno()
+
+GST --> GST : buscarTipoTurno()
+entity "__:TipoTurno__" as TT #Red
+GST --> TT : getNombre()*
+
+GST --> PST : pedirSeleccionTipoTurno()
+P --> PST : tomarSeleccionTipoTurno()
+
+PST --> GST : tomarSeleccionTipoTurno()
+
+entity "__:Servicio__" as S #Red
+GST --> GST : buscarServicios()
+
+GST --> S: getNombre()*
+
+GST --> PST : pedirSeleccionServicio()
+
+P --> PST : tomarSeleccionServicio()
+
+PST --> GST : tomarSeleccionServicio()
+
+GST --> PST : pedirSeleccionProfServicio()
+P --> PST : tomarSeleccionProfServicio()
+PST --> GST : tomarSeleccionProfServicio()
+
+GST --> PST : pedirIngresoApellidoProfesional()
+P --> PST : tomarIngresoApellidoProfesional()
+
+PST --> GST : tomarIngresoApellidoProfesional()
+
+GST --> GST : buscarProfesionales()
+
+entity "__:select:Servicio__" as sS 
+GST --> sS : buscarProfesionales()
+entity "__:Profesionales__" as Profesional #red 
+sS --> sS : buscarProfesional()
+group loop [Mientras haya profesionales]
+    sS --> Profesional : esProfesional()
+    sS --> Profesional : getApellido()
+end
+
+GST --> PST : pedirSeleccionProfesional()
+
+P --> PST : tomarSeleccionProfesional()
+PST --> GST : tomarSeleccionProfesional()
+
+entity "__:selec:Profesional__" as sP
+
+GST --> GST : buscarDiasDisponibles()
+
+GST --> sS : buscarDiasDisponibles()
+sS --> sP : buscarDiasDisponibles()
+entity "__:Agenda__" as A #red
+entity "__:EstadoA__" as EA 
+sP --> sP : buscarDiasDisponibles()
+
+group loop [Mientras haya dias]
+    sP --> A : estaDisponible()
+    A --> EA : estaDisponible()
+    sP --> A : getDatos()
+    A --> A : getDia()
+end
+
+GST --> PST : pedirSeleccionDiaDisponible()
+P --> PST : tomarSeleccionDiaDisponible()
+PST --> GST : tomarSeleccionDiaDisponible()
+
+GST --> GST : buscarTurnos()
+GST --> sS :buscarTurnos()
+sS --> sP : buscarTurnos()
+entity "__:selec:Agenda__" as sA
+sP --> sA
+sA --> sA : buscarTurnos()
+entity "__:Turno__" as T #red
+entity "__:EstadoT__" as ET 
+group loop [Mientras haya turnos]
+    sA --> T : estaLibre()
+    T --> ET : estaLibre()
+    sA --> T : getHorario()
+end
+GST --> PST : pedirSeleccionHorarioTurno()
+
+P --> PST : tomarSeleccionHorarioTurno()
+PST --> GST : tomarSeleccionHorarioTurno()
+
+GST --> PST : pedirConfirmacion()
+P --> PST : tomarConfirmacion()
+PST --> GST : tomarCOnfirmacion()
+
+entity "__:Paciente__" as Paciente
+
+entity "__sesion:Actual__" as sActual
+entity "__:log:Usuario__" as lU 
+
+GST --> GST :buscarUsuarioLogueado()
+GST --> sActual : buscarUsuarioLogueado()
+sActual --> lU : getPaciente()
+
+GST --> GST : buscarEstadoSolicitado()
+entity "__:Estado__" as E #red
+group loop [Mientras haya estados]
+    GST --> E : esAmbito()
+    GST --> E : esSolicitado()
+end
+entity "__:CambioEstado__" as CE #red
+entity "__:actual:CambioEstado__" as aCE
+entity "__:selec:Turno__" as sT 
+GST --> GST : getFechaHoraActual()
+
+GST --> GST : asignarTurno()
+GST --> Paciente : setTurno()
+GST --> GST : buscarCambioEstado()
+GST --> Paciente : buscarCambioEstado()
+Paciente --> sT : buscarCambioEstado()
+sT --> sT : buscarCambioEstado()
+sT --> CE : esActual()*
+CE --> aCE : setFechaHoraFin()
+
+GST --> Paciente : obtenerEmailPaciente()
+GST --> Paciente : getEmail()
+
+GST --> GST : enviarMail()
+create boundary "__:InterfazMail__" as IM 
+GST --> IM : enviarMail()
+GST --> GST : generarPDF()
+create boundary "__:InterfazPDF__" as IPDF
+GST --> IPDF : generarPDF()
+GST --> GST : finCU()
 
 @enduml
