@@ -1,0 +1,69 @@
+@startuml secuencia 
+
+actor "__:ResponsablePedidos__" as RP 
+
+create boundary "__:PantallaGenerarRemito__" as PGR 
+
+RP --> PGR : opcGenerarRemito()
+
+PGR --> PGR : abrirVentana()
+
+create control "__:GestorGenerarRemito__" as GGR 
+
+PGR --> GGR : nuevoRemito()
+
+GGR --> GGR : buscarPedidos()
+
+entity "__:Pedido__" as P #Red
+entity "__:Remito__" as R #Red
+entity "__:Cliente__" as C #Red
+group loop [Mientras haya pedidos]
+    GGR --> P : buscarPedidos()
+    P --> R : noExisteRemito()
+    GGR --> P : getDatos()
+    P --> P : getNumeroPedido()
+    P --> P : obtenerCliente()
+    group loop [Mientras haya clientes]
+        P --> C : esTuCliente()
+        entity "__:Cliente__" as C 
+        P --> C : getNombre()
+        P --> C : getRazonSocial()
+        P --> C : getTelefono()
+        P --> C : getEmail()
+        P --> P : obtenerNombrePuntoEntrega()
+        group loop [Mientras haya puntos de entrega]
+            entity "__:PuntoEntrega__" as PE #Red
+            P --> PE : esTuPuntoEntrega()
+            P --> PE : getNombre()
+            P --> PE : getDireccion()
+        end
+    end
+end
+GGR --> GGR : ordenarFechaAsc()
+
+GGR --> PGR : pedirSeleccionPedido()
+RP --> PGR : tomarSeleccionPedido()
+PGR --> GGR : tomarSeleccionPedido()
+
+entity "__:selec:Pedido__" as sP 
+
+GGR --> GGR : buscarDetallesPedido()
+entity "__:DetallePedido__" as DP #Red
+entity "__:TipoCortes__" as TC 
+GGR --> sP : buscarDetallesPedido()
+group loop [Mientras haya detalle pedidos]
+    sP --> DP : getKilos()
+    DP --> DP : buscarTipoCortes()
+    DP --> TC : getNombre()
+end
+
+
+GGR --> GGR : buscarCortesVacunosCandidatos()
+
+GGR --> sP : buscarCortesVacunosCandidatos()
+sP --> DP : buscarCortesVacunosCandidatos()
+
+
+
+
+@enduml

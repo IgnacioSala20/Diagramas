@@ -39,7 +39,13 @@ DUDAS:
 
       PREGUNTAR POR GENERAR DIAGRAMACION de folklore, en el cual generamos la diagramacion como completada, pero en ningun lado dice que cambia el estado, ademas que es una salida, por lo tanto, esto seria una interfaz que genera y maneja todo el?
 
-      Preguntar si es lo mismo hacer un obtenerClasificacion y luego getNombre a Clasificacion
+      Preguntar si es lo mismo hacer un obtenerClasificacion(self en lo que es la entidad o gestor) y luego getNombre a Clasificacion, o solo con getNombre es suficiente
+
+      Preguntar por los loops cuando ingresan datos o seleccionan
+      Seleccionar varios elementos, incluye adentro del loop el pedirSelccion...
+      Mi pregunta eso, no hay un disparador para ese loop? EJ: el de PPAI de darOrden 
+
+
 
 ## ¿Cómo se maneja la selección múltiple de entidades en el sistema?
 **Pregunta:**  

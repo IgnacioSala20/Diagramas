@@ -1,0 +1,145 @@
+@startuml CU: Registrar turno 
+autonumber 
+
+actor "__:Paciente__" as Paciente
+boundary "__:PantallaTurnos__" as Pantalla 
+control "__:GestorTurnos__" as Gestor 
+boundary "__:InterfazMail__" as InterfazMail 
+boundary "__:InterfazPDDF__" as InterfazPDF
+
+Paciente -->> Pantalla**: opcionSolicitarTurno()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**: nuevoTurno()
+'aca se refiere a si lo busca por profesional o servicio
+Gestor -> Gestor: solicitarFormaEleccionTurno()
+Gestor -> Pantalla: pedirFormaEleccionTurno()
+Paciente -> Pantalla: tomarFormaEleccionTurno()
+Pantalla -> Gestor: tomarFormaEleccionTurno()
+'selecciona servicio...
+Gestor -> Gestor: buscarServicios()
+entity "__:Servicio__" as Servicio #violet
+Gestor -> Servicio: *getNombre()
+
+Gestor -> Pantalla: mostrarServiciosParaSeleccion()
+Paciente -> Pantalla: tomarSeleccionServicio()
+Pantalla -> Gestor: tomarSeleccionServicio()
+entity "__selec:Servicio__" as ServicioSelec 
+
+Gestor -> Pantalla: pedirSeleccionBusquedaProfesionalONo()
+Paciente -> Pantalla: buscarProfesional()
+Pantalla -> Gestor: buscarProfesional()
+Gestor -> Pantalla: pedirIngresoApellidoProfesional()
+Paciente -> Pantalla: tomarIngresoApellidoProfesional()
+Pantalla -> Gestor: tomarIngresoApellidoProfesional()
+
+Gestor -> Gestor: buscarProfesionales()
+Gestor -> ServicioSelec: buscarProfesionales()
+entity "__:Profesional__" as Profesionales #violet 
+loop Profesionales [mientras existan profesionales del servicio seleccionado]
+    ServicioSelec -> Profesionales: esDeServicio()
+    ServicioSelec -> Profesionales: getApellido()
+    ServicioSelec -> Profesionales: getNombre()
+end
+
+Gestor -> Pantalla: mostrarProfesionalesParaSeleccion()
+Paciente -> Pantalla: tomarSeleccionProfesional()
+Pantalla -> Gestor: tomarSeleccionProfesional()
+entity "__selec:Profesional__" as ProfesionalSelec
+Gestor -> Gestor: tomarFechaHoraActual()
+Gestor -> Gestor: buscarAgendaDelMesActual()
+Gestor -> ServicioSelec: buscarAgendaDelMesActual()
+ServicioSelec -> ProfesionalSelec: buscarAgendaDelMesActual()
+entity  "__:Agenda__" as Agenda #violet
+entity "__mesActual:Agenda__" as actualAgenda
+entity  "__:Turno__" as Turnos #violet
+entity "__:CambioEstado__" as CE #violet 
+entity "__actual:CambioEstado__" as actCE 
+entity "__:Estado__" as E 
+entity "__:EstadoAgenda__" as EA 
+
+ProfesionalSelec -> Agenda: *esDeMesActual()
+
+'aca buscaria en general todos los turnos, y si al menos uno esta disponible, la agenda seguiria siendo disponible (??)
+ProfesionalSelec -> actualAgenda: tieneTurnosDisponibles()
+actualAgenda -> EA: esDisponible()
+'loop Turnos [mientras existan turnos]
+        'aca obtendria todos, incluso los que no son libres asi puede mostrarlos como gris?
+    actualAgenda -> Turnos: *getFechaHoraTurno()
+    'ESTO CREO Q NO LO DEBERÍA HACER AHORA... lo comento pero es una DUDA
+        'aca si busco los disponibles (verdes)
+   ' actualAgenda -> Turnos: estaLibre()
+  '  Turnos -> CE: *esActual()
+  '  CE -> actCE: esLibre()
+ '   actCE -> E: esLibre()
+        'aca deberia poner algo para que "marque como gris"?
+'end
+
+Gestor -> Pantalla: pedirSeleccionDia()
+Paciente -> Pantalla: tomarSeleccionDia()
+Pantalla -> Gestor: tomarSeleccionDia()
+
+'del dia seleccionado
+Gestor -> Gestor: buscarTurnosDisponibles()
+Gestor -> ServicioSelec: buscarTurnosDisponibles()
+ServicioSelec -> ProfesionalSelec: buscarTurnosDisponibles()
+ProfesionalSelec -> actualAgenda: obtenerTurnosDisponibles()
+loop Turnos [mientras existan turnos]
+    actualAgenda -> Turnos: estaLibre()
+    Turnos -> CE: *esActual()
+    CE -> actCE: esLibre()
+    actCE -> E: esLibre()
+        'aca deberia poner algo para que "marque como verde"?
+    actualAgenda -> Turnos: getFechaHoraTurno()
+end
+
+Gestor -> Pantalla: pedirSeleccionTurno()
+Paciente -> Pantalla: tomarSeleccionTurno()
+Pantalla -> Gestor: tomarSeleccionTurno()
+
+Gestor -> Pantalla: pedirConfirmacion()
+Paciente -> Pantalla: tomarConfirmacion()
+Pantalla -> Gestor: tomarConfirmacion()
+
+Gestor -> Gestor: buscarUsuarioLogueado()
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+entity "__:Paciente__" as Pacientes #violet 
+entity "__logueado:Paciente__" as logPaciente 
+Gestor -> Sesion: obtenerUsuarioLogueado()
+Sesion -> Usuario: getNombre()
+Gestor -> Pacientes: *esTuUsuario()
+Gestor -> Gestor: obtenerMailUsuario()
+Gestor -> Sesion: obtenerMail()
+Sesion -> Usuario: obtenerMail()
+
+entity "__:Estado__" as Estados #violet
+Gestor -> Gestor: buscarEstadoSolicitado()
+Gestor -> Estados: *esSolicitado()
+
+Gestor -> Gestor: asignarTurnoPaciente()
+Gestor -> logPaciente: solicitar()
+logPaciente -> logPaciente: crearCambioEstado()
+logPaciente -> actCE: setFechaHoraFin()
+entity "__nuevo:CambioEstado__" as newCE 
+logPaciente -->> newCE**: new()
+'que seria el solicitado
+newCE -> newCE: setEstadoActual()
+entity "__nuevo:Turno__" as nuevoTurno
+logPaciente -->> nuevoTurno**: new()
+
+Gestor -> Gestor: enviarMailPaciente()
+Gestor -> InterfazMail: enviarMail()
+
+Gestor -> Gestor: generarPDF()
+Gestor -> InterfazPDF: generarPDF()
+
+Gestor -> Pantalla: deseaDescargarPDF()
+Paciente -> Pantalla: descargarPDF()
+Pantalla -> Gestor: descargarPDF()
+
+Gestor -> Gestor: finCU()
+
+
+
+
+@enduml
