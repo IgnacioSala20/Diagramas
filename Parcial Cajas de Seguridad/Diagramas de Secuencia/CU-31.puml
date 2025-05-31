@@ -88,14 +88,13 @@ Gestor -> Gestor: tomarFechaHoraActual()
 Gestor -> Gestor: obtenerUsuarioLogueado()
 entity "__:Sesion__" as Sesion 
 entity "__:Usuario__" as Usuario 
-entity "__:Responsable__" as Responsable #violet
+entity "__:Responsable__" as Responsable 
 Gestor -> Sesion: obtenerUsuarioLogueado()
-Sesion -> Usuario: getNombre()
-Gestor -> Responsable: *esTuUsuario()
+Sesion -> Usuario: conocerResponsable()
+Usuario-> Responsable: getNombre()
 
 Gestor -> Gestor: cancelarContrato()
-Gestor -> Cliente: cancelarContrato()
-Cliente -> ContratoSeleccionado: cancelar()
+Gestor -> ContratoSeleccionado: cancelar()
 
 ContratoSeleccionado -> actualCE: setFechaHoraFin()
 ContratoSeleccionado -> ContratoSeleccionado: crearCambioEstado()
@@ -107,12 +106,9 @@ Gestor -> Estados: *esAmbitoCajaSeguridad()
 Gestor -> Estados: *esDisponible()
 
 Gestor -> Gestor: disponibilizarCajaSeguridad()
-Gestor -> Cliente: disponibilizarCajaSeguridad()
-Cliente -> ContratoSeleccionado: disponibilizarCajaSeguridad()
+Gestor -> ContratoSeleccionado: disponibilizarCajaSeguridad()
 ContratoSeleccionado -> CajaSeguridad: disponibilizar()
 CajaSeguridad -> CajaSeguridad: setEstadoActual()
 
 Gestor -> Gestor: finCU()
-
-
 @enduml
