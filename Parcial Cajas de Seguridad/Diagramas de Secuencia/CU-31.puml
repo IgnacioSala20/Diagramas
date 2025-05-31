@@ -1,0 +1,118 @@
+@startuml
+autonumber 
+
+actor "__:ResponsableAdministrativo__" as RA 
+boundary "__:PantallaSolicitudCancelacion__" as Pantalla
+control "__:GestorSolicitudCancelacion__" as Gestor
+
+RA -->>Pantalla**: opcCancelarContrato()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**: nuevaCancelacion()
+Gestor -> Pantalla: pedirDNITitular()
+RA -> Pantalla: tomarIngresoDNI()
+Pantalla -> Gestor: tomarIngresoDNI()
+
+Gestor -> Gestor: buscarClientePorDNI()
+entity "__:Cliente__" as Clientes #violet 
+loop Clientes [mientras existan clientes]
+    Gestor -> Clientes: esTuDNI()
+    Gestor -> Clientes: sosTitular()
+end
+'obtiene el cliente que tiene ese número de DNI y es titular
+entity "__ingresado:Cliente__" as Cliente 
+
+entity "__:Contrato__" as Contratos #violet 
+entity "__:CambioEstado__" as CE #violet 
+entity "__actual:CambioEstado__" as actualCE 
+entity "__:Estado__" as E 
+
+Gestor -> Gestor: buscarContratosVigentes()
+Gestor -> Cliente: buscarContratosVigentes()
+
+entity "__:CajaDeSeguridad__" as CajasSeguridad #Violet
+loop Contratos [mientras existan contratos]
+    'obtengo los vigentes recorriendo sus cambios de estado
+    Cliente -> Contratos: estaVigente()
+    Contratos -> CE: *esActual()
+    Contratos -> actualCE: esVigente()
+    actualCE -> E: esVigente()
+
+    Contratos -> Contratos: getNroContrato()
+    Contratos -> Contratos: getFechaInicio()
+    Contratos -> CajasSeguridad: getNroCajaSeguridad()
+    Contratos -> Contratos: getFechaFin()
+
+    loop Titulares [mientras existan más titulares para el contrato]
+        Contratos -> Clientes: sosTitular()
+        Contratos -> Clientes: getApellido()
+        Contratos -> Clientes: getNombre()
+        Contratos -> Clientes: getDNI()
+    end
+
+end
+
+Gestor -> Gestor: ordenarContratosPorFechaFin()
+Gestor -> Pantalla: pedirSeleccionContrato()
+RA -> Pantalla: tomarSeleccionContrato()
+Pantalla -> Gestor: tomarSeleccionContrato()
+entity "__selec:Contrato__" as ContratoSeleccionado
+entity "__:CajaDeSeguridad__" as CajaSeguridad
+
+Gestor -> Gestor: verificarCondicionesCancelacion()
+'fecha inicio del seleccionado ya la tiene
+Gestor -> Gestor: calcularAntiguedadContrato()
+
+Gestor -> Cliente: verificarCondicionesCancelacion()
+Cliente -> ContratoSeleccionado: getSolicitudesCancelacion()
+Cliente -> ContratoSeleccionado: getDeclaracionVaciamiento()
+ContratoSeleccionado -> CajaSeguridad: tieneDeclaracionVaciamiento()
+
+Gestor -> Gestor: buscarMotivoCancelacion()
+entity "__:MotivoCancelacion__" as Motivos #Violet 
+Gestor -> Motivos: *getNombre()
+Gestor -> Pantalla: mostrarMotivosParaSeleccion()
+RA -> Pantalla: tomarSeleccionMotivo()
+Pantalla -> Gestor: tomarSeleccionMotivo()
+
+Gestor -> Pantalla: pedirConfirmacion()
+RA -> Pantalla: tomarConfirmacion()
+Pantalla -> Gestor: tomarConfirmacion()
+
+Gestor -> Gestor: buscarEstadoCancelado()
+entity "__:Estado__" as Estados #violet 
+Gestor -> Estados: *esAmbitoContrato()
+Gestor -> Estados: *esCancelado()
+
+Gestor -> Gestor: tomarFechaHoraActual()
+
+Gestor -> Gestor: obtenerUsuarioLogueado()
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+entity "__:Responsable__" as Responsable #violet
+Gestor -> Sesion: obtenerUsuarioLogueado()
+Sesion -> Usuario: getNombre()
+Gestor -> Responsable: *esTuUsuario()
+
+Gestor -> Gestor: cancelarContrato()
+Gestor -> Cliente: cancelarContrato()
+Cliente -> ContratoSeleccionado: cancelar()
+
+ContratoSeleccionado -> actualCE: setFechaHoraFin()
+ContratoSeleccionado -> ContratoSeleccionado: crearCambioEstado()
+entity "__cancelado:CambioEstado__" as newCE 
+ContratoSeleccionado -->> newCE**: new()
+
+Gestor -> Gestor: buscarEstadoDisponible()
+Gestor -> Estados: *esAmbitoCajaSeguridad()
+Gestor -> Estados: *esDisponible()
+
+Gestor -> Gestor: disponibilizarCajaSeguridad()
+Gestor -> Cliente: disponibilizarCajaSeguridad()
+Cliente -> ContratoSeleccionado: disponibilizarCajaSeguridad()
+ContratoSeleccionado -> CajaSeguridad: disponibilizar()
+CajaSeguridad -> CajaSeguridad: setEstadoActual()
+
+Gestor -> Gestor: finCU()
+
+
+@enduml
