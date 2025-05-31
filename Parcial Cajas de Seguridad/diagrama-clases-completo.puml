@@ -19,16 +19,15 @@ class TipoCajaDeSeguridad{
 class Contrato{
     -caja:CajaDeSeguridad
     -nroContrato
-    -detalleContrato:DetalleContrato
     -fechaInicio
     -fechaFin
     -estado:Estado
 }
 
-class DetalleContrato{
-    - cliente:Cliente
-    - esTitular
-}
+'class DetalleContrato{
+'    - cliente:Cliente
+'    - esTitular
+'}
 
 class CambioEstado{
     -fechaInicio 
@@ -116,9 +115,10 @@ class Pantalla{}
 CajaDeSeguridad --> "1" TipoCajaDeSeguridad
 CajaDeSeguridad --> "1" Estado
 
-Contrato o--> "1..*" DetalleContrato
-DetalleContrato --> "1..*" Cliente
-
+'Contrato o--> "1..*" DetalleContrato
+'DetalleContrato --> "1..*" Cliente
+Contrato --> "1..* titular" Cliente 
+Contrato -->"0..* autorizado" Cliente
 Contrato --> "1" CajaDeSeguridad
 
 Contrato --> "1..*" CambioEstado
