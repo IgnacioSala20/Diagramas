@@ -1,0 +1,13 @@
+@startuml cu 
+autonumber 
+'ESTO ES CON CAMBIO DE ESTADO
+control "__:Gestor__" as Gestor 
+entity "__:Reserva__" as R #violet
+entity "__:CambioEstado__" as CE 
+entity "__actual:CambioEstado__" as actCE 
+entity "__Estado__" as E 
+Gestor -> Gestor: buscarReservaPteConfirmacion()
+
+
+
+@enduml

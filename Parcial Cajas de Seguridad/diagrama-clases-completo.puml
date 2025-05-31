@@ -1,0 +1,141 @@
+@startuml
+hide circle 
+class CajaDeSeguridad{
+    -nroCajaDeSeguridad
+    -estadoActual:Estado
+    -seguroIncluido
+    -tipo:TipoCajaDeSeguridad
+
+
+}
+
+class TipoCajaDeSeguridad{
+    -tamaño
+    -precio
+}
+
+'class Sucursal{}
+
+class Contrato{
+    -caja:CajaDeSeguridad
+    -nroContrato
+    -detalleContrato:DetalleContrato
+    -fechaInicio
+    -fechaFin
+    -estado:Estado
+}
+
+class DetalleContrato{
+    - cliente:Cliente
+    - esTitular
+}
+
+class CambioEstado{
+    -fechaInicio 
+    -fechaFin
+    -estado:Estado
+
+}
+class Estado{
+    - ambito
+    - valor
+
+}
+
+'class FormaPago{}
+'class Cuota{}
+
+class Cliente{
+    -nombre
+    -apellido
+    -DNI 
+    -PIN 
+}
+'class Rol{}
+
+class Sesion{
+    -fechaHoraInicio
+    -fechaHoraFin
+    -usuario:Usuario
+}
+class Usuario{
+    -nombreUsuario
+    -contraseña
+    -nroTelefono
+    -responsable:Responsable
+}
+class Responsable{
+    -nombre
+    -apellido 
+    -DNI
+}
+
+
+
+class Motivo{
+    - descripcion
+}
+
+class SolicitudAccesoForzado{
+    -fechaHora
+    -responsable:Responsable
+    - motivo:Motivo
+}
+
+class SolicitudCancelacion{
+    -fechaHora 
+    -responsable:Responsable 
+    -motivo:Motivo
+}
+
+class Turno{
+    -fechaHora 
+    -estado:Estado 
+    -tipoServicio:TipoServicio
+}
+'caja de seguridad y/o sala de negocios
+class TipoServicio{
+    -nombreTipo
+}
+'class EstadoTurno{} conviene turno hacerlo sin cambio de estado?
+
+class SalaDeNegocios{
+    -capacidad
+    -tamañoSala
+    -estado:Estado 
+    -claveAcceso
+
+}
+
+'esto va a depender de la plantilla que toque
+class Gestor{} 
+class Pantalla{}
+
+
+
+CajaDeSeguridad --> "1" TipoCajaDeSeguridad
+CajaDeSeguridad --> "1" Estado
+
+Contrato o--> "1..*" DetalleContrato
+DetalleContrato --> "1..*" Cliente
+
+Contrato --> "1" CajaDeSeguridad
+
+Contrato --> "1..*" CambioEstado
+CambioEstado --> "1" Estado
+
+Turno --> "1" Estado 
+Turno --> "1..*" TipoServicio
+
+Turno -->"0..1" SalaDeNegocios
+
+Sesion --> "1" Usuario
+Usuario --> "1" Responsable
+
+SolicitudAccesoForzado --> "1" Motivo
+SolicitudCancelacion --> "1" Motivo
+
+Gestor ..> Sesion
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+@enduml
