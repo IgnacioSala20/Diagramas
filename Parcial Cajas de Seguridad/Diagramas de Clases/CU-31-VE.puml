@@ -1,0 +1,118 @@
+@startuml
+hide circle 
+class CajaDeSeguridad{
+    -nroCajaDeSeguridad
+    -estadoActual:Estado
+    -seguroIncluido
+
+}
+
+
+class Contrato{
+    -caja:CajaDeSeguridad
+    -nroContrato
+    -fechaInicio
+    -fechaFin
+    -estado:Estado
+-motivo:MotivoCancelacion
+}
+
+
+class CambioEstado{
+    -fechaInicio 
+    -fechaFin
+    -estado:Estado
+
+}
+class Estado{
+    - ambito
+    - valor
+
+}
+
+
+class Cliente{
+    -nombre
+    -apellido
+    -DNI 
+    -PIN 
+}
+'class Rol{}
+
+class Sesion{
+    -fechaHoraInicio
+    -fechaHoraFin
+    -usuario:Usuario
+}
+class Usuario{
+    -nombreUsuario
+    -contraseña
+    -nroTelefono
+    -responsable:Responsable
+}
+class Responsable{
+    -nombre
+    -apellido 
+    -DNI
+}
+
+
+
+class MotivoCancelacion{
+    - nombre 
+    - descripcion
+}
+
+
+
+
+
+'esto va a depender de la plantilla que toque
+class Gestor{
+-DNITitular
+-listaContratosVigentes
+-listaOrdenadaContratos
+-contratoSeleccionado
+-antiguedadContrato
+-fechaHoraActual
+-listaSolicitudesCancelacion
+-declaracionVaciamiento
+-listaMotivosCancelacion
+-motivoSeleccionado
+-punteroEstadoCencelado
+-punteroEstadoDisponible
+
+} 
+class Pantalla{
+-btnCancelar
+-btnConfirmar
+-txtDNITitular
+-gridContratosVigentesOrdenados
+-arrayMotivosCancelacion
+
+}
+
+
+CajaDeSeguridad --> "1" Estado
+
+'Contrato o--> "1..*" DetalleContrato
+'DetalleContrato --> "1..*" Cliente
+Contrato --> "1..* titular" Cliente 
+Contrato -->"0..* autorizado" Cliente
+Contrato --> "1" CajaDeSeguridad
+
+Contrato --> "1..*" CambioEstado
+CambioEstado --> "1" Estado
+
+
+Sesion --> "1" Usuario
+Usuario --> "1" Responsable
+
+Contrato--> "0..1" MotivoCancelacion
+
+Gestor ..> Sesion
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+Gestor..> Contrato
+Gestor ..> Cliente
+@enduml
