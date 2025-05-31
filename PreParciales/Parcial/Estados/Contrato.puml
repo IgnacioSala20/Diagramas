@@ -1,0 +1,37 @@
+@startuml contrato
+
+[*] --> EnRevision : new()
+
+EnRevision --> Validado : validar()
+Validado --> Firmado : ponerVigente()
+
+Firmado --> Vigente : validar()
+
+Vigente --> Vencido : vencer()
+
+Vencido --> Vigente : renovar()
+Vencido --> Finalizado : finalizar()
+
+Vigente --> ConDeuda : adeudar()
+
+ConDeuda --> Vigente : cobrar() [TiempoDeuda<3meses y el cliente pago]
+
+ConDeuda --> ConDeuda : validarTiempoDeuda() [TiempoDeuda<3meses y el cliente no pago]
+
+ConDeuda --> DeBaja : daDeBaja() [TiempoDeuda>3meses y el cliente no pago]
+
+Vigente --> Cancelado : cancelar()
+
+Vigente --> ConAccesoForzado : forzarAcceso()
+
+ConAccesoForzado --> DeBaja : darDeBaja()
+
+DeBaja --> [*]
+Finalizado --> [*]
+Cancelado -->[*]
+
+
+@enduml
+
+"ConAccesoForzado
+Cancelado"

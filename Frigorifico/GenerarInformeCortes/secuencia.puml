@@ -1,0 +1,81 @@
+@startuml secuencia 
+autonumber
+actor "__:ResponsableAdministracion__" as RA 
+
+create boundary "__:PantallaGenerarInforme__" as PGI 
+
+RA --> PGI : opcGenerarInforme()
+
+PGI --> PGI : abrirVentana()
+create control "__:GestorGenerarInforme__" as GGI
+
+PGI --> GGI : nuevoInforme()
+
+GGI --> PGI : pedirSeleccionFechaInicioFin()
+RA --> PGI : tomarSeleccionFEchaInicioFin()
+PGI --> GGI : tomarSeleccionFechaInicioFIn()
+
+GGI --> GGI : validarSeleccionFechas()
+entity "__:Categoria__" as C #Red
+
+GGI --> GGI : buscarCategoriaAnimales()
+
+GGI --> C : getNombre()*
+
+GGI --> PGI : pedirSeleccionCateogiras()
+group loop [Mientras haya categorias para seleccionar]
+    RA --> PGI : tomarSeleccionCategorias()
+    PGI --> GGI : tomarSeleccionCategorias()
+end
+
+GGI --> GGI : buscarTipoCortes()
+entity "__:TipoCorte__" as TC #Red
+GGI --> TC : getNombre()*
+
+GGI --> PGI : pedirSeleccionTipoCorte()
+group loop [Mientrass haya tipo corte vacuno]
+    RA --> PGI : tomarSeleccionTipoCorte()
+    PGI --> GGI : tomarSeleccionTIpoCorte()
+end
+
+GGI --> PGI : pedirCOnfirmacion()
+RA --> PGI : tomarConfirmacion()
+PGI --> GGI : tomarConfirmacion()
+
+entity "__:Remito__" as R #Red
+
+entity "__:EstadoR__" as ER 
+
+GGI --> GGI : buscarRemitos()
+entity "__:CorteVacuno__" as CV #Red
+entity "__:Animal__" as A #Red
+group loop [Mientras haya remitos]
+    GGI --> R : estaDentroPeriodo()
+    GGI --> R : esFacturado()
+    R --> ER : esFacturado()
+    GGI --> GGI : validarCorteVacuno()
+    group loop [Mientras haya tipo cortes]
+        GGI --> R : esTipoCorte()
+        R --> CV : esTipoCorte()
+        CV --> TC : esTipoCorteSeleccionado()
+    end
+    GGI --> GGI : validarCategoria()
+    GGI --> R : esCategoria()
+    R --> CV : esCategoria
+    entity "__:Animal__" as Animal #Red
+    CV --> Animal : esTuCategoria()*
+    GGI --> GGI : sumarPesosRemitos()
+    GGI --> R : sumarPesos()
+end
+
+GGI --> GGI : buscarFacturas()
+
+entity "__:Facturas__" as F #Red
+GGI --> F : buscarFacturas()
+group loop [Mientras haya facturas]
+    F --> R : esTuFactura()
+end
+
+
+
+@enduml

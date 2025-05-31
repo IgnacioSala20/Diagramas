@@ -1,0 +1,32 @@
+@startuml pasteleria
+
+[*] --> EsperaConfirmacion : new() [RangoDestino=SI]
+
+[*] --> EnAnalisis : new() [RangoDestino=NO]
+
+EsperaConfirmacion --> Cancelado : cancelar()
+EnAnalisis --> Cancelado : cancelar()
+EnAnalisis --> EsperaConfirmacion : esperarCOnfirmacion()
+EsperaConfirmacion --> Confirmado : confirmar()
+
+Confirmado --> Cobrado : cobrar()
+Confirmado --> Extinguido : extinguir() [Intentos>2 o RechazoCobro]
+Confirmado --> Confirmado : cobrar() [Intentos<2]
+Cobrado --> Preparacion : preparar()
+
+Preparacion --> EnInspeccion : inspeccionar()
+
+EnInspeccion --> PendienteDespacho : despachar()
+
+PendienteDespacho --> Preparacion : preparar()
+
+EnDespacho --> Entregado : entregar()
+EnDespacho --> NoEntregado : repartir()
+NoEntregado --> EnDespacho: despachar()
+
+NoEntregado --> Cancelado : cancelar()
+PendienteDespacho --> EnDespacho : despachar()
+Entregado --> [*]
+Extinguido --> [*]
+Cancelado --> [*]
+@enduml

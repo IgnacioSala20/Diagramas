@@ -1,0 +1,66 @@
+@startuml clase 
+
+class CajaSeguridad{}
+
+
+class AccesoForzado{}
+
+class Cliente{}
+
+class Rol{}
+
+class Contrato{}
+
+class Estado{}
+class CambioEstado{}
+
+class SolicitudAccesoForzado{}
+
+class TipoAccesoForzado{}
+
+class Sesion{}
+class Usuario{}
+
+class Empleado{}
+class Motivo{}
+class Gestor {}
+class Pantalla {}
+class DetalleContrato{}
+
+Contrato --> DetalleContrato : detalleContrato
+
+DetalleContrato --> Cliente : cliente
+Sesion --> "1" Usuario : usuario
+
+Usuario --> "1" Empleado : empleado
+
+AccesoForzado --> "1" TipoAccesoForzado : tipoAccesoForzado
+
+Cliente --> "1..*" Rol : rol
+
+CambioEstado --> "1" Estado : estado
+Contrato --> "1" Estado : estadoActual
+
+Contrato --> "1..*" CambioEstado : cambioEstado
+
+CajaSeguridad --> "1" Contrato : contrato
+
+CajaSeguridad --> "1" Estado : estado
+CajaSeguridad --> "1..*" AccesoForzado : accesoForzado
+
+
+
+Contrato ..> CajaSeguridad
+Gestor ..> TipoAccesoForzado 
+Gestor ..> Pantalla
+Pantalla ..> Gestor
+
+CambioEstado --> "1" Usuario: usuario
+AccesoForzado --> "1..*" SolicitudAccesoForzado: solicitudAccesoForzado 
+Gestor ..> Cliente
+Gestor ..> Sesion
+
+SolicitudAccesoForzado --> "1..*" Contrato : contrato
+
+CambioEstado --> "1" Motivo : motivo
+@enduml

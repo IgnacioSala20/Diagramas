@@ -1,0 +1,24 @@
+@startuml estado
+
+[*] --> PendienteRevision : new()
+
+PendienteRevision --> Autorizada : autorizar()
+PendienteRevision --> Rechazada : rechazar()
+PendienteRevision --> Derivada : derivar()
+
+Derivada --> Rechazada : rechazar() [Devoluciones>2]
+
+Derivada --> Anulada : anular()
+
+Derivada --> PendienteRevision : devolver() [Devoluciones<2]
+
+Autorizada -->  Autorizada
+Autorizada --> Invalidada : invalidar()
+Derivada --> Invalidada : invalidar()
+Autorizada --> RevisionRealizada: realizarRevision()
+Derivada --> Autorizada : autorizar()
+RevisionRealizada --> [*]
+Invalidada --> [*]
+Rechazada --> [*]
+Anulada --> [*]
+@enduml

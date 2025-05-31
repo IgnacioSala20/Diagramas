@@ -1,0 +1,39 @@
+@startuml cajaseguridad
+[*] --> Disponible : new()
+
+
+Disponible --> AsignadaContrato : asignarContrato()
+
+
+AsignadaContrato --> AsignadaCliente: asignarCliente()
+AsignadaContrato --> AsignadaContrato : validarFechaInicio() [Cumple]
+AsignadaCliente --> ConAccesoForzado : forzar()
+
+ConAccesoForzado --> Disponible : habilitar()
+
+AsignadaCliente --> Bloqueada : bloquear()
+
+Bloqueada --> AsignadaCliente : desbloquear() [Tiempo<3meses y pago deuda]
+
+Bloqueada --> Bloqueada : validarTiempoDeuda() [Tiempo<3meses y no se pago]
+
+Bloqueada --> Embargada : embargar() [Tiempo>3meses y no se pago]
+
+Embargada --> Disponible : habilitar()
+
+AsignadaCliente --> NoDisponible : reparar() 
+
+
+Disponible --> NoDisponible : reparar()
+
+NoDisponible --> Disponible : habilitar()
+
+NoDisponible --> DeBaja : darBaja()
+
+AsignadaCliente-->Inactiva : desactivar()
+Inactiva --> Vacia : vaciar()
+Vacia --> Disponible : habilitar()
+
+DeBaja --> [*]
+
+@enduml

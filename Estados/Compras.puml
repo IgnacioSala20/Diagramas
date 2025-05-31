@@ -1,0 +1,30 @@
+@startuml compras 
+
+[*] --> Creado : new()
+
+Creado --> Derivado : derivar()
+
+Derivado --> EnNivelAprobacion : analizar()
+
+EnNivelAprobacion --> Cambios : solicitarCambios()
+EnNivelAprobacion --> Rechazado : rechazar()
+
+Cambios --> EnNivelAprobacion : analizar()
+
+Creado --> Cancelado : cancelar()
+Derivado --> Cancelado : cancelar()
+
+EnNivelAprobacion --> Cancelado : cancelar()
+
+Cambios --> Cancelado : cancelar()
+
+Rechazado --> [*]
+Cancelado -->[*]
+
+EnNivelAprobacion --> Aceptado : aceptar()
+Aceptado --> EnvioPedido : enviar()
+
+EnvioPedido --> Cerrado : cerrar()
+Cerrado --> [*]
+
+@enduml

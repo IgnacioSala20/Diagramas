@@ -1,0 +1,32 @@
+@startuml informatica 
+
+[*] --> PAsignacionEvaluador : new()
+
+PAsignacionEvaluador --> PendientePrimeraEvaluacion : asignarEvaluadores()
+
+
+PendientePrimeraEvaluacion --> EvaluacionInicial : revisar() 
+EvaluacionInicial --> PendienteEvaluacionChairs : analizar()
+PendienteEvaluacionChairs --> Aceptado : aceptar()
+
+PendienteEvaluacionChairs --> Rechazado : rechazar()
+PendienteEvaluacionChairs --> AceptadoSujetoCorrecciones : revisar()
+Rechazado --> [*]
+
+AceptadoSujetoCorrecciones --> Anulado : anular() [SuperoTiempoLimite=SI]
+AceptadoSujetoCorrecciones --> EnCorreccion : reenviar() [SuperoTiempoLimite=NO]
+EnCorreccion --> Aceptado : aceptar()
+EnCorreccion --> Rechazado : rechazar()
+Aceptado --> Publicado : publicar()
+Aceptado --> [*]
+
+Anulado --> [*]
+PAsignacionEvaluador --> Retirado : retirar()
+PendienteEvaluacionChairs --> Retirado : retirar()
+EvaluacionInicial --> Retirado : retirar()
+PendienteEvaluacionChairs --> Retirado : retirar()
+AceptadoSujetoCorrecciones --> Retirado : retirar()
+EnCorreccion --> Retirado : retirar()
+Publicado --> [*]
+Retirado --> [*]
+@enduml

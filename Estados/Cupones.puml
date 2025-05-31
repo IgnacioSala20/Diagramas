@@ -1,0 +1,9 @@
+@startuml cupones 
+
+[*] --> Pendiente : new()
+
+Pendiente --> Pendiente : validarFechaCierre() [MenorFechaCierre=SI]
+
+
+
+@enduml

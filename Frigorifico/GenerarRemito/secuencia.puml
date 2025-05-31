@@ -55,14 +55,24 @@ group loop [Mientras haya detalle pedidos]
     sP --> DP : getKilos()
     DP --> DP : buscarTipoCortes()
     DP --> TC : getNombre()
+    entity "__:CorteVacuno__" as CV #Red 
+    group loop [Mientras haya cortes vacunos]
+        TC -->CV : esEsteTipoCorte()
+        TC --> CV : esEstadoCreado()
+        entity "__:EstadoCV__" as ECV
+        CV --> ECV: esEstadoCreado()
+        TC --> CV : esFechaMenor()
+        TC --> CV : getDatos()
+        CV --> CV : getNombre()
+        CV --> CV : getFechaComercializacion()
+    end
 end
 
-
-GGR --> GGR : buscarCortesVacunosCandidatos()
-
-GGR --> sP : buscarCortesVacunosCandidatos()
-sP --> DP : buscarCortesVacunosCandidatos()
-
+GGR --> PGR : pedirSeleccionCortesVacunos()
+group loop [Mientras haya tipos de cortes]
+    RP --> PGR : tomarSeleccionCortesVacunos()
+    PGR --> GGR : tomarSeleccionCortesVacunos()
+end
 
 
 
