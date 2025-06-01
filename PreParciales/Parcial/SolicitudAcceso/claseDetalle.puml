@@ -60,6 +60,8 @@ class Responsable{
     +dni
 }
 class SolicitudAccesoForzado{}
+SolicitudAccesoForzado --> "1" Cliente : cliente
+SolicitudAccesoForzado --> "1" MotivoAcceso : motivo
 Gestor ..> Pantalla 
 Pantalla ..> Gestor
 
