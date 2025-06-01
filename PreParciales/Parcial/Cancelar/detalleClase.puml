@@ -1,0 +1,49 @@
+@startuml detalleClase
+
+class Pantalla{}
+class Gestor{}
+class Sesion{}
+class Usuario{}
+class Responsable{}
+class CLiente{}
+class MotivoCancelacion{}
+class CajaSeguridad{}
+class Contrato{}
+class DetalleCOntrato{}
+class Rol{}
+class CambioEstado{}
+class Estado{}
+class SolicitudCancelacion{}
+class DeclaracionVaciamiento{}
+
+CajaSeguridad --> "0..1" DeclaracionVaciamiento : declaracionVaciamiento
+
+Gestor ..> Pantalla 
+Pantalla ..> Gestor
+Gestor ..> Sesion
+Sesion--> "1" Usuario : usuario
+Usuario --> "1" Responsable : responsable
+
+Gestor ..> Contrato
+Contrato *-> "1..6" DetalleCOntrato: detalleCOntrato
+
+DetalleCOntrato --> "1" Rol : rol
+DetalleCOntrato --> "0..1" SolicitudCancelacion : solicitudCancelacion
+
+Contrato --> "1" CajaSeguridad : cajaSeguridad
+
+CambioEstado --> "1" Estado: estado
+
+DetalleCOntrato --> "1" CLiente : cliente
+
+CambioEstado --> "1" MotivoCancelacion : motivoCancelacion
+
+
+Contrato --> "1..*" CambioEstado: cambioEstado
+
+CajaSeguridad --> "1" Estado : estado
+Contrato --> "1" Estado : estado
+
+CambioEstado --> "1" Responsable : responsable
+
+@enduml

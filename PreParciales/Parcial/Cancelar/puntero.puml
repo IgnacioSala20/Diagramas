@@ -47,6 +47,7 @@ group loop [Mientras haya contratos]
     Contrato --> Contrato : obtenerNumCaja()
     Contrato --> CS : getNumCaja()
 end
+CRC --> CRC : ordenarFechaFinContratacion()
 
 CRC --> PRC : pedirSeleccionCOntrato()
 RA --> PRC : tomarSeleccionContrato()
