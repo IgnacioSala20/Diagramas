@@ -6,7 +6,6 @@ Disponible --> AsignadaContrato : asignarContrato()
 
 
 AsignadaContrato --> AsignadaCliente: asignarCliente()
-AsignadaContrato --> AsignadaContrato : validarFechaInicio() [Cumple]
 AsignadaCliente --> ConAccesoForzado : forzar()
 
 ConAccesoForzado --> Disponible : habilitar()
@@ -20,8 +19,6 @@ Bloqueada --> Bloqueada : validarTiempoDeuda() [Tiempo<3meses y no se pago]
 Bloqueada --> Embargada : embargar() [Tiempo>3meses y no se pago]
 
 Embargada --> Disponible : habilitar()
-
-AsignadaCliente --> NoDisponible : reparar() 
 
 
 Disponible --> NoDisponible : reparar()

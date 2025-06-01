@@ -1,0 +1,83 @@
+@startuml clase 
+
+class Pantalla{
+    +listMotivosAcceso
+    +labelCliente
+    +listContratosVigentes 
+    +btnConfirmar()
+    btnCancelar()
+}
+class Gestor{
+    +listaMotivosAcceso
+    +seleccionMotivoAcceso
+    +DNIingresado
+    +punteroCliente
+    +listaContratosDelTitular
+    +listaContratosVigentesDelTitular
+    +listaSeleccionContratos
+    +punteroResponsable
+    +punteroEstadoConAccesoForzadoContrato
+    +punteroEstadoConAccesoForzadoCaja
+    +fechaHoraActual
+}
+class Contrato{}
+class DetalleContrato{}
+class Rol{
+    +nombre
+}
+class MotivoAcceso{
+    +nombre
+    +descripcion
+}
+
+class Cliente{
+    +apellido
+    +nombre
+    +dni
+}
+class Estado{
+    +nombre
+    +ambito
+}
+class CambioEstado{
+    +fechaHoraInicio
+    +fechaHoraFin
+}
+class CajaSeguridad{
+    +numCaja
+}
+class Sesion{
+    +fechaHoraInicio
+    +fechaHoraFin
+}
+class Usuario{
+    +nombreUsuario
+    +contraseña
+}
+class Responsable{
+    +nombre
+    +apellido
+    +dni
+}
+class SolicitudAccesoForzado{}
+Gestor ..> Pantalla 
+Pantalla ..> Gestor
+
+CambioEstado --> "1" Estado : estado
+Contrato --> "1" CajaSeguridad : cajaSeguridad
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Responsable : responsable
+DetalleContrato --> "1" Rol: rol
+
+Gestor ..> MotivoAcceso 
+Gestor ..> Cliente 
+Gestor ..> Contrato
+CajaSeguridad --> "1" Estado : estado
+Contrato --> "1..*" CambioEstado : cambioEstado
+Gestor ..> Sesion
+CambioEstado --> "1" Responsable : responsable
+Contrato --> "1..6" DetalleContrato :detalle
+DetalleContrato --> "1" Cliente : cliente
+Gestor ..> SolicitudAccesoForzado
+SolicitudAccesoForzado --> "1..*" Contrato : contrato
+@enduml

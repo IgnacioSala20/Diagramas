@@ -4,13 +4,12 @@
 
 EnRevision --> Validado : validar()
 Validado --> Firmado : ponerVigente()
+Firmado --> Firmado : validarFecha( [Fecha Inicio Vigencia=false])
+Firmado --> Vigente : validarFecha() [Fecha Inicio Vigencia=true]
+Vigente --> Finalizado : finalizar [Renovo=NO]
 
-Firmado --> Vigente : validar()
 
-Vigente --> Vencido : vencer()
-
-Vencido --> Vigente : renovar()
-Vencido --> Finalizado : finalizar()
+Vigente --> Vigente : renovar() [Renovo=SI]
 
 Vigente --> ConDeuda : adeudar()
 

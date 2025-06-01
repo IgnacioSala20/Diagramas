@@ -34,7 +34,6 @@ group loop [Mientras haya contratos]
     entity "__:Rol__" as R 
     group loop [Mientras haya detalles]
         Contrato --> DC : esCliente()
-        DC --> C : esCLiente()
         DC --> R : esTitular()
 
         DC --> C : getDatos()
@@ -56,8 +55,8 @@ CCC --> PCC : pedirSeleccionContrato()
 RA --> PCC : tomarSeleccionContrato()
 PCC --> CCC : tomarSeleccionContrato()
 
-CCC --> CCC : verificarCOndiciones()
-entity "__:selec:COntrato__" as sC 
+CCC --> CCC : verificarCondiciones()
+entity "__:selec:Contrato__" as sC 
 CCC --> sC : verificarSolicitudesCancelacion()
 sC --> sC : verificarSolicitudes()
 group loop [Mientras haya detalles]
@@ -66,9 +65,11 @@ group loop [Mientras haya detalles]
     sC --> DC : existeSolicitudCancelacion()
 end
 
-CCC --> CCC : verificarDeclaracionVaciamiento()
-CCC --> sC : verificarDeclaracionVaciamiento()
-sC --> CS : existeDeclaracionVaciamiento()
+CCC --> CCC : validarCajaVacia()
+CCC --> sC : validarCajaVacia()
+sC --> CS : esVacia()
+entity "__:EstadoCajaSeguridad__" as ECS 
+CS --> ECS : esVacia()
 
 entity "__:MotivoCancelacion__" as MC #Red
 CCC --> CCC : buscarMotivoCancelacion()
@@ -109,7 +110,7 @@ CCC --> sC : cancelar()
 create entity "__:nuevo:CambioEstado__" as nCE
 sC --> nCE : new()
 sC --> sC : setEstado()
-CCC --> CCC : actualizarCaja()
+CCC --> CCC : actualizarEstadoCajaSeguridad()
 CCC --> sC : habilitar()
 sC --> CS : setEstado()
 
