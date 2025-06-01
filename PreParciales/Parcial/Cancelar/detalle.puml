@@ -1,0 +1,16 @@
+@startuml detalle 
+
+actor "__:Responsable Administracion__" as RA 
+
+boundary "__:PantallaCancelarContrato__" as PCC 
+
+control "__:ControladorCancelarContrato__" as CCC 
+
+
+RA --> PCC : opcCancelarContrato()
+PCC --> PCC : abrirVentana()
+PCC --> CCC : nuevaCancelacion()
+
+
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml clasePuntero
+
+class PantallaRegistrarCancelacion{}
+class ControladorRegistrarCancelacion{}
+
+class Cliente{}
+class Contrato{}
+class SolicitudCancelacion{}
+class MotivoCancelacion{}
+class Sesion{}
+class Usuario{}
+class CambioEstado{}
+class CajaSeguridad{}
+class Responsable{}
+class Estado{}
+
+
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Responsable : responsable
+Contrato --> "1" CajaSeguridad : cajaSeguridad
+CambioEstado --> "1" Estado : estado
+Contrato --> "1..*" CambioEstado : cambioEstado
+Contrato --> "1" Estado : estado
+CajaSeguridad --> "1" Estado : estado
+
+PantallaRegistrarCancelacion ..> ControladorRegistrarCancelacion
+ControladorRegistrarCancelacion ..> PantallaRegistrarCancelacion
+
+Contrato --> "1..6" Cliente : titulares
+Contrato --> "1..6" Cliente : autorizados
+
+CambioEstado --> "1" MotivoCancelacion : motivoCancelacion
+ControladorRegistrarCancelacion ..> MotivoCancelacion
+
+Contrato --> "1..6" SolicitudCancelacion : solicitudCancelacion
+SolicitudCancelacion --> "1" Cliente : cliente
+ControladorRegistrarCancelacion ..> Sesion
+CambioEstado --> "1" Responsable : responsable
+ControladorRegistrarCancelacion ..> Estado
+@enduml

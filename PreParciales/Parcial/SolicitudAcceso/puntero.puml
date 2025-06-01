@@ -1,0 +1,124 @@
+@startuml puntero 
+autonumber
+actor "__:Responsable Administrativo__" as RA 
+
+boundary "__:PantallaRegistrarSolicitud__" as PRS 
+
+control "__:GestorRegistrarSolicitud__" as GRS 
+
+RA --> PRS : opcRegistrarSolciitud()
+PRS --> PRS : abrirVentana()
+PRS --> GRS : nuevaSolicitud()
+
+GRS --> GRS : buscarMotivoAcceso()
+entity "__:MotivoAcceso__" as MA #Red
+GRS --> MA : getNombre()*
+
+GRS --> PRS : pedirSeleccionMotivoAcesso()
+RA --> PRS : tomarSeleccionMotivoAcceso()
+PRS --> GRS : tomarSeleccionMotivoAcceso()
+
+GRS --> PRS : pedirIngresoDNI()
+RA --> PRS : tomarIngresoDNI()
+PRS --> GRS : tomarIngresoDNI()
+
+GRS --> GRS : buscarCliente()
+
+entity "__:CLiente__" as C #Red
+entity "__:COntrato__" as Contrato #Red
+
+group loop [ Mientras haya clientes]
+    GRS --> C : esTuDNI()
+    GRS --> C : esTitularEnContrato()
+    C --> C : buscarClienteTitular()
+    group loop [Mientras haya contratos]
+        C --> Contrato : esTitularEnContrato()
+        C --> Contrato : getApellido()
+        C --> Contrato : getNombre()
+        C --> Contrato : getDNI()
+    end
+end
+
+GRS --> PRS : pedirCOnfirmacionDatos()
+RA --> PRS : tomarCOnfirmacionDatos()
+PRS --> GRS : tomarConfirmacionDatos()
+entity "__:EstadoCOntrato__" as EC
+GRS --> GRS : buscarContratosVigentes()
+group loop [Mientras haya contratos]
+    GRS --> Contrato : esVigente()
+    Contrato --> EC : esVigente()
+    GRS --> Contrato : esDeCliente()
+    Contrato --> C : esCliente()
+    group loop [Mientras haya clientes]
+        Contrato --> C : esTitular()
+        Contrato --> C : esCLiente()
+    end
+    GRS --> Contrato : getDatos()
+    Contrato --> Contrato : getNumContrato()
+    Contrato --> Contrato : getFechaVigencia()
+    Contrato --> Contrato :obtenerNumCaja()
+    entity "__:CajaSeguridad__" as CS
+    Contrato --> CS : getNumCaja()
+end
+
+GRS --> PRS : pedirSeleccionContratos()
+group loop[ Mientras se seleccionen contratos]
+    RA --> PRS : tomarSeleccionCOntraros()
+    PRS --> GRS : tomarSeleccionContratos()
+end
+
+GRS --> PRS : pedirConfirmacionCreacion()
+RA --> PRS : tomarCOnfirmacionCreacion()
+PRS --> GRS : tomarCOnfirmacionCreacion()
+GRS --> GRS : getFechaHoraActual()
+entity "__:actual:Sesion__" as actualS 
+entity "__:log:Usuario__" as lU 
+GRS --> GRS : buscarResponsable()
+GRS --> actualS: buscarResponsable()
+actualS --> lU : getResponsable()
+
+
+GRS --> GRS : crearSolicitud()
+entity "__:selec:Contrato__" as sC 
+create entity "__:nuevo:SolicitusAccesoForzado__" as nSAF 
+GRS --> nSAF : new()
+
+GRS --> GRS : actualizarEstadoContrato()
+entity "__:CambioEstado__" as CE #Red
+entity "__:actual:CambioEstado__" as aCE
+GRS --> GRS : buscarEstadoContrato()
+entity "__:Estado__" as E #Red
+group loop [Mientras haya Estados]
+    GRS --> E : esAmbitoContrato()
+    GRS --> E : esConAccesoForzado()
+end
+GRS --> GRS : buscarEstadoCaja()
+group loop [Mientras haya Estados]
+    GRS --> E : esAmbitoCaja()
+    GRS --> E : esDisponible()
+end
+entity "__:CajaSeguridad__" as CS
+GRS --> GRS : actualizarEstados()
+group loop [Mientras haya contratos seleccionados]
+    GRS --> GRS : buscarCEA()
+    GRS --> sC : buscarCEA()
+    sC --> sC : buscarEstado()
+    sC --> CE : esActual()*
+    CE --> aCE : setFechaHoraFin()
+
+    GRS --> GRS : crearCambioEstado()
+    GRS --> sC : forzarAcceso()
+    create entity "__:nuevo:CambioEstadi__" as nCE 
+    sC --> nCE : new()
+
+    GRS --> GRS : actualizarEstadoCaja()
+    GRS --> sC : forzar()
+    sC --> CS : setEstado()
+end
+GRS --> GRS : finCU()
+
+
+
+
+
+@enduml

@@ -1,0 +1,127 @@
+@startuml puntero 
+autonumber
+actor "__:Responsable Administrativo__" as RA 
+
+boundary "__:PantallaRegistrarCancelacion__" as PRC 
+
+RA --> PRC : opcCancelarContrato()
+
+PRC --> PRC : abrirVentana()
+
+control "__:ControladorRegistrarCancelacion__" as CRC 
+
+PRC --> CRC : nuevaCancelacion()
+
+CRC --> PRC : pedirIngresoDNI()
+RA --> PRC : tomarIngresoDNI()
+
+PRC --> CRC : tomarIngresoDNI()
+
+entity "__:Cliente__" as C #Red
+
+CRC --> CRC : buscarCliente()
+CRC --> C : esTuDNI()*
+
+CRC --> CRC : buscarContratosVigentes()
+
+entity "__:Contrato__" as Contrato #Red
+entity "__:EstadoCOntrato__" as EC
+entity "__:CajaSeguridad__" as CS
+group loop [Mientras haya contratos]
+    CRC --> Contrato : esVigente()
+    Contrato --> EC : esVigente()
+    
+    CRC --> Contrato : esCLiente()
+    Contrato --> Contrato : buscarClientesTitulares()
+    group loop [Mientras haya titulares]
+        Contrato --> C : sosTitular()
+        Contrato --> C : sosCliente()
+        Contrato --> C : getApellido()
+        Contrato --> C : getNombre()
+        Contrato --> C : getDNI()
+    end
+    CRC --> Contrato : getDatos()
+    Contrato --> Contrato : getNumContrato()
+    Contrato --> Contrato : getFechaInicio()
+    Contrato --> Contrato : getFechaFin()
+    Contrato --> Contrato : obtenerNumCaja()
+    Contrato --> CS : getNumCaja()
+end
+
+CRC --> PRC : pedirSeleccionCOntrato()
+RA --> PRC : tomarSeleccionContrato()
+PRC --> CRC : tomarSeleccionContrato()
+
+CRC --> CRC : verificarCondiciones()
+entity "__:selec:COntrato__" as sC 
+CRC --> sC : cumpleMitadPeriodo()
+sC --> sC : calcularAntiguedad()
+
+CRC --> sC : tieneDeclaracionVaciamiento()
+sC --> sC : getDeclaracionVaciamiento()
+
+entity "__:SolicitudCancelacion__" as SC #Red
+
+CRC --> CRC : verificarSolicitudCancelacion()
+group loop [Mientras haya solicitudes]
+    CRC --> sC : tieneSolicitudCancelacion()
+    sC --> SC : esDeTitular()
+    SC --> C: esDeTItular()
+end
+CRC --> CRC : buscarMotivoCancelacion()
+
+entity "__:MotivoCancelacion__" as MC #Red
+
+CRC --> MC : getNombre()*
+
+CRC --> PRC : pedirConfirmacion()
+RA --> PRC : tomarCOnfirmacion()
+PRC --> CRC : tomarCOnfirmacion()
+
+CRC --> CRC : buscarEstadoCancelado()
+
+entity "__:Estado__" as E #Red
+group loop [Mientras haya estados]
+    CRC --> E : esAmbito()
+    CRC --> E : getNombre()
+end
+
+CRC --> CRC : getFechaHoraActual()
+
+CRC --> CRC : buscarResponsable()
+entity "__:actual:Sesion__" as aSesion 
+entity "__:log:Usuario__" as lU 
+
+CRC --> aSesion : buscarResponsable()
+aSesion --> lU : getResponsable()
+
+CRC --> CRC : buscarCEA()
+CRC --> sC : buscarCEA()
+entity "__:CambioEstado__" as CE #Red
+entity "__:actual:CambioEstado__" as aCE 
+sC --> sC : buscarEstado()
+sC --> CE : esActual()*
+CE --> aCE : setFechaHoraFin()
+
+CRC --> CRC : crearCambioEstado()
+CRC --> sC : cancelar()
+create entity "__:nuevo:CambioEstado__" as nCE
+sC --> nCE : new()
+sC --> sC : setEstado()
+
+CRC --> CRC : buscarEstadoDisponible()
+group loop [Mientras haya estados]
+    CRC --> E: esAmbito()
+    CRC --> E : esDisponible()
+end
+
+CRC --> CRC : actualizarEstadoCaja()
+
+CRC --> sC : habilitar()
+entity "__:CajaSeguridad__" as CS
+sC --> CS : setEstado()
+
+CRC --> CRC : finCU()
+
+
+@enduml

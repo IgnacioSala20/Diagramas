@@ -1,0 +1,36 @@
+@startuml clasePuntero
+
+class Pantalla{}
+class Gestor{}
+class Estado{}
+class CambioEstado{}
+class Sesion{}
+class Usuario{}
+class Responsable{}
+class Cliente{}
+
+class CajaSeguridad{}
+class Contrato {}
+class MotivoAcceso{}
+class SolicitudAcceso{}
+Pantalla ..> Gestor
+Gestor ..> Pantalla
+CambioEstado --> "1" Estado : estado
+Contrato --> "1..*" CambioEstado : cambioEstado
+CajaSeguridad --> "1" Estado : estado
+Contrato --> "1" Estado : estado
+Contrato --> "1..*" Cliente : titular
+Contrato --> "1..*" Cliente : autorizados
+
+Gestor ..> Contrato 
+Gestor..> Cliente
+Gestor ..> MotivoAcceso
+Cliente ..> Contrato
+
+Gestor..> SolicitudAcceso
+Gestor ..> Estado
+Gestor ..> Sesion 
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Responsable : responsable
+CambioEstado --> "1" Responsable : responsable 
+@enduml
