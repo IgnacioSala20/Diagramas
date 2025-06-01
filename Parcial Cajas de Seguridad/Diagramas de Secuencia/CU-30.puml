@@ -29,8 +29,8 @@ loop Titulares [mientras existan titulares]
     Gestor -> Clientes: esTuDNI()
     Clientes -> Clientes: getNombre()
     Clientes -> Clientes: getApellido()
-    Clientes -> Contratos: poseeContrato()
-    Contratos -> Cliente: sosTitular()
+    Gestor -> Cliente: poseeContrato()
+    Cliente -> Contratos: esTitular()
 end
 Gestor -> Pantalla: mostrarDatosCliente()
 Gestor -> Pantalla: pedirConfirmacion()
