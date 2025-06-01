@@ -1,0 +1,108 @@
+@startuml
+autonumber 
+
+actor "__:ResponsableAdministrativo__" as RA 
+boundary "__:PantallaCancelarContrato__" as Pantalla 
+control "__:GestorCancelarContrato__" as Gestor 
+
+entity "__:Cliente__" as Clientes #violet 
+entity "__ingresado:Cliente__" as Cliente 
+
+RA-->>Pantalla**:opcCancelarContrato()
+Pantalla->Pantalla:habilitarVentana()
+Pantalla-->>Gestor**: nuevaCancelacion()
+Gestor -> Pantalla: pedirIngresoDNI()
+RA->Pantalla: tomarIngresoDNI()
+Pantalla->Gestor:tomarIngresoDNI()
+
+Gestor -> Gestor: buscarClientePorDNI()
+Gestor -> Clientes: *esTuDNI()
+
+entity "__:Contrato__" as Contratos #violet
+Gestor -> Gestor: buscarContratosVigentesTitular()
+Gestor -> Contratos: buscarContratosVigentes()
+entity "__:CambioEstado__" as CE #violet 
+entity "__actual:CambioEstado__" as actualCE 
+entity "__:Estado__" as E 
+entity "__:CajaDeSeguridad__" as CajaDeSeguridad
+loop Contratos [mientras existan contratos]
+    Contratos -> Cliente: sosTitular()
+    Gestor -> Contratos: estaVigente()
+    Contratos -> CE: *esActual()
+    Contratos -> actualCE: esVigente()
+    actualCE -> E: esVigente()
+
+    Contratos -> Contratos: getNroContrato()
+    Contratos -> CajaDeSeguridad: getNroCajaDeSeguridad()
+    Contratos -> Contratos: getFechaInicio()
+    Contratos -> Contratos: getFechaFin()
+    Contratos -> Contratos: getDemasTitulares()
+
+
+    loop Titulares [mientras existan más titulares para el contrato]
+        Contratos -> Clientes: sosTitular()
+        Contratos -> Clientes: getApellido()
+        Contratos -> Clientes: getNombre()
+        Contratos -> Clientes: getDNI()
+    end
+end
+
+Gestor -> Gestor: ordenarContratosPorFechaFin()
+
+Gestor -> Pantalla: mostrarContratosParaSeleccion()
+RA->Pantalla: tomarSeleccionContrato()
+Pantalla-> Gestor: tomarSeleccionContrato()
+entity "__selec:Contrato__" as ContratoSeleccionado 
+entity "__:SolicitudCancelacion__" as Solicitudes
+Gestor -> Gestor: verificarCondicionesCancelacion()
+Gestor -> Gestor: tomarFechaHoraActual()
+Gestor -> ContratoSeleccionado: calcularAntiguedadPeriodo()
+Gestor -> ContratoSeleccionado: tieneDeclaracionVaciamiento()
+ContratoSeleccionado -> CajaDeSeguridad: estaVacia()
+CajaDeSeguridad -> E: esVacia()
+Gestor -> Gestor: validarExistenciaSolicitudes()
+loop Solicitudes [mientras existan solicitudes]
+    Gestor -> ContratoSeleccionado: tieneSolicitudesCancelacion()
+    ContratoSeleccionado -> Solicitudes: existeSolicitud()
+    Solicitudes -> Clientes: sosTitular()
+end
+ContratoSeleccionado -> ContratoSeleccionado: validadCantidadSolicitudes()
+
+entity "__:MotivoCancelacion__" as Motivos #violet 
+Gestor -> Gestor: obtenerMotivos()
+Gestor -> Motivos: *getNombre()
+Gestor -> Pantalla: mostrarMotivosParaSeleccion()
+RA->Pantalla: tomarSeleccionMotivo()
+Pantalla->Gestor: tomarSeleccionMotivo()
+
+Gestor -> Pantalla: pedirConfirmacionCancelacion()
+RA->Pantalla: tomarConfirmacionCancelacion()
+Pantalla->Gestor: tomarConfirmacionCancelacion()
+
+Gestor -> Gestor: buscarEstadoCancelado()
+entity "__:Estado__" as Estados #violet 
+Gestor -> Estados: *esAmbitoContrato()
+Gestor -> Estados: *esCancelado()
+
+Gestor -> Gestor: buscarEstadoDisponible()
+Gestor -> Estados: *esAmbitoCajasDeSeguridad()
+Gestor -> Estados: *esDisponible()
+
+
+Gestor -> Gestor: obtenerUsuarioLogueado()
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+Gestor -> Sesion: obtenerUsuarioLogueado()
+Sesion -> Usuario: getResponsable()
+entity "__nuevo:CambioEstado__" as newCE 
+
+Gestor -> Gestor: registrarCancelacion()
+Gestor -> ContratoSeleccionado: cancelar()
+ContratoSeleccionado -> actualCE: setFechaHoraFin()
+ContratoSeleccionado -> ContratoSeleccionado: crearCambioEstado()
+ContratoSeleccionado -->> newCE**: new()
+ContratoSeleccionado -> CajaDeSeguridad: disponibilizar()
+CajaDeSeguridad -> CajaDeSeguridad: setEstadoActual()
+
+Gestor -> Gestor: finCU()
+@enduml

@@ -1,0 +1,103 @@
+@startuml
+autonumber 
+
+actor "__:ResponsableAdministrativo__" as RA 
+boundary "__:PantallaAF__" as Pantalla 
+control "__:GestorSolicitudAF__" as Gestor 
+
+RA-->>Pantalla**: opcRegSolicitudAF()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**:nuevaSolicitud()
+
+entity "__:MotivoAF__" as Motivos #violet 
+Gestor -> Gestor: buscarMotivos()
+Gestor -> Motivos: *getNombre()
+
+Gestor -> Pantalla: mostrarMotivosParaSeleccion()
+RA->Pantalla: tomarSeleccionMotivo()
+Pantalla-> Gestor: tomarSeleccionMotivo()
+
+Gestor -> Pantalla: pedirIngresoDNI()
+RA->Pantalla: tomarIngresoDNI()
+Pantalla -> Gestor: tomarIngresoDNI()
+
+entity "__:Cliente__" as Clientes #violet 
+Gestor -> Gestor: buscarClientePorDNI()
+Gestor -> Clientes: *esTuDNI()
+entity "__ingresado:Cliente__" as Cliente 
+Gestor -> Cliente: getDatosClienteIngresado()
+Cliente -> Cliente: getApellido()
+Cliente -> Cliente: getNombre()
+
+entity "__:Contrato__" as Contratos #violet
+Gestor -> Gestor: buscarContratosCliente()
+loop Contratos [mientras existan contratos]
+    Gestor -> Contratos: coincideClienteIngresado()
+    Contratos -> Cliente: sosTitular()
+end
+
+Gestor -> Pantalla: mostrarDatosClienteParaConfirmacion()
+RA -> Pantalla: tomarConfirmacionDatosCliente()
+Pantalla -> Gestor: tomarConfirmacionDatosCliente()
+
+entity "__:CambioEstado__" as CE #violet 
+entity "__actual:CambioEstado__" as actualCE 
+entity "__:Estado__" as E 
+
+entity "__:CajaDeSeguridad__" as CajaDeSeguridad 
+Gestor -> Gestor: buscarContratosVigentesDelTitular()
+Gestor -> Contratos: buscarContratosVigentesDelTitular()
+loop Contratos vigentes [mientras existan contratos]
+    Contratos -> Cliente: sosTitular()
+    Gestor -> Contratos: estaVigente()
+    Contratos -> CE: *esActual()
+    Contratos -> actualCE: esVigente()
+    actualCE -> E: esVigente()
+
+    Contratos -> Contratos: getNroContrato()
+    Contratos -> Contratos: getFechaVigencia()
+    Contratos -> CajaDeSeguridad: getNroCajaDeSeguridad()
+
+end
+Gestor -> Pantalla: mostrarContratosParaSeleccion()
+RA-> Pantalla: tomarSeleccionContratos()
+Pantalla -> Gestor: tomarSeleccionContratos()
+
+Gestor -> Pantalla: pedirConfirmacionSolicitud()
+RA->Pantalla: tomarConfirmacionSolicitud()
+Pantalla-> Gestor: tomarConfirmacionSolicitud()
+
+Gestor -> Gestor: crearSolicitudAF()
+entity "__nueva:SolicitudAF__" as Solicitud
+Gestor -->> Solicitud**: new()
+
+entity "__:Estado__" as Estados #violet 
+Gestor -> Gestor: buscarEstadoConAccesoForzadoContrato()
+Gestor -> Estados: *esAmbitoContrato()
+Gestor -> Estados: *esConAccesoForzadoContrato()
+
+Gestor -> Gestor: buscarEstadoConAccesoForzadoCaja()
+Gestor -> Estados: *esAmbitoCajaDeSeguridad()
+Gestor -> Estados: *esConAccesoForzadoCaja()
+
+Gestor -> Gestor: getFechaHoraActual()
+
+Gestor -> Gestor: obtenerUsuarioLogueado()
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+Gestor -> Sesion: obtenerUsuarioLogueado()
+Sesion -> Usuario: getResponsable()
+entity "__nuevo:CambioEstado__" as newCE 
+loop Contratos [mientras existan contratos seleccionados]
+
+    Gestor -> Contratos: forzarAccesoContrato()
+    Contratos -> actualCE: setFechaHoraFin()
+    Contratos -> Contratos: crearCambioEstado()
+    Contratos -->> newCE**: new()
+    Contratos -> CajaDeSeguridad: forzarAcceso()
+    CajaDeSeguridad -> CajaDeSeguridad: setEstadoActual()
+
+end
+
+Gestor -> Gestor: finCU()
+@enduml
