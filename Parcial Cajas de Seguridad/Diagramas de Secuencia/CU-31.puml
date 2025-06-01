@@ -64,6 +64,11 @@ Gestor -> Gestor: calcularAntiguedadContrato()
 
 Gestor -> Cliente: verificarCondicionesCancelacion()
 Cliente -> ContratoSeleccionado: getSolicitudesCancelacion()
+entity "__:SolicitudCancelacion__" as Solicitud 
+ContratoSeleccionado -> Solicitud: conocerSolicitudCancelacion()
+Solicitud -> Solicitud: tomarFechaHoraSolicitud()
+Solicitud -> ContratoSeleccionado: poseeDeuda()
+
 Cliente -> ContratoSeleccionado: getDeclaracionVaciamiento()
 ContratoSeleccionado -> CajaSeguridad: tieneDeclaracionVaciamiento()
 
