@@ -1,43 +1,41 @@
 @startuml
-hide circle 
-class CajaDeSeguridad{
-    -nroCajaDeSeguridad
-    -estadoActual:Estado
-    -seguroIncluido
-
-}
-
 
 class Contrato{
-    -caja:CajaDeSeguridad
-    -nroContrato
-    -fechaInicio
-    -fechaFin
-    -estado:Estado
--motivo:MotivoCancelacion
+-fechaInicio
+-fechaFin
 }
 
+class CajaDeSeguridad{
+-nroCaja
+-tipo
+-seguroIncluido
+}
 
 class CambioEstado{
-    -fechaInicio 
-    -fechaFin
-    -estado:Estado
-
+-fechaHoraInicio
+-fechaHoraFin
 }
+
 class Estado{
-    - ambito
-    - valor
-
+-ambito
+-valor
 }
-
 
 class Cliente{
-    -nombre
-    -apellido
-    -DNI 
-    -PIN 
+-esTitular
+-nombre
+-apellido
+-DNI
+-PINAcceso
 }
-'class Rol{}
+
+class MotivoCancelacion{
+-nombre
+-descripcion
+}
+class SolicitudCancelacion{
+-fechaHora
+}
 
 class Sesion{
     -fechaHoraInicio
@@ -56,18 +54,6 @@ class Responsable{
     -DNI
 }
 
-
-
-class MotivoCancelacion{
-    - nombre 
-    - descripcion
-}
-
-
-
-
-
-'esto va a depender de la plantilla que toque
 class Gestor{
 -DNITitular
 -listaContratosVigentes
@@ -93,26 +79,23 @@ class Pantalla{
 }
 
 
-CajaDeSeguridad --> "1" Estado
-
-'Contrato o--> "1..*" DetalleContrato
-'DetalleContrato --> "1..*" Cliente
-Contrato --> "1..* titular" Cliente 
-Contrato -->"0..* autorizado" Cliente
-Contrato --> "1" CajaDeSeguridad
-
-Contrato --> "1..*" CambioEstado
-CambioEstado --> "1" Estado
-
-
 Sesion --> "1" Usuario
 Usuario --> "1" Responsable
-
-Contrato--> "0..1" MotivoCancelacion
 
 Gestor ..> Sesion
 Gestor ..> Pantalla
 Pantalla ..> Gestor
 Gestor..> Contrato
 Gestor ..> Cliente
+
+Contrato --> "1..* clientes" Cliente
+Contrato --> "0..* solicitudes" SolicitudCancelacion
+SolicitudCancelacion --> "1 titular" Cliente
+Contrato --> "1 motivo" MotivoCancelacion
+Contrato --> "1.. estadoContrato" CambioEstado
+CambioEstado --> "1 estado" Estado
+
+Contrato --> "1 cajaSeguridad" CajaDeSeguridad
+CajaDeSeguridad --> "1 estado" Estado
+
 @enduml
