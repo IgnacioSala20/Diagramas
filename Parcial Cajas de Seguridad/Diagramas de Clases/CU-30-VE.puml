@@ -1,0 +1,177 @@
+@startuml
+hide circle 
+
+class GestorSolicitudAF{
+    -listaMotivos
+    -motivoSeleccionado
+    -DNITitular 
+    -datosTitular
+    -listaContratosVigentesDelTitular
+    -fechaHoraActual
+    -punteroEstadoAccesoForzadoContrato
+    -punteroEstadoAccesoForzadoCaja
+    -punteroUsuarioLogueado
+    -datosResponsable
+
+    +nuevaSolicitud()
+    +buscarMotivos()
+    +tomarSeleccionMotivo()
+    +tomarIngresoDNI()
+    +buscarClientePorDNI()
+    +tomarConfirmacionDatosCliente()
+    +buscarContratosVigentes()
+    +tomarSeleccionContratos()
+    +tomarConfirmacion()
+    +tomarFechaHoraActual()
+    +buscarEstadoConAccesoForzadoParaContrato()
+    +buscarEstadoConAccesoForzadoParaCajaDeSeguridad()
+    +buscarUsuarioLogueado()
+    +crearSolicitudAF()
+    +forzarAccesoCajaSeguridad()
+    +finCU()
+}
+
+class PantallaSolicitudAF{
+    -btncRegSolicitudAF
+    -btnCancelar
+    -btnConfirmar
+    -btnSeleccionarMotivo
+    -txtDNI
+    -arrayMotivos
+    -gridContratos
+
+    +opRegSolicitudAF()
+    +habilitarVentana()
+    +mostrarMotivosParaSeleccion()
+    +tomarSeleccionMotivo
+    +tomarIngresoDNI()
+    +tomarConfirmacionDatosCliente()
+    +tomarSeleccionContratos()
+    +tomarConfirmacion()
+
+}
+
+class MotivoAccesoForzado{
+    -nombre
+    -descripcion
+
+    +getNombre()
+
+}
+
+class Cliente{
+    -nombre
+    -apellido
+    -DNI
+    -telefono
+    -esTitular
+
+    +esTuDNI()
+    +getNombre()
+    +getApellido()
+    +poseeContrato()
+    +sosTitular()
+}
+
+class Contrato{
+    -nroContrato
+    -fechaVigencia
+    -caja:CajaSeguridad 
+    -estadoActual:CambioEstado 
+    
+    +esTitular()
+    +estaVigente()
+    +getNroContrato()
+    +getFechaVigencia()
+    +conocerCajaSeguridad()
+    +crearCambioEstado()
+    +forzarAcceso()
+    +forzarAccesoCajaSeguridad()
+
+}
+
+Class CambioEstado{
+    -fechaHoraInicio
+    -fechaHoraFin
+    -estado:Estado 
+
+    +new()
+    +esActual()
+    +setFechaHoraFin()
+    +esVigente()
+
+}
+
+Class Estado{
+    -ambito
+    -valor 
+
+    +esVigente()
+    +esAmbitoCajaSeguridad()
+    +esConAccesoForzado()
+    +esAmbitoContrato()
+
+
+}
+
+class CajaDeSeguridad{
+    -nroCajaSeguridad
+    -tipo 
+    -tamaño 
+    -estado:Estado
+
+    +getNroCajaSeguridad()
+    +forzarAcceso()
+    +setEstadoActual()
+}
+
+Class SolicitudDeAcceso{
+
+    +new()
+}
+
+Class Sesion{
+    -fechaHoraInicio 
+    -fechaHoraFin 
+    -usuario:Usuario 
+
+    +obtenerUsuarioLogueado()
+}
+
+Class Usuario{
+    -nombre 
+    -contraseña
+    -telefono 
+    -responsable:Responsable
+
+    +conocerResponsable()
+}
+
+Class Responsable{
+    -nombre 
+    -apellido 
+    -DNI 
+
+    +getNombre()
+}
+
+GestorSolicitudAF ..> PantallaSolicitudAF 
+PantallaSolicitudAF ..> GestorSolicitudAF
+
+GestorSolicitudAF ..> Sesion 
+Sesion --> "1" Usuario 
+Usuario --> "1" Responsable
+
+GestorSolicitudAF ..> Cliente 
+GestorSolicitudAF ..> MotivoAccesoForzado
+
+GestorSolicitudAF ..> SolicitudDeAcceso
+
+Cliente --> "1..*" Contrato
+Contrato ..> Cliente
+Contrato --> "1..*" CambioEstado
+CambioEstado --> "1" Estado 
+
+CajaDeSeguridad --> "1" Estado
+Contrato --> "1" CajaDeSeguridad
+@enduml
