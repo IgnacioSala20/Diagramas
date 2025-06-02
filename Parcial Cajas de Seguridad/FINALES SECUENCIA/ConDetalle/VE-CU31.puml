@@ -1,0 +1,92 @@
+@startuml Vista estática - CU31 
+hide circle 
+
+class PantallaCancelarContrato{
+    -btnCancelarContrato
+    -btnConfirmar
+    -btnCancelar
+    -txtDNI
+    -listContratosVigentesOrdenados
+    -listMotivos
+}
+class GestorCancelarContrato{
+    -dniCliente
+    -datosContrato
+    -listaContratosVigentesDelTitularOrdenados
+    -fechaHoraActual
+    -listaMotivosCancelacion
+    -punteroEstadoCancelado
+    -punteroEstadoDisponible
+    -punteroSesionActual
+    -punteroUsuarioLogueado
+}
+class Cliente{
+    -nombre
+    -apellido
+    -dni
+}
+class Contrato{
+    -nroContrato
+    -fechaInicio
+    -fechaFin
+
+}
+class CambioEstado{
+    -fechaHoraInicio
+    -fechaHoraFin
+}
+class Estado{
+    -ambito
+    -valor
+}
+class DetalleContrato{}
+class Rol{
+    -nombre
+}
+class CajaDeSeguridad{
+    -nroCajaDeSeguridad
+    -tipo 
+    -tamaño
+}
+class SolicitudCancelacion{
+    -fechaHora
+}
+class MotivoCancelacion{
+    -nombre 
+    -descripcion
+}
+class Sesion{
+    -fechaHoraInicio 
+    -fechaHoraFin 
+}
+class Usuario{
+    -nombre 
+    -contraseña
+
+    +getResponsable()
+}
+
+PantallaCancelarContrato ..> GestorCancelarContrato
+GestorCancelarContrato ..> PantallaCancelarContrato
+GestorCancelarContrato ..> Cliente 
+GestorCancelarContrato ..> Contrato 
+GestorCancelarContrato ..> MotivoCancelacion
+GestorCancelarContrato ..> Sesion 
+Sesion --> "1" Usuario : usuario
+
+Contrato o--> "1..*" DetalleContrato:detalle
+DetalleContrato --> "1" Rol :rol
+DetalleContrato --> "0..1" SolicitudCancelacion:solicitud
+DetalleContrato --> "1" Cliente:cliente
+
+Contrato --> "1..*" CambioEstado:estado
+CambioEstado --> "1" Estado :estado
+
+Contrato --> "1" CajaDeSeguridad:caja
+CajaDeSeguridad --> "1" Estado :estado
+
+Contrato --> "1" MotivoCancelacion
+
+
+
+@enduml

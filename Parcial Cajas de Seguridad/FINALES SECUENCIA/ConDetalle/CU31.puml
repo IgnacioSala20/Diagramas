@@ -1,0 +1,128 @@
+@startuml
+autonumber 
+
+actor "__:ResponsableAdministrativo__" as RA 
+boundary "__:PantallaCancelarContrato__" as Pantalla 
+control "__:GestorCancelarContrato__" as Gestor 
+
+RA-->>Pantalla**: opcCancelarContrato()
+Pantalla -> Pantalla: habilitarVentana()
+Pantalla -->> Gestor**:nuevaCancelacion()
+
+Gestor -> Pantalla: pedirDNITitular()
+RA -> Pantalla: tomarIngresoDNI()
+Pantalla -> Gestor: tomarIngresoDNI()
+
+Gestor -> Gestor: buscarClientePorDNI()
+entity "__:Cliente__" as Clientes #violet 
+
+Gestor -> Clientes: *esTuDNI()
+
+
+entity "__:Contrato__" as Contratos #violet
+entity "__:CambioEstado__" as CE #violet 
+entity "__actual:CambioEstado__" as actualCE #violet 
+entity "__:Estado__" as E 
+
+entity "__:DetalleContrato__" as Detalle #violet 
+entity "__:Rol__" as Rol 
+
+entity "__:CajaDeSeguridad__" as CajaDeSeguridad
+Gestor -> Gestor: buscarContratosCliente()
+loop Contratos [mientras existan contratos]
+    
+    Gestor -> Contratos: esVigente()
+    Contratos -> CE: *esActual()
+    Contratos -> actualCE: esVigente()
+    actualCE -> E: esVigente()
+    Gestor -> Contratos: esDeClienteIngresado()
+    Contratos -> Contratos: buscarContratosCliente()
+    loop Detalles [mientras existan detalles del contrato]
+        Contratos -> Detalle: esClienteIngresado()
+        Detalle -> Rol: esTitular()
+    end
+
+    Gestor -> Contratos: getDatosContrato()
+    Contratos -> Contratos: getNroContrato()
+    Contratos -> Contratos: getFechaVigencia()
+    Contratos -> CajaDeSeguridad: getNroCajaSeguridad()
+    Contratos -> Contratos: getDemasTitulares()
+
+    loop Detalles [mientras existan detalles del Contrato]
+        Contratos -> Detalle: esCliente()
+        Detalle -> Rol: esTitular()
+
+        Detalle -> Clientes: getApellido()
+        Detalle -> Clientes: getNombre()
+        Detalle -> Clientes: getDNI()
+
+
+    end
+
+end
+Gestor -> Gestor: ordenarContratosPorFechaFin()
+
+Gestor -> Pantalla: mostrarParaSeleccionContrato()
+RA -> Pantalla: tomarSeleccionContrato()
+Pantalla -> Gestor: tomarSeleccionContrato()
+entity "__selec:Contrato__" as ContratoSeleccionado
+entity "__:SolicitudCancelacion__" as Solicitud #violet
+Gestor -> Gestor: validarCondicionesCancelacion()
+Gestor -> Gestor: tomarFechaHoraActual()
+Gestor -> ContratoSeleccionado: validarPeriodoVigenciaContrato()
+Gestor -> ContratoSeleccionado: validarCajaVacia()
+ContratoSeleccionado -> CajaDeSeguridad: estaVacia()
+CajaDeSeguridad -> E: esVacia()
+Gestor -> ContratoSeleccionado: verificarExistenciaSolicitudesCancelacion()
+loop Solicitudes [mientras existan solicitudes]
+    ContratoSeleccionado -> Detalle: tieneSolicitudCancelacion()
+    Detalle -> Solicitud: existeSolicitud()
+    Detalle -> Rol: esTitular()
+end
+
+
+Gestor -> Gestor: buscarMotivoCancelacion()
+entity "__:MotivoCancelacion__" as Motivos #Violet 
+Gestor -> Motivos: *getNombre()
+Gestor -> Pantalla: mostrarMotivosParaSeleccion()
+RA -> Pantalla: tomarSeleccionMotivo()
+Pantalla -> Gestor: tomarSeleccionMotivo()
+
+Gestor -> Pantalla: pedirConfirmacion()
+RA -> Pantalla: tomarConfirmacion()
+Pantalla -> Gestor: tomarConfirmacion()
+
+Gestor -> Gestor: buscarEstadoCancelado()
+entity "__:Estado__" as Estados #violet 
+Gestor -> Estados: *esAmbitoContrato()
+Gestor -> Estados: *esCancelado()
+
+
+
+Gestor -> Gestor: obtenerUsuarioLogueado()
+entity "__:Sesion__" as Sesion 
+entity "__:Usuario__" as Usuario 
+Gestor -> Sesion: obtenerUsuarioLogueado()
+Sesion -> Usuario: conocerResponsable()
+
+Gestor -> Gestor: cancelarContrato()
+Gestor -> ContratoSeleccionado: cancelar()
+
+ContratoSeleccionado -> actualCE: setFechaHoraFin()
+ContratoSeleccionado -> ContratoSeleccionado: crearCambioEstado()
+entity "__cancelado:CambioEstado__" as newCE 
+ContratoSeleccionado -->> newCE**: new()
+
+Gestor -> Gestor: buscarEstadoDisponible()
+Gestor -> Estados: *esAmbitoCajaSeguridad()
+Gestor -> Estados: *esDisponible()
+
+Gestor -> Gestor: disponibilizarCajaSeguridad()
+Gestor -> ContratoSeleccionado: disponibilizarCajaSeguridad()
+ContratoSeleccionado -> CajaSeguridad: disponibilizar()
+CajaSeguridad -> CajaSeguridad: setEstadoActual()
+
+Gestor -> Gestor: finCU()
+
+
+@enduml

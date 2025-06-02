@@ -1,0 +1,97 @@
+@startuml Vista estática - CU30 
+hide circle 
+
+class PantallaAF{
+    -btnRegistrarSolicitud
+    -btnCancelar
+    -btnConfirmar
+    -listMotivosAF
+    -txtDNI
+    -lblDatosCliente
+    -gridContratosVigentesDelTitular
+
+}
+class GestorSolicitudAF{
+    -listaMotivosAF 
+    -datosClienteIngresado
+    -listaContratosVigentesTitular
+    -dniTitular
+    -listaContratosSeleccionados
+    -punteroEstadoConAccesoForzadoContrato
+    -punteroEstadoConAccesoForzadoCajaDeSeguridad
+    -datosUsuarioLogueado
+    -punteroSesionActual
+    -fechaHoraActual
+}
+class MotivoAF{
+    -nombre
+    -descripcion
+}
+class Cliente{
+    -nombre
+    -apellido
+    -DNI
+}
+class Contrato{
+    -nroContrato
+    -fechaVigencia
+    
+}
+class DetalleContrato{}
+class Rol{
+    -nombre
+}
+class CambioEstado{
+    -fechaHoraInicio
+    -fechaHoraFin
+}
+class Estado{
+    -ambito
+    -valor
+}
+class CajaDeSeguridad{
+    -nroCajaDeSeguridad
+    -tipo 
+    -tamaño
+}
+class Sesion{
+    -fechaHoraInicio 
+    -fechaHoraFin
+}
+class Usuario{
+    -nombre
+    -contraseña
+    -telefono
+}
+class Responsable{}
+class SolicitudAF{
+    -fechaHora 
+    -motivo 
+    -responsable 
+}
+
+PantallaAF ..> GestorSolicitudAF
+GestorSolicitudAF ..> PantallaAF
+GestorSolicitudAF ..> MotivoAF
+GestorSolicitudAF ..> Cliente 
+GestorSolicitudAF ..> Contrato
+GestorSolicitudAF ..> Sesion 
+GestorSolicitudAF ..> SolicitudAF
+
+Sesion --> "1" Usuario : usuario
+Usuario --> "1" Responsable : responsable
+
+Contrato o--> "1..*" DetalleContrato :detalleContrato
+DetalleContrato --> "1" Cliente : cliente
+DetalleContrato --> "1" Rol : rol
+
+Contrato --> "1..*" CambioEstado : estado
+CambioEstado --> "1" Estado : estado
+
+Contrato --> "1" CajaDeSeguridad :cajaDeSeguridad
+CajaDeSeguridad --> "1" Estado :estado
+
+SolicitudAF --> "1..*" Contrato : contrato
+SolicitudAF --> "1" MotivoAF :motivo
+
+@enduml
